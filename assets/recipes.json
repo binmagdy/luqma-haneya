@@ -1,0 +1,1063 @@
+[
+  {
+    "id": "koshary",
+    "title": "كشري من البيت",
+    "description": "طبق مصري أصيل يجمع المكرونة والأرز والعدس والبصل المحمر.",
+    "minutes": 75,
+    "servings": 6,
+    "tags": [
+      "نباتي",
+      "تقيل",
+      "مصري"
+    ],
+    "steps": [
+      "سلق العدس والحمص حتى النضج.",
+      "سلق المكرونة والأرز منفصلين.",
+      "اقلي البصل شرائح حتى يتحمر.",
+      "اخلطي الصلصة بالكمون وقليل ماء.",
+      "رتبي الطبقات: أرز، مكرونة، عدس، حمص، صلصة، بصل محمر."
+    ],
+    "mainIngredients": [
+      "٢ كوب أرز مصري",
+      "٢ كوب مكرونة قلم",
+      "١ كوب عدس بني",
+      "١ كوب حمص منقوع طوال الليل",
+      "٣ بصلات كبار",
+      "صلصة طماطم",
+      "كمون، ملح، فلفل"
+    ],
+    "optionalIngredients": [
+      "سلطة مخللة بجانب الطبق (اختياري)"
+    ],
+    "mealType": "lunch",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian"
+  },
+  {
+    "id": "molokhia",
+    "title": "ملوخية بالأرانب",
+    "description": "ملوخية دبقة مع صلصة ثوم كزبرة.",
+    "minutes": 90,
+    "servings": 4,
+    "tags": [
+      "لحوم",
+      "عائلي"
+    ],
+    "steps": [
+      "اسلقي اللحم مع البهارات.",
+      "اهرسي الثوم مع الكزبرة وقلبي في السمنة.",
+      "أضيفي الملوخية على المرقة مع التقليب المستمر.",
+      "قدمي مع الأرز الأبيض أو العيش البلدي."
+    ],
+    "mainIngredients": [
+      "٥٠٠ جرام ملوخية مجمدة أو طازة",
+      "١ أرنب أو دجاج مقطع",
+      "رأس ثوم",
+      "كزبرة ناشفة",
+      "مرقة لحم",
+      "سمنة بلدي"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "hard",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "fatta",
+    "title": "فتة لحم بالخل والثوم",
+    "description": "فتة دافية بالأرز والعيش المحمص والخل.",
+    "minutes": 60,
+    "servings": 5,
+    "tags": [
+      "لحوم",
+      "مناسبات"
+    ],
+    "steps": [
+      "حمّصي العيش في الفرن حتى يقرمش.",
+      "اسلقي الأرز بالمرقة.",
+      "هرس الثوم بالخل والقليل من المرقة.",
+      "رتبي طبقات العيش والأرز واللحم واسكبي الصلصة."
+    ],
+    "mainIngredients": [
+      "٥٠٠ جرام لحم ضأن أو بقري مسلوق",
+      "عيش بلدي",
+      "أرز مصري",
+      "٣ أكواب مرقة",
+      "خل أبيض"
+    ],
+    "optionalIngredients": [
+      "ثوم، طحينة اختياري"
+    ],
+    "mealType": "any",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "sayadeya",
+    "title": "سيدية سمك بلطي",
+    "description": "سمك مع أرز بني وبهارات سمك.",
+    "minutes": 45,
+    "servings": 4,
+    "tags": [
+      "بحري",
+      "سريع"
+    ],
+    "steps": [
+      "تبيل السمك بالكمون والليمون.",
+      "اقلي أو اشوي السمك.",
+      "قلبي البصل حتى ي caramelize ثم أرز مع البهارات.",
+      "أضيفي المرقة واتركي الأرز ينضج.",
+      "قدمي السمك فوق الأرز."
+    ],
+    "mainIngredients": [
+      "٤ شرائح سمك بلطي",
+      "٢ كوب أرز بسمتي",
+      "بصل مبشور",
+      "كمون، كزبرة، قرفة، حبهان",
+      "مرقة سمك",
+      "زيت"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "mahshi",
+    "title": "محشي كوسة وورق عنب",
+    "description": "حشوة أرز بالخضار والطماطم.",
+    "minutes": 120,
+    "servings": 6,
+    "tags": [
+      "نباتي",
+      "عائلي"
+    ],
+    "steps": [
+      "اخلطي الأرز مع الخضار والطماطم والبهارات.",
+      "احشي الكوسة أو لف ورق العنب.",
+      "رتبي في الحلة وغطي بالمرقة والطماطم.",
+      "طبخ هادئ حتى ينضج الأرز."
+    ],
+    "mainIngredients": [
+      "كوسة أو ورق عنب",
+      "٢ كوب أرز مصري",
+      "بقدونس، شبت، كزبرة",
+      "طماطم مبشورة",
+      "مرقة دجاج أو خضار",
+      "بصل، ثوم"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "hard",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "ful_medames",
+    "title": "فول مدمس بالزيت والليمون",
+    "description": "فطار مصري سريع.",
+    "minutes": 25,
+    "servings": 3,
+    "tags": [
+      "نباتي",
+      "سريع",
+      "فطار"
+    ],
+    "steps": [
+      "سخني الفول على نار هادئة.",
+      "اهرسي جزئياً بالشوكة.",
+      "أضيفي الزيت والليمون والكمون.",
+      "قدمي مع العيش البلدي والبصل الأخضر."
+    ],
+    "mainIngredients": [
+      "علبة فول مدمس",
+      "زيت زيتون",
+      "ليمون",
+      "كمون، ملح"
+    ],
+    "optionalIngredients": [
+      "طماطم مكعبات اختياري"
+    ],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "taameya",
+    "title": "طعمية في البيت",
+    "description": "طعمية مقرمشة من الفول الأخضر.",
+    "minutes": 40,
+    "servings": 4,
+    "tags": [
+      "نباتي",
+      "فطار"
+    ],
+    "steps": [
+      "افرمي المكونات معاً حتى تعجينة ناعمة.",
+      "شكلي أقراص واقلي في زيت غزير.",
+      "قدمي مع سلطة طحينة."
+    ],
+    "mainIngredients": [
+      "٥٠٠ جرام فول أخضر منقوع",
+      "بقدونس، كزبرة",
+      "بصل أخضر",
+      "ثوم، كمون، كزبرة ناشفة",
+      "بيكينج بودر رشة"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "bamya",
+    "title": "بامية باللحم",
+    "description": "مرقة طماطم غنية مع بامية صغيرة.",
+    "minutes": 70,
+    "servings": 5,
+    "tags": [
+      "لحوم",
+      "عائلي"
+    ],
+    "steps": [
+      "حمّري اللحم مع البصل.",
+      "أضيفي الطماطم والمرقة واتركي حتى يطرى اللحم.",
+      "قلبي الثوم بالكزبرة وأضيفي البامية في النهاية.",
+      "قدمي مع أرز أبيض."
+    ],
+    "mainIngredients": [
+      "٥٠٠ جرام بامية صغيرة",
+      "٤٠٠ جرام لحم مكعبات",
+      "طماطم مفرومة",
+      "ثوم، كزبرة ناشفة",
+      "مرقة",
+      "سمنة"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "roz_bil_khodar",
+    "title": "أرز بالخضار",
+    "description": "أكلة بسيطة واقتصادية مناسبة للغداء",
+    "minutes": 30,
+    "servings": 4,
+    "steps": [
+      "اغسلي الأرز واتركيه جانبًا.",
+      "شوحي البصل في الزيت.",
+      "أضيفي الجزر والبسلة وقلبي.",
+      "أضيفي الأرز والماء واتركيه حتى ينضج."
+    ],
+    "tags": [
+      "غداء",
+      "اقتصادي",
+      "خضار"
+    ],
+    "mainIngredients": [
+      "أرز",
+      "جزر",
+      "بسلة",
+      "بصل",
+      "زيت",
+      "ملح",
+      "فلفل"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "makarona_bel_salsa",
+    "title": "مكرونة بالصلصة",
+    "description": "وجبة سريعة يحبها الجميع",
+    "minutes": 25,
+    "servings": 3,
+    "steps": [
+      "اسلقي المكرونة.",
+      "حضري الصلصة بالثوم والزيت.",
+      "أضيفي المكرونة للصلصة وقلبي."
+    ],
+    "tags": [
+      "غداء",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "مكرونة",
+      "صلصة طماطم",
+      "ثوم",
+      "زيت",
+      "ملح",
+      "فلفل"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "bayd_bel_tomatom",
+    "title": "بيض بالطماطم",
+    "description": "فطار بسيط وسريع",
+    "minutes": 15,
+    "servings": 2,
+    "steps": [
+      "شوحي البصل والطماطم.",
+      "أضيفي البيض وقلبي حتى ينضج."
+    ],
+    "tags": [
+      "فطار",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "بيض",
+      "طماطم",
+      "بصل",
+      "زيت",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "foul_bel_zait",
+    "title": "فول بالزيت",
+    "description": "فطار مصري تقليدي",
+    "minutes": 10,
+    "servings": 2,
+    "steps": [
+      "سخني الفول.",
+      "أضيفي الزيت والليمون والملح."
+    ],
+    "tags": [
+      "فطار",
+      "مصري"
+    ],
+    "mainIngredients": [
+      "فول",
+      "زيت",
+      "ليمون",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian"
+  },
+  {
+    "id": "batates_mahlia",
+    "title": "بطاطس محمرة",
+    "description": "طبق جانبي سريع",
+    "minutes": 20,
+    "servings": 3,
+    "steps": [
+      "قطعي البطاطس.",
+      "اقليها في الزيت حتى تذهب."
+    ],
+    "tags": [
+      "سريع",
+      "جانبي"
+    ],
+    "mainIngredients": [
+      "بطاطس",
+      "زيت",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "shakshoka",
+    "title": "شكشوكة",
+    "description": "وجبة خفيفة وسريعة",
+    "minutes": 20,
+    "servings": 2,
+    "steps": [
+      "شوحي الخضار.",
+      "أضيفي البيض واتركيه حتى ينضج."
+    ],
+    "tags": [
+      "فطار",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "بيض",
+      "طماطم",
+      "فلفل",
+      "بصل",
+      "زيت"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "kofta_bel_salsa",
+    "title": "كفتة بالصلصة",
+    "description": "وجبة مشبعة للعائلة",
+    "minutes": 40,
+    "servings": 4,
+    "steps": [
+      "شكلي الكفتة.",
+      "اقليها قليلًا.",
+      "أضيفي الصلصة واتركيها تنضج."
+    ],
+    "tags": [
+      "غداء",
+      "لحوم"
+    ],
+    "mainIngredients": [
+      "لحمة مفرومة",
+      "بصل",
+      "صلصة",
+      "ملح",
+      "فلفل"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "roz_bel_laban",
+    "title": "أرز باللبن",
+    "description": "حلو بسيط وسريع",
+    "minutes": 35,
+    "servings": 4,
+    "steps": [
+      "اسلقي الأرز.",
+      "أضيفي اللبن والسكر.",
+      "اتركيه حتى يثقل."
+    ],
+    "tags": [
+      "حلو"
+    ],
+    "mainIngredients": [
+      "أرز",
+      "لبن",
+      "سكر",
+      "فانيليا"
+    ],
+    "optionalIngredients": [],
+    "mealType": "snack",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "feteer_mashaltet",
+    "title": "فطير مشلتت بسيط",
+    "description": "نسخة منزلية سهلة",
+    "minutes": 60,
+    "servings": 4,
+    "steps": [
+      "اعجني الدقيق.",
+      "افردي العجين وضيفي الزبدة.",
+      "اخبزيه في الفرن."
+    ],
+    "tags": [
+      "فطار",
+      "مصري"
+    ],
+    "mainIngredients": [
+      "دقيق",
+      "ماء",
+      "زبدة",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian"
+  },
+  {
+    "id": "koshari_simple",
+    "title": "كشري بسيط",
+    "description": "أكلة مصرية شهيرة",
+    "minutes": 45,
+    "servings": 5,
+    "steps": [
+      "اسلقي المكونات.",
+      "حضري الصلصة.",
+      "رصي الطبقات وقدمي."
+    ],
+    "tags": [
+      "غداء",
+      "مصري"
+    ],
+    "mainIngredients": [
+      "أرز",
+      "عدس",
+      "مكرونة",
+      "صلصة",
+      "بصل"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian"
+  },
+  {
+    "id": "chicken_roasted",
+    "title": "فراخ مشوية في الفرن",
+    "description": "وجبة صحية للعائلة",
+    "minutes": 60,
+    "servings": 4,
+    "steps": [
+      "تبلي الفراخ.",
+      "ضعيها مع الخضار في الفرن.",
+      "اتركيها حتى تنضج."
+    ],
+    "tags": [
+      "غداء",
+      "فراخ"
+    ],
+    "mainIngredients": [
+      "فراخ",
+      "بطاطس",
+      "بصل",
+      "بهارات",
+      "زيت"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "lentil_soup",
+    "title": "شوربة عدس",
+    "description": "وجبة دافئة في الشتاء",
+    "minutes": 35,
+    "servings": 4,
+    "steps": [
+      "اسلقي العدس.",
+      "أضيفي الخضار والتوابل.",
+      "اضربي الخليط وقدمي."
+    ],
+    "tags": [
+      "شوربة",
+      "اقتصادي"
+    ],
+    "mainIngredients": [
+      "عدس",
+      "جزر",
+      "بصل",
+      "ثوم",
+      "كمون"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "fried_eggplant",
+    "title": "باذنجان مقلي",
+    "description": "طبق جانبي بسيط",
+    "minutes": 25,
+    "servings": 3,
+    "steps": [
+      "قطعي الباذنجان.",
+      "اقليه في الزيت."
+    ],
+    "tags": [
+      "جانبي"
+    ],
+    "mainIngredients": [
+      "باذنجان",
+      "زيت",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "roz_maamar_simple",
+    "title": "أرز معمر بسيط",
+    "description": "طبق تقليدي بطعم غني",
+    "minutes": 50,
+    "servings": 4,
+    "steps": [
+      "اخلطي الأرز مع اللبن.",
+      "أضيفي الزبدة.",
+      "اخبزي في الفرن."
+    ],
+    "tags": [
+      "غداء",
+      "مصري"
+    ],
+    "mainIngredients": [
+      "أرز",
+      "لبن",
+      "زبدة",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian"
+  },
+  {
+    "id": "tahina_sauce",
+    "title": "سلطة طحينة",
+    "description": "إضافة لذيذة للأكلات",
+    "minutes": 10,
+    "servings": 3,
+    "steps": [
+      "اخلطي كل المكونات.",
+      "قدميها بجانب الأكل."
+    ],
+    "tags": [
+      "جانبي"
+    ],
+    "mainIngredients": [
+      "طحينة",
+      "ليمون",
+      "ثوم",
+      "ماء",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "cheese_sandwich",
+    "title": "سندوتش جبنة",
+    "description": "وجبة خفيفة سريعة",
+    "minutes": 5,
+    "servings": 1,
+    "steps": [
+      "ضعي الجبنة في العيش.",
+      "أضيفي الطماطم وقدمي."
+    ],
+    "tags": [
+      "فطار",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "عيش",
+      "جبنة",
+      "طماطم"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "grilled_potatoes",
+    "title": "بطاطس في الفرن",
+    "description": "بديل صحي للمقلي",
+    "minutes": 35,
+    "servings": 3,
+    "steps": [
+      "قطعي البطاطس.",
+      "ضعيها في الفرن حتى تتحمر."
+    ],
+    "tags": [
+      "جانبي"
+    ],
+    "mainIngredients": [
+      "بطاطس",
+      "زيت",
+      "بهارات"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "simple_salad",
+    "title": "سلطة خضراء",
+    "description": "طبق صحي",
+    "minutes": 10,
+    "servings": 2,
+    "steps": [
+      "قطعي الخضار.",
+      "أضيفي الليمون."
+    ],
+    "tags": [
+      "صحي"
+    ],
+    "mainIngredients": [
+      "خيار",
+      "طماطم",
+      "خس",
+      "ليمون"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "milk_banana",
+    "title": "موز باللبن",
+    "description": "مشروب مغذي",
+    "minutes": 5,
+    "servings": 2,
+    "steps": [
+      "اخلطي المكونات في الخلاط."
+    ],
+    "tags": [
+      "مشروبات"
+    ],
+    "mainIngredients": [
+      "موز",
+      "لبن",
+      "سكر"
+    ],
+    "optionalIngredients": [],
+    "mealType": "snack",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "fried_rice_egg",
+    "title": "أرز بالبيض",
+    "description": "أكلة سريعة من بواقي الأرز",
+    "minutes": 15,
+    "servings": 2,
+    "steps": [
+      "شوحي البصل.",
+      "أضيفي البيض ثم الأرز."
+    ],
+    "tags": [
+      "سريع"
+    ],
+    "mainIngredients": [
+      "أرز",
+      "بيض",
+      "بصل",
+      "زيت"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "chicken_pan",
+    "title": "فراخ في طاسة",
+    "description": "وجبة سريعة بالفراخ",
+    "minutes": 30,
+    "servings": 3,
+    "steps": [
+      "شوحي الفراخ.",
+      "أضيفي البصل والثوم.",
+      "اتركيها حتى تنضج."
+    ],
+    "tags": [
+      "فراخ"
+    ],
+    "mainIngredients": [
+      "فراخ",
+      "بصل",
+      "ثوم",
+      "بهارات"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "beans_sandwich",
+    "title": "سندوتش فول",
+    "description": "وجبة فطار مشبعة",
+    "minutes": 10,
+    "servings": 1,
+    "steps": [
+      "ضعي الفول في العيش.",
+      "أضيفي الليمون."
+    ],
+    "tags": [
+      "فطار"
+    ],
+    "mainIngredients": [
+      "فول",
+      "عيش",
+      "ليمون"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "simple_omelette",
+    "title": "أومليت",
+    "description": "بيض مخفوق سريع",
+    "minutes": 10,
+    "servings": 1,
+    "steps": [
+      "اخفقي البيض.",
+      "اطهيه في طاسة."
+    ],
+    "tags": [
+      "فطار"
+    ],
+    "mainIngredients": [
+      "بيض",
+      "لبن",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "rice_meat",
+    "title": "أرز باللحمة",
+    "description": "وجبة تقليدية مشبعة",
+    "minutes": 60,
+    "servings": 4,
+    "steps": [
+      "اسلقي اللحمة.",
+      "حضري الأرز.",
+      "قدميهم معًا."
+    ],
+    "tags": [
+      "غداء",
+      "لحوم"
+    ],
+    "mainIngredients": [
+      "أرز",
+      "لحمة",
+      "بصل",
+      "بهارات"
+    ],
+    "optionalIngredients": [],
+    "mealType": "lunch",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "pasta_veg",
+    "title": "مكرونة بالخضار",
+    "description": "وجبة صحية وسهلة",
+    "minutes": 30,
+    "servings": 3,
+    "steps": [
+      "اسلقي المكرونة.",
+      "شوحي الخضار.",
+      "اخلطيهم."
+    ],
+    "tags": [
+      "خضار"
+    ],
+    "mainIngredients": [
+      "مكرونة",
+      "خضار",
+      "زيت"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "tea_mint",
+    "title": "شاي بالنعناع",
+    "description": "مشروب مريح",
+    "minutes": 5,
+    "servings": 2,
+    "steps": [
+      "اغلي الماء.",
+      "أضيفي الشاي والنعناع."
+    ],
+    "tags": [
+      "مشروبات"
+    ],
+    "mainIngredients": [
+      "شاي",
+      "نعناع",
+      "سكر"
+    ],
+    "optionalIngredients": [],
+    "mealType": "snack",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "fried_chicken_simple",
+    "title": "فراخ مقلية بسيطة",
+    "description": "طريقة منزلية سهلة",
+    "minutes": 45,
+    "servings": 4,
+    "steps": [
+      "تبلي الفراخ.",
+      "غطيها بالدقيق.",
+      "اقليها في الزيت."
+    ],
+    "tags": [
+      "فراخ"
+    ],
+    "mainIngredients": [
+      "فراخ",
+      "دقيق",
+      "زيت",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "dates_milk",
+    "title": "تمر باللبن",
+    "description": "مشروب مغذي وسريع",
+    "minutes": 5,
+    "servings": 2,
+    "steps": [
+      "اخلطي التمر مع اللبن."
+    ],
+    "tags": [
+      "مشروبات"
+    ],
+    "mainIngredients": [
+      "تمر",
+      "لبن"
+    ],
+    "optionalIngredients": [],
+    "mealType": "snack",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "simple_cake",
+    "title": "كيك بسيط",
+    "description": "حلو منزلي سهل",
+    "minutes": 50,
+    "servings": 6,
+    "steps": [
+      "اخلطي المكونات.",
+      "اخبزي في الفرن."
+    ],
+    "tags": [
+      "حلو"
+    ],
+    "mainIngredients": [
+      "دقيق",
+      "بيض",
+      "سكر",
+      "لبن"
+    ],
+    "optionalIngredients": [],
+    "mealType": "snack",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  },
+  {
+    "id": "eggplant_sandwich",
+    "title": "سندوتش باذنجان",
+    "description": "سندوتش اقتصادي",
+    "minutes": 20,
+    "servings": 1,
+    "steps": [
+      "اقلي الباذنجان.",
+      "ضعيه في العيش مع الطحينة."
+    ],
+    "tags": [
+      "سريع"
+    ],
+    "mainIngredients": [
+      "باذنجان",
+      "عيش",
+      "طحينة"
+    ],
+    "optionalIngredients": [],
+    "mealType": "any",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed"
+  }
+]
