@@ -3,33 +3,97 @@ import 'package:flutter/foundation.dart';
 import '../../core/bootstrap.dart';
 import '../../domain/entities/recipe_entity.dart';
 import '../../domain/entities/user_preferences_entity.dart';
+import '../../domain/repositories/favorites_repository.dart';
+import '../../domain/repositories/rating_repository.dart';
 import '../../domain/repositories/recipe_repository.dart';
+import '../../domain/repositories/user_recipe_repository.dart';
 import '../../domain/services/recipe_scoring_service.dart';
 import '../datasources/recipe_local_datasource.dart';
 import '../datasources/recipe_remote_datasource.dart';
+import '../datasources/viewed_recipes_local_datasource.dart';
 import '../models/recipe_model.dart';
 
 class RecipeRepositoryImpl implements RecipeRepository {
   RecipeRepositoryImpl({
     required RecipeLocalDataSource local,
     required RecipeRemoteDataSource remote,
+    required UserRecipeRepository userRecipes,
+    required RatingRepository ratingRepository,
+    required FavoritesRepository favoritesRepository,
+    required ViewedRecipesLocalDataSource viewedRecipesLocal,
   })  : _local = local,
-        _remote = remote;
+        _remote = remote,
+        _userRecipes = userRecipes,
+        _rating = ratingRepository,
+        _favorites = favoritesRepository,
+        _viewed = viewedRecipesLocal;
 
   final RecipeLocalDataSource _local;
   final RecipeRemoteDataSource _remote;
+  final UserRecipeRepository _userRecipes;
+  final RatingRepository _rating;
+  final FavoritesRepository _favorites;
+  final ViewedRecipesLocalDataSource _viewed;
 
   Future<List<RecipeModel>> _resolvedCatalog() async {
     final bundled = await _local.loadBundledRecipes();
-    if (firebaseAppReady) {
+    final submitted = await _userRecipes.submittedRecipes();
+    final byId = <String, RecipeModel>{};
+
+    for (final r in bundled) {
+      byId[r.id] = r;
+    }
+    for (final e in submitted) {
+      final m = RecipeModel.fromEntity(e);
+      byId[m.id] = m;
+    }
+
+    if (firebaseAppReady && _remote.isAvailable) {
       try {
         final remote = await _remote.fetchRecipes();
-        if (remote.isNotEmpty) return remote;
+        for (final r in remote) {
+          byId[r.id] = r;
+        }
       } catch (_) {
-        /* use bundled */
+        /* keep bundled + user */
       }
     }
-    return bundled;
+
+    return byId.values.toList();
+  }
+
+  Future<RecipeSuggestionContext> _suggestionContext(
+      List<RecipeModel> all) async {
+    final favIds = await _favorites.favoriteRecipeIds();
+    final favRecipes = <RecipeEntity>[];
+    for (final r in all) {
+      if (favIds.contains(r.id)) favRecipes.add(r);
+    }
+
+    final myRatings = await _rating.allMyRatings();
+    final highRated = <RecipeEntity>[];
+    for (final r in all) {
+      final v = myRatings[r.id];
+      if (v != null && v >= 4) highRated.add(r);
+    }
+
+    final viewedIds = await _viewed.loadOrdered();
+    final recent = <RecipeEntity>[];
+    for (final id in viewedIds.take(10)) {
+      for (final r in all) {
+        if (r.id == id) {
+          recent.add(r);
+          break;
+        }
+      }
+    }
+
+    return RecipeSuggestionContext(
+      favoriteRecipeIds: favIds,
+      favoriteRecipes: favRecipes,
+      highRatedRecipes: highRated,
+      recentlyViewedRecipes: recent,
+    );
   }
 
   @override
@@ -49,10 +113,15 @@ class RecipeRepositoryImpl implements RecipeRepository {
     UserPreferencesEntity prefs,
   ) async {
     final all = await _resolvedCatalog();
+    final ctx = await _suggestionContext(all);
     final ranked = <MapEntry<RecipeModel, double>>[];
 
     for (final r in all) {
-      final s = RecipeScoringService.scoreForDailySuggestion(r, prefs);
+      final s = RecipeScoringService.scoreForDailySuggestion(
+        r,
+        prefs,
+        context: ctx,
+      );
       if (s == null) continue;
       ranked.add(MapEntry(r, s));
     }
@@ -80,7 +149,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
       }
     }
 
-    return pool.take(5).map((e) => e.key).toList();
+    return pool.take(kDailySuggestionDisplayLimit).map((e) => e.key).toList();
   }
 
   @override

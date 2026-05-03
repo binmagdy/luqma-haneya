@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/add_recipe/presentation/add_recipe_screen.dart';
+import '../../features/browse/presentation/all_recipes_screen.dart';
+import '../../features/favorites/presentation/favorites_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/meal_plan/presentation/meal_plan_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
@@ -28,6 +31,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/home',
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: '/recipes',
+        builder: (context, state) => const AllRecipesScreen(),
+      ),
+      GoRoute(
+        path: '/favorites',
+        builder: (context, state) => const FavoritesScreen(),
+      ),
+      GoRoute(
+        path: '/add-recipe',
+        builder: (context, state) => const AddRecipeScreen(),
       ),
       GoRoute(
         path: '/suggest',

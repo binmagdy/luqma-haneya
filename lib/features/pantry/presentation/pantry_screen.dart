@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/recipe_rating_resolve.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/lh_primary_button.dart';
 import '../../../core/widgets/lh_recipe_tile.dart';
@@ -54,6 +55,9 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final favs = ref.watch(favoriteIdsProvider);
+    final sums = ref.watch(ratingSummariesProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('مكونات عندك في البيت'),
@@ -131,18 +135,45 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
                         ),
                   );
                 }
-                return Column(
-                  children: list
-                      .map(
-                        (r) => Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: LhRecipeTile(
-                            recipe: r,
-                            onTap: () => context.push('/recipe/${r.id}'),
-                          ),
-                        ),
-                      )
-                      .toList(),
+                return favs.when(
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (e, _) => Text('خطأ: $e'),
+                  data: (favSet) {
+                    return sums.when(
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (e, _) => Text('خطأ: $e'),
+                      data: (sumMap) {
+                        return Column(
+                          children: list
+                              .map(
+                                (r) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: LhRecipeTile(
+                                    recipe: r,
+                                    ratingSummary:
+                                        resolveRatingDisplay(r, sumMap),
+                                    isFavorite: favSet.contains(r.id),
+                                    onFavoriteTap: () async {
+                                      await ref
+                                          .read(favoritesRepositoryProvider)
+                                          .setFavorite(
+                                            r.id,
+                                            !favSet.contains(r.id),
+                                          );
+                                      ref.invalidate(favoriteIdsProvider);
+                                    },
+                                    onTap: () =>
+                                        context.push('/recipe/${r.id}'),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      },
+                    );
+                  },
                 );
               },
               loading: () => const Center(

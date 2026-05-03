@@ -5,6 +5,23 @@ import '../entities/recipe_entity.dart';
 import '../entities/user_preferences_entity.dart';
 import '../value_objects/recipe_schema.dart';
 
+/// Extra personalization for daily suggestions (favorites, strong ratings, history).
+class RecipeSuggestionContext {
+  const RecipeSuggestionContext({
+    this.favoriteRecipeIds = const {},
+    this.favoriteRecipes = const [],
+    this.highRatedRecipes = const [],
+    this.recentlyViewedRecipes = const [],
+  });
+
+  final Set<String> favoriteRecipeIds;
+  final List<RecipeEntity> favoriteRecipes;
+  final List<RecipeEntity> highRatedRecipes;
+  final List<RecipeEntity> recentlyViewedRecipes;
+
+  static const RecipeSuggestionContext empty = RecipeSuggestionContext();
+}
+
 /// Weighted scoring for recipe recommendations (daily suggestions + pantry search).
 /// Uses [ArabicTextNormalize] for ingredient and preference text matching.
 class RecipeScoringService {
@@ -31,6 +48,14 @@ class RecipeScoringService {
   static const double _mealTypeMatchWeight = 20;
   static const double _dislikePenaltyPerHit = 52;
   static const double _spicyPenaltyWhenAvoided = 40;
+
+  static const double _favoriteRecipeIdBoost = 26;
+  static const double _favoriteSimilarTagPerHit = 6;
+  static const int _favoriteSimilarTagCap = 24;
+  static const double _highRatedSimilarTagPerHit = 5;
+  static const int _highRatedSimilarTagCap = 18;
+  static const double _recentViewMealOrCuisineBoost = 4;
+  static const int _recentViewBoostCap = 12;
 
   static const List<String> _meatHints = [
     'لحم',
@@ -66,13 +91,16 @@ class RecipeScoringService {
   /// Returns `null` if the recipe should not appear in ranked lists at all.
   static double? scoreForDailySuggestion(
     RecipeEntity recipe,
-    UserPreferencesEntity prefs,
-  ) {
+    UserPreferencesEntity prefs, {
+    RecipeSuggestionContext? context,
+  }) {
     if (isHardExcluded(recipe, prefs)) return null;
 
     if (prefs.avoidSpicy && recipe.spicy) {
       return null;
     }
+
+    final ctx = context ?? RecipeSuggestionContext.empty;
 
     // Baseline so empty prefs still rank; dislikes/allergies pull recipes down.
     var score = 22.0;
@@ -158,6 +186,26 @@ class RecipeScoringService {
         score += 3;
       }
     }
+
+    if (ctx.favoriteRecipeIds.contains(recipe.id)) {
+      score += _favoriteRecipeIdBoost;
+    }
+
+    score += _tagOverlapBoost(
+      recipe,
+      ctx.favoriteRecipes,
+      perHit: _favoriteSimilarTagPerHit,
+      cap: _favoriteSimilarTagCap,
+    );
+
+    score += _tagOverlapBoost(
+      recipe,
+      ctx.highRatedRecipes,
+      perHit: _highRatedSimilarTagPerHit,
+      cap: _highRatedSimilarTagCap,
+    );
+
+    score += _recentViewAffinity(recipe, ctx.recentlyViewedRecipes);
 
     return score;
   }
@@ -279,6 +327,57 @@ class RecipeScoringService {
     }
     final s = scoreForDailySuggestion(recipe, prefs);
     return '[${recipe.id}] daily score=${s?.toStringAsFixed(2) ?? 'null'}';
+  }
+
+  static double _tagOverlapBoost(
+    RecipeEntity recipe,
+    List<RecipeEntity> seeds, {
+    required double perHit,
+    required int cap,
+  }) {
+    if (seeds.isEmpty) return 0;
+    final curTags =
+        recipe.tags.map(normalize).where((t) => t.length >= 2).toList();
+    if (curTags.isEmpty) return 0;
+    var add = 0.0;
+    for (final seed in seeds) {
+      if (seed.id == recipe.id) continue;
+      for (final t in seed.tags) {
+        final nt = normalize(t);
+        if (nt.length < 2) continue;
+        for (final ct in curTags) {
+          if (ct.contains(nt) || nt.contains(ct)) {
+            add += perHit;
+            if (add >= cap) return cap.toDouble();
+          }
+        }
+      }
+    }
+    return add.clamp(0, cap.toDouble());
+  }
+
+  static double _recentViewAffinity(
+    RecipeEntity recipe,
+    List<RecipeEntity> recent,
+  ) {
+    if (recent.isEmpty) return 0;
+    var add = 0.0;
+    for (final v in recent) {
+      if (v.id == recipe.id) continue;
+      if (recipe.mealType == v.mealType &&
+          recipe.mealType != RecipeMealType.any) {
+        add += _recentViewMealOrCuisineBoost;
+      }
+      final nc = normalize(recipe.cuisine);
+      final nv = normalize(v.cuisine);
+      if (nc.length >= 2 &&
+          nv.length >= 2 &&
+          (nc.contains(nv) || nv.contains(nc))) {
+        add += _recentViewMealOrCuisineBoost;
+      }
+      if (add >= _recentViewBoostCap) return _recentViewBoostCap.toDouble();
+    }
+    return add.clamp(0, _recentViewBoostCap.toDouble());
   }
 
   static void debugLogRanking({

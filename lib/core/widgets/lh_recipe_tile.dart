@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/entities/recipe_entity.dart';
+import '../../domain/entities/recipe_rating_summary.dart';
 import '../recipe_labels_ar.dart';
 import '../theme/app_colors.dart';
-import '../../domain/entities/recipe_entity.dart';
+import 'lh_favorite_button.dart';
+import 'lh_rating_stars.dart';
 
 class LhRecipeTile extends StatelessWidget {
   const LhRecipeTile({
     super.key,
     required this.recipe,
     required this.onTap,
+    this.ratingSummary,
+    this.isFavorite = false,
+    this.onFavoriteTap,
   });
 
   final RecipeEntity recipe;
   final VoidCallback onTap;
+  final RecipeRatingSummary? ratingSummary;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteTap;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +109,29 @@ class LhRecipeTile extends StatelessWidget {
                         size: 18, color: AppColors.olive),
                     const SizedBox(width: 4),
                     Text('${recipe.servings} أشخاص'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    if (onFavoriteTap != null) ...[
+                      LhFavoriteButton(
+                        isFavorite: isFavorite,
+                        onPressed: onFavoriteTap!,
+                        size: 22,
+                      ),
+                      const SizedBox(width: 4),
+                    ],
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: LhRatingSummaryRow(
+                          summary: ratingSummary,
+                          compact: true,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],

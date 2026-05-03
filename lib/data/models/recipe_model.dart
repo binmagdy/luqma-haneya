@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../domain/entities/recipe_entity.dart';
 import '../../domain/value_objects/recipe_schema.dart';
+import '../../domain/value_objects/recipe_source.dart';
 
 class RecipeModel extends RecipeEntity {
   const RecipeModel({
@@ -17,7 +20,39 @@ class RecipeModel extends RecipeEntity {
     required super.cuisine,
     required super.mainIngredients,
     required super.optionalIngredients,
+    super.source = RecipeSource.asset,
+    super.createdByUserId,
+    super.createdAt,
+    super.isApproved = true,
+    super.averageRating,
+    super.ratingCount,
   });
+
+  factory RecipeModel.fromEntity(RecipeEntity e) {
+    if (e is RecipeModel) return e;
+    return RecipeModel(
+      id: e.id,
+      title: e.title,
+      description: e.description,
+      minutes: e.minutes,
+      servings: e.servings,
+      steps: e.steps,
+      tags: e.tags,
+      mealType: e.mealType,
+      difficulty: e.difficulty,
+      budget: e.budget,
+      spicy: e.spicy,
+      cuisine: e.cuisine,
+      mainIngredients: e.mainIngredients,
+      optionalIngredients: e.optionalIngredients,
+      source: e.source,
+      createdByUserId: e.createdByUserId,
+      createdAt: e.createdAt,
+      isApproved: e.isApproved,
+      averageRating: e.averageRating,
+      ratingCount: e.ratingCount,
+    );
+  }
 
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
     final tags = List<String>.from(json['tags'] as List<dynamic>? ?? const []);
@@ -46,6 +81,12 @@ class RecipeModel extends RecipeEntity {
       cuisine: json['cuisine'] as String? ?? _inferCuisine(tags),
       mainIngredients: main,
       optionalIngredients: optional,
+      source: json['source'] as String? ?? RecipeSource.asset,
+      createdByUserId: json['createdByUserId'] as String?,
+      createdAt: _parseDate(json['createdAt']),
+      isApproved: json['isApproved'] as bool? ?? true,
+      averageRating: (json['averageRating'] as num?)?.toDouble(),
+      ratingCount: (json['ratingCount'] as num?)?.toInt(),
     );
   }
 
@@ -75,6 +116,12 @@ class RecipeModel extends RecipeEntity {
       cuisine: data['cuisine'] as String? ?? _inferCuisine(tags),
       mainIngredients: main,
       optionalIngredients: optional,
+      source: data['source'] as String? ?? RecipeSource.remote,
+      createdByUserId: data['createdByUserId'] as String?,
+      createdAt: _parseFirestoreDate(data['createdAt']),
+      isApproved: data['isApproved'] as bool? ?? true,
+      averageRating: (data['averageRating'] as num?)?.toDouble(),
+      ratingCount: (data['ratingCount'] as num?)?.toInt(),
     );
   }
 
@@ -93,7 +140,50 @@ class RecipeModel extends RecipeEntity {
       'cuisine': cuisine,
       'mainIngredients': mainIngredients,
       'optionalIngredients': optionalIngredients,
+      'source': source,
+      if (createdByUserId != null) 'createdByUserId': createdByUserId,
+      if (createdAt != null) 'createdAt': createdAt,
+      'isApproved': isApproved,
+      if (averageRating != null) 'averageRating': averageRating,
+      if (ratingCount != null) 'ratingCount': ratingCount,
     };
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'minutes': minutes,
+      'servings': servings,
+      'steps': steps,
+      'tags': tags,
+      'mealType': mealType,
+      'difficulty': difficulty,
+      'budget': budget,
+      'spicy': spicy,
+      'cuisine': cuisine,
+      'mainIngredients': mainIngredients,
+      'optionalIngredients': optionalIngredients,
+      'source': source,
+      if (createdByUserId != null) 'createdByUserId': createdByUserId,
+      if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
+      'isApproved': isApproved,
+      if (averageRating != null) 'averageRating': averageRating,
+      if (ratingCount != null) 'ratingCount': ratingCount,
+    };
+  }
+
+  static DateTime? _parseDate(dynamic v) {
+    if (v is String) return DateTime.tryParse(v);
+    return null;
+  }
+
+  static DateTime? _parseFirestoreDate(dynamic v) {
+    if (v == null) return null;
+    if (v is Timestamp) return v.toDate();
+    if (v is String) return DateTime.tryParse(v);
+    return null;
   }
 
   static String _inferMealType(List<String> tags) {

@@ -1,6 +1,9 @@
 import '../entities/recipe_entity.dart';
 import '../entities/user_preferences_entity.dart';
 
+/// Max rows on the suggestions screen only; browse/search are not capped here.
+const int kDailySuggestionDisplayLimit = 10;
+
 abstract class RecipeRepository {
   Future<List<RecipeEntity>> getAllRecipes();
 

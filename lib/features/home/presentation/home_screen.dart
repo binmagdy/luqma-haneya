@@ -27,8 +27,7 @@ class HomeScreen extends ConsumerWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: ListView(
             children: [
               const SizedBox(height: 12),
               Text(
@@ -40,14 +39,14 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'من هنا تقدر تقترح أكلة النهاردة، تدور على وصفة بمكونات موجودة في التلاجة، أو تخطط الأسبوع.',
+                'تصفحي كل الوصفات، خذي اقتراحات ذكية، دوري بالمكونات، خطّطي الأسبوع، أو ضيفي وصفتك.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.inkMuted,
                       height: 1.45,
                     ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
               if (!firebaseOn)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -59,7 +58,7 @@ class HomeScreen extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
-                        'وضع تجريبي: شغّل Firebase (flutterfire configure) عشان تتزامن خطط الوجبات مع السحابة.',
+                        'وضع تجريبي: شغّل Firebase (flutterfire configure) عشان تتزامن خطط الوجبات والمفضلة والتقييمات مع السحابة.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
@@ -67,16 +66,23 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
               LhPrimaryButton(
-                label: 'هناكل إيه النهارده؟',
+                label: 'كل الوصفات',
+                icon: Icons.menu_book_rounded,
+                expanded: true,
+                onPressed: () => context.push('/recipes'),
+              ),
+              const SizedBox(height: 12),
+              LhPrimaryButton(
+                label: 'اقتراحات لي',
                 icon: Icons.auto_awesome_rounded,
                 expanded: true,
                 onPressed: () => context.push('/suggest'),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: () => context.push('/pantry'),
                 icon: const Icon(Icons.kitchen_rounded),
-                label: const Text('عندي مكونات في البيت'),
+                label: const Text('بحث بالمكونات'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.olive,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -86,13 +92,49 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
-              TextButton.icon(
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
                 onPressed: () => context.push('/meal-plan'),
                 icon: const Icon(Icons.edit_calendar_rounded),
-                label: const Text('خطة الأسبوع'),
+                label: const Text('الخطة الأسبوعية'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.olive,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  side: const BorderSide(color: AppColors.oliveLight),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
               ),
-              const Spacer(),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: () => context.push('/favorites'),
+                icon: const Icon(Icons.favorite_rounded),
+                label: const Text('المفضلة'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.olive,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  side: const BorderSide(color: AppColors.oliveLight),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: () => context.push('/add-recipe'),
+                icon: const Icon(Icons.add_circle_outline_rounded),
+                label: const Text('إضافة وصفة'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.olive,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  side: const BorderSide(color: AppColors.oliveLight),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 28),
               Text(
                 'وصفات مصرية بلمسة دافية',
                 textAlign: TextAlign.center,

@@ -1,4 +1,5 @@
 import '../value_objects/recipe_schema.dart';
+import '../value_objects/recipe_source.dart';
 
 class RecipeEntity {
   const RecipeEntity({
@@ -16,6 +17,12 @@ class RecipeEntity {
     required this.cuisine,
     required this.mainIngredients,
     required this.optionalIngredients,
+    this.source = RecipeSource.asset,
+    this.createdByUserId,
+    this.createdAt,
+    this.isApproved = true,
+    this.averageRating,
+    this.ratingCount,
   });
 
   final String id;
@@ -42,6 +49,23 @@ class RecipeEntity {
 
   final List<String> mainIngredients;
   final List<String> optionalIngredients;
+
+  /// One of [RecipeSource] values: bundled asset, user submission, or remote doc.
+  final String source;
+
+  /// Local device id or auth uid when synced to Firestore.
+  final String? createdByUserId;
+
+  final DateTime? createdAt;
+
+  /// In production, user-submitted rows should stay false until moderation.
+  final bool isApproved;
+
+  /// Denormalized community average from Firestore recipe doc when present.
+  final double? averageRating;
+
+  /// Denormalized count from Firestore recipe doc when present.
+  final int? ratingCount;
 
   /// All ingredient lines (main then optional) for lists and legacy call sites.
   List<String> get ingredients => [...mainIngredients, ...optionalIngredients];
