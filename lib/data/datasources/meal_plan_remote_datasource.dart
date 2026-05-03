@@ -40,7 +40,9 @@ class MealPlanRemoteDataSource {
     if (doc == null) return;
     await doc.set({
       'assignments': assignments,
+      'weekKey': weekKey,
       'updatedAt': FieldValue.serverTimestamp(),
+      'generatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
 }

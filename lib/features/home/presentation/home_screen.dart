@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/recipe_rating_resolve.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/week_calendar.dart';
 import '../../../core/widgets/lh_primary_button.dart';
+import '../../../core/widgets/lh_recipe_tile.dart';
 import '../../../di/providers.dart';
+import '../../../domain/entities/recipe_entity.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -29,6 +33,8 @@ class HomeScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ListView(
             children: [
+              const SizedBox(height: 8),
+              const _HomeAccountStrip(),
               const SizedBox(height: 12),
               Text(
                 'يوم سعيد ونفسك في لقمة حلوة؟',
@@ -46,6 +52,8 @@ class HomeScreen extends ConsumerWidget {
                       height: 1.45,
                     ),
               ),
+              const SizedBox(height: 20),
+              const _HomeTrendingSection(),
               const SizedBox(height: 24),
               if (!firebaseOn)
                 Padding(
@@ -94,9 +102,23 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
+                onPressed: () => context.push('/smart-meal-plan'),
+                icon: const Icon(Icons.auto_graph_rounded),
+                label: const Text('الخطة الأسبوعية الذكية'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.olive,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  side: const BorderSide(color: AppColors.oliveLight),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
                 onPressed: () => context.push('/meal-plan'),
                 icon: const Icon(Icons.edit_calendar_rounded),
-                label: const Text('الخطة الأسبوعية'),
+                label: const Text('تعديل الخطة يدوياً'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.olive,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -147,6 +169,170 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HomeAccountStrip extends ConsumerWidget {
+  const _HomeAccountStrip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(authSessionProvider);
+
+    return session.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (s) {
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: () => context.push('/auth'),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.cream.withValues(alpha: 0.65),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: AppColors.oliveLight.withValues(alpha: 0.4),
+                ),
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                child: Row(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    Icon(
+                      s.isGuest
+                          ? Icons.person_off_outlined
+                          : Icons.person_rounded,
+                      color: AppColors.olive,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        s.isGuest
+                            ? 'تسجيل الدخول اختياري — أنتِ ضيفة على الجهاز'
+                            : (s.resolvedDisplayName ?? s.firestoreSyncId),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ),
+                    if (s.isGuest)
+                      TextButton(
+                        onPressed: () => context.push('/auth'),
+                        child: const Text('دخول'),
+                      )
+                    else
+                      TextButton(
+                        onPressed: () =>
+                            ref.read(authRepositoryProvider).signOut(),
+                        child: const Text('خروج'),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HomeTrendingSection extends ConsumerWidget {
+  const _HomeTrendingSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final trending = ref.watch(trendingRecipesProvider);
+    final sums = ref.watch(ratingSummariesProvider);
+    final favs = ref.watch(favoriteIdsProvider);
+
+    return trending.when(
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 24),
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (e, _) => Text('تريندي: $e', textAlign: TextAlign.center),
+      data: (list) {
+        return sums.when(
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+          data: (sumMap) {
+            return favs.when(
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+              data: (favSet) {
+                if (list.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+                final slice = list.length > 12 ? list.sublist(0, 12) : list;
+                final wk = isoWeekKey(DateTime.now());
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'وصفات تريندي هذا الأسبوع ($wk)',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => context.push('/trending'),
+                          child: const Text('عرض الكل'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 200,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: slice.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, i) {
+                          final RecipeEntity r = slice[i];
+                          return SizedBox(
+                            width: 280,
+                            child: LhRecipeTile(
+                              recipe: r,
+                              ratingSummary: resolveRatingDisplay(r, sumMap),
+                              isFavorite: favSet.contains(r.id),
+                              onFavoriteTap: () async {
+                                await ref
+                                    .read(favoritesRepositoryProvider)
+                                    .setFavorite(
+                                      r.id,
+                                      !favSet.contains(r.id),
+                                    );
+                                ref.invalidate(favoriteIdsProvider);
+                              },
+                              onTap: () => context.push('/recipe/${r.id}'),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

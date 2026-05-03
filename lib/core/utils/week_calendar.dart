@@ -33,3 +33,13 @@ DateTime _mondayOf(DateTime d) {
   final day = DateTime(d.year, d.month, d.day);
   return day.subtract(Duration(days: day.weekday - DateTime.monday));
 }
+
+/// ISO week-year key, e.g. `2026-W18` for trending / public ratings.
+String isoWeekKey(DateTime date) {
+  final d = DateTime(date.year, date.month, date.day);
+  final thursday = d.add(Duration(days: DateTime.thursday - d.weekday));
+  final y = thursday.year;
+  final firstWeekMonday = _mondayOf(DateTime(y, 1, 4));
+  final week = 1 + thursday.difference(firstWeekMonday).inDays ~/ 7;
+  return '$y-W${week.toString().padLeft(2, '0')}';
+}

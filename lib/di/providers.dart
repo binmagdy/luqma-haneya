@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/bootstrap.dart';
+import '../data/datasources/auth_local_datasource.dart';
 import '../data/datasources/favorites_local_datasource.dart';
 import '../data/datasources/favorites_remote_datasource.dart';
 import '../data/datasources/meal_plan_local_datasource.dart';
@@ -11,23 +12,29 @@ import '../data/datasources/rating_local_datasource.dart';
 import '../data/datasources/rating_remote_datasource.dart';
 import '../data/datasources/recipe_local_datasource.dart';
 import '../data/datasources/recipe_remote_datasource.dart';
+import '../data/datasources/trending_remote_datasource.dart';
 import '../data/datasources/user_identity_local_datasource.dart';
 import '../data/datasources/user_recipe_local_datasource.dart';
 import '../data/datasources/user_recipe_remote_datasource.dart';
 import '../data/datasources/viewed_recipes_local_datasource.dart';
+import '../data/repositories/auth_repository_impl.dart';
 import '../data/repositories/favorites_repository_impl.dart';
 import '../data/repositories/meal_plan_repository_impl.dart';
 import '../data/repositories/preferences_repository_impl.dart';
 import '../data/repositories/rating_repository_impl.dart';
 import '../data/repositories/recipe_repository_impl.dart';
+import '../data/repositories/trending_repository_impl.dart';
 import '../data/repositories/user_recipe_repository_impl.dart';
+import '../domain/entities/auth_session_entity.dart';
 import '../domain/entities/recipe_entity.dart';
 import '../domain/entities/recipe_rating_summary.dart';
+import '../domain/repositories/auth_repository.dart';
 import '../domain/repositories/favorites_repository.dart';
 import '../domain/repositories/meal_plan_repository.dart';
 import '../domain/repositories/preferences_repository.dart';
 import '../domain/repositories/rating_repository.dart';
 import '../domain/repositories/recipe_repository.dart';
+import '../domain/repositories/trending_repository.dart';
 import '../domain/repositories/user_recipe_repository.dart';
 
 final preferencesLocalDsProvider = Provider<PreferencesLocalDataSource>(
@@ -41,6 +48,23 @@ final preferencesRepositoryProvider = Provider<PreferencesRepository>(
 final userIdentityDsProvider = Provider<UserIdentityLocalDataSource>(
   (ref) => UserIdentityLocalDataSource(),
 );
+
+final authLocalDsProvider = Provider<AuthLocalDataSource>(
+  (ref) => AuthLocalDataSource(),
+);
+
+final authRepositoryProvider = Provider<AuthRepository>(
+  (ref) => AuthRepositoryImpl(
+    local: ref.watch(authLocalDsProvider),
+    identity: ref.watch(userIdentityDsProvider),
+  ),
+);
+
+final authSessionProvider = StreamProvider<AuthSessionEntity>((ref) {
+  final repo = ref.watch(authRepositoryProvider);
+  return Stream.fromFuture(repo.readSession())
+      .asyncExpand((_) => repo.watchSession());
+});
 
 final viewedRecipesLocalDsProvider = Provider<ViewedRecipesLocalDataSource>(
   (ref) => ViewedRecipesLocalDataSource(),
@@ -70,7 +94,7 @@ final ratingRepositoryProvider = Provider<RatingRepository>(
   (ref) => RatingRepositoryImpl(
     local: ref.watch(ratingLocalDsProvider),
     remote: ref.watch(ratingRemoteDsProvider),
-    identity: ref.watch(userIdentityDsProvider),
+    auth: ref.watch(authRepositoryProvider),
   ),
 );
 
@@ -88,7 +112,7 @@ final favoritesRepositoryProvider = Provider<FavoritesRepository>(
   (ref) => FavoritesRepositoryImpl(
     local: ref.watch(favoritesLocalDsProvider),
     remote: ref.watch(favoritesRemoteDsProvider),
-    identity: ref.watch(userIdentityDsProvider),
+    auth: ref.watch(authRepositoryProvider),
   ),
 );
 
@@ -134,8 +158,13 @@ final mealPlanRepositoryProvider = Provider<MealPlanRepository>(
   (ref) => MealPlanRepositoryImpl(
     local: ref.watch(mealPlanLocalDsProvider),
     remote: ref.watch(mealPlanRemoteDsProvider),
-    identity: ref.watch(userIdentityDsProvider),
+    auth: ref.watch(authRepositoryProvider),
   ),
+);
+
+final mealPlanWeekAssignmentsProvider =
+    FutureProvider.autoDispose.family<Map<String, String>, String>(
+  (ref, weekKey) => ref.watch(mealPlanRepositoryProvider).loadWeek(weekKey),
 );
 
 final firebaseReadyProvider = Provider<bool>((ref) => firebaseAppReady);
@@ -143,6 +172,21 @@ final firebaseReadyProvider = Provider<bool>((ref) => firebaseAppReady);
 final allRecipesCatalogProvider = FutureProvider<List<RecipeEntity>>(
   (ref) => ref.watch(recipeRepositoryProvider).getAllRecipes(),
 );
+
+final trendingRemoteDsProvider = Provider<TrendingRemoteDataSource>(
+  (ref) => TrendingRemoteDataSource(
+    firebaseAppReady ? FirebaseFirestore.instance : null,
+  ),
+);
+
+final trendingRepositoryProvider = Provider<TrendingRepository>(
+  (ref) => TrendingRepositoryImpl(ref.watch(trendingRemoteDsProvider)),
+);
+
+final trendingRecipesProvider = FutureProvider<List<RecipeEntity>>((ref) async {
+  final cat = await ref.watch(allRecipesCatalogProvider.future);
+  return ref.watch(trendingRepositoryProvider).trendingRecipes(cat);
+});
 
 final ratingSummariesProvider =
     FutureProvider<Map<String, RecipeRatingSummary>>(

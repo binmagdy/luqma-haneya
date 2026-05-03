@@ -1,29 +1,29 @@
 import 'package:flutter/foundation.dart';
 
+import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/favorites_repository.dart';
 import '../datasources/favorites_local_datasource.dart';
 import '../datasources/favorites_remote_datasource.dart';
-import '../datasources/user_identity_local_datasource.dart';
 
 class FavoritesRepositoryImpl implements FavoritesRepository {
   FavoritesRepositoryImpl({
     required FavoritesLocalDataSource local,
     required FavoritesRemoteDataSource remote,
-    required UserIdentityLocalDataSource identity,
+    required AuthRepository auth,
   })  : _local = local,
         _remote = remote,
-        _identity = identity;
+        _auth = auth;
 
   final FavoritesLocalDataSource _local;
   final FavoritesRemoteDataSource _remote;
-  final UserIdentityLocalDataSource _identity;
+  final AuthRepository _auth;
 
   @override
   Future<Set<String>> favoriteRecipeIds() async {
     final local = await _local.load();
     if (_remote.isAvailable) {
       try {
-        final uid = await _identity.getOrCreateDeviceId();
+        final uid = (await _auth.readSession()).firestoreSyncId;
         final remote = await _remote.fetchFavorites(uid);
         if (remote.isNotEmpty) {
           final merged = {...local, ...remote};
@@ -44,6 +44,16 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   }
 
   @override
+  Future<Set<String>> getFavorites() => favoriteRecipeIds();
+
+  @override
+  Future<void> addFavorite(String recipeId) => setFavorite(recipeId, true);
+
+  @override
+  Future<void> removeFavorite(String recipeId) =>
+      setFavorite(recipeId, false);
+
+  @override
   Future<void> setFavorite(String recipeId, bool value) async {
     final cur = await _local.load();
     if (value) {
@@ -54,7 +64,7 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
     await _local.save(cur);
     if (_remote.isAvailable) {
       try {
-        final uid = await _identity.getOrCreateDeviceId();
+        final uid = (await _auth.readSession()).firestoreSyncId;
         await _remote.setFavorite(
             userId: uid, recipeId: recipeId, value: value);
       } catch (e, st) {

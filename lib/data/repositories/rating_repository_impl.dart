@@ -1,24 +1,25 @@
 import 'package:flutter/foundation.dart';
 
+import '../../core/utils/week_calendar.dart';
 import '../../domain/entities/recipe_rating_summary.dart';
+import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/rating_repository.dart';
 import '../datasources/rating_local_datasource.dart';
 import '../datasources/rating_remote_datasource.dart';
-import '../datasources/user_identity_local_datasource.dart';
 
 /// Offline aggregate on this device is a single-rater MVP until Firestore returns real counts.
 class RatingRepositoryImpl implements RatingRepository {
   RatingRepositoryImpl({
     required RatingLocalDataSource local,
     required RatingRemoteDataSource remote,
-    required UserIdentityLocalDataSource identity,
+    required AuthRepository auth,
   })  : _local = local,
         _remote = remote,
-        _identity = identity;
+        _auth = auth;
 
   final RatingLocalDataSource _local;
   final RatingRemoteDataSource _remote;
-  final UserIdentityLocalDataSource _identity;
+  final AuthRepository _auth;
 
   @override
   Future<int?> getMyRating(String recipeId) async {
@@ -51,24 +52,34 @@ class RatingRepositoryImpl implements RatingRepository {
   }
 
   @override
-  Future<void> setMyRating(String recipeId, int stars) async {
+  Future<void> setMyRating(
+    String recipeId,
+    int stars, {
+    required bool publishPublic,
+  }) async {
     if (stars < 1 || stars > 5) {
       throw ArgumentError.value(stars, 'stars', 'must be 1–5');
     }
-    final userId = await _identity.getOrCreateDeviceId();
+    final session = await _auth.readSession();
     final my = await _local.loadMyRatings();
     my[recipeId] = {
       'rating': stars,
       'updatedAt': DateTime.now().toIso8601String(),
+      'publishPublic': publishPublic,
     };
     await _local.saveMyRatings(my);
 
-    if (_remote.isAvailable) {
+    final canRemote =
+        publishPublic && session.canPublishPublicRatings && _remote.isAvailable;
+
+    if (canRemote) {
       try {
+        final wk = isoWeekKey(DateTime.now());
         await _remote.upsertRating(
           recipeId: recipeId,
-          userId: userId,
+          userId: session.firestoreSyncId,
           stars: stars,
+          weekKey: wk,
         );
         final agg = await _remote.fetchRecipeAggregate(recipeId);
         if (agg != null) {

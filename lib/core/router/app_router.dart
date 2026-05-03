@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/add_recipe/presentation/add_recipe_screen.dart';
+import '../../features/auth/presentation/auth_screen.dart';
 import '../../features/browse/presentation/all_recipes_screen.dart';
 import '../../features/favorites/presentation/favorites_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/meal_plan/presentation/meal_plan_screen.dart';
+import '../../features/smart_meal_plan/presentation/smart_meal_plan_screen.dart';
+import '../../features/trending/presentation/trending_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/pantry/presentation/pantry_screen.dart';
 import '../../features/recipe_detail/presentation/recipe_detail_screen.dart';
@@ -62,6 +65,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/meal-plan',
         builder: (context, state) => const MealPlanScreen(),
+      ),
+      GoRoute(
+        path: '/smart-meal-plan',
+        builder: (context, state) => const SmartMealPlanScreen(),
+      ),
+      GoRoute(
+        path: '/trending',
+        builder: (context, state) => const TrendingScreen(),
+      ),
+      GoRoute(
+        path: '/auth',
+        builder: (context, state) => const AuthScreen(),
       ),
     ],
   );

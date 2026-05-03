@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/bootstrap.dart';
 
 /// Firestore: `recipes/{recipeId}/ratings/{userId}` plus denormalized counters on the recipe doc.
+///
+/// TODO: Move weekly / all-time aggregate maintenance to a Cloud Function to avoid
+/// extra reads and race conditions at scale.
 class RatingRemoteDataSource {
   RatingRemoteDataSource(this._firestore);
 
@@ -10,11 +13,11 @@ class RatingRemoteDataSource {
 
   bool get isAvailable => firebaseAppReady && _firestore != null;
 
-  /// Updates subcollection rating doc and maintains `ratingSum` / `ratingCount` / `averageRating` on the recipe.
   Future<void> upsertRating({
     required String recipeId,
     required String userId,
     required int stars,
+    required String weekKey,
   }) async {
     if (!isAvailable) return;
     final fs = _firestore!;
@@ -27,7 +30,10 @@ class RatingRemoteDataSource {
       final recipeSnap = await transaction.get(recipeRef);
 
       final ratingPayload = <String, dynamic>{
+        'recipeId': recipeId,
+        'userId': userId,
         'rating': stars,
+        'weekKey': weekKey,
         'updatedAt': now,
       };
       if (!ratingSnap.exists) {
@@ -36,8 +42,6 @@ class RatingRemoteDataSource {
       transaction.set(ratingRef, ratingPayload, SetOptions(merge: true));
 
       if (!recipeSnap.exists) {
-        // Avoid creating a stub top-level recipe doc with only counters when the
-        // catalog row is not in Firestore yet (e.g. bundled-only recipes).
         return;
       }
 
@@ -60,13 +64,48 @@ class RatingRemoteDataSource {
           'ratingSum': sum,
           'ratingCount': count,
           'averageRating': avg,
+          'lastRatedAt': now,
         },
         SetOptions(merge: true),
       );
     });
+
+    await _patchWeeklyFromClient(recipeRef, weekKey);
   }
 
-  /// Pull denormalized aggregates after a write (or on cold start for a recipe).
+  Future<void> _patchWeeklyFromClient(
+    DocumentReference<Map<String, dynamic>> recipeRef,
+    String weekKey,
+  ) async {
+    if (!isAvailable) return;
+    try {
+      final snap = await recipeRef
+          .collection('ratings')
+          .where('weekKey', isEqualTo: weekKey)
+          .get();
+      if (snap.docs.isEmpty) {
+        await recipeRef.set({
+          'weeklyRatingAverage': null,
+          'weeklyRatingCount': 0,
+        }, SetOptions(merge: true));
+        return;
+      }
+      var s = 0;
+      for (final d in snap.docs) {
+        final v = (d.data()['rating'] as num?)?.toInt() ?? 0;
+        s += v;
+      }
+      final c = snap.docs.length;
+      final wavg = s / c;
+      await recipeRef.set({
+        'weeklyRatingAverage': wavg,
+        'weeklyRatingCount': c,
+      }, SetOptions(merge: true));
+    } catch (_) {
+      /* index missing or offline — skip weekly patch */
+    }
+  }
+
   Future<({double average, int count})?> fetchRecipeAggregate(
     String recipeId,
   ) async {

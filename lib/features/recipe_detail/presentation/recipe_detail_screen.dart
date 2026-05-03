@@ -106,16 +106,62 @@ class _RecipeBody extends ConsumerStatefulWidget {
   ConsumerState<_RecipeBody> createState() => _RecipeBodyState();
 }
 
+enum _GuestRatingChoice { cancel, localOnly, login }
+
 class _RecipeBodyState extends ConsumerState<_RecipeBody> {
   int? _draftStars;
   var _saving = false;
 
   Future<void> _saveRating(int stars) async {
+    final session = await ref.read(authSessionProvider.future);
+    var publishPublic = session.canPublishPublicRatings;
+
+    if (!session.canPublishPublicRatings) {
+      if (!mounted) return;
+      final choice = await showDialog<_GuestRatingChoice>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('تقييم عام'),
+          content: const Text(
+            'سجّل دخولك عشان تقييمك يظهر للناس.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.cancel),
+              child: const Text('إلغاء'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.localOnly),
+              child: const Text('حفظ محلي فقط'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.login),
+              child: const Text('تسجيل الدخول'),
+            ),
+          ],
+        ),
+      );
+      if (!mounted) return;
+      switch (choice) {
+        case _GuestRatingChoice.login:
+          context.push('/auth');
+          return;
+        case _GuestRatingChoice.localOnly:
+          publishPublic = false;
+          break;
+        case _GuestRatingChoice.cancel:
+        case null:
+          return;
+      }
+    }
+
     setState(() => _saving = true);
     try {
-      await ref
-          .read(ratingRepositoryProvider)
-          .setMyRating(widget.recipeId, stars);
+      await ref.read(ratingRepositoryProvider).setMyRating(
+            widget.recipeId,
+            stars,
+            publishPublic: publishPublic,
+          );
       ref.invalidate(myRatingProvider(widget.recipeId));
       ref.invalidate(ratingSummariesProvider);
       ref.invalidate(allRecipesCatalogProvider);

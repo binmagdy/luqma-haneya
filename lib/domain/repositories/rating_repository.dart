@@ -12,6 +12,11 @@ abstract class RatingRepository {
   /// All cached summaries (for browse lists). May be sparse offline.
   Future<Map<String, RecipeRatingSummary>> getAllCachedSummaries();
 
-  /// Persists locally, updates one-rater aggregates offline, syncs Firestore when ready.
-  Future<void> setMyRating(String recipeId, int stars);
+  /// Persists locally. If [publishPublic] is true, syncs to Firestore as a public
+  /// rating (requires signed-in Firebase user). Otherwise stays local-only.
+  Future<void> setMyRating(
+    String recipeId,
+    int stars, {
+    required bool publishPublic,
+  });
 }
