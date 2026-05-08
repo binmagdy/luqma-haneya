@@ -26,6 +26,7 @@
     }
   },
   "homeTrendingSeeAll": "عرض الكل",
+  "homeTrendingEmpty": "لا يوجد تريندي من السحابة حاليًا.",
   "homeTrendingError": "تريندي: {error}",
   "@homeTrendingError": {
     "placeholders": {
@@ -34,6 +35,17 @@
       }
     }
   },
+  "homePopularPrefsTitle": "الأكلات المفضلة عند الناس",
+  "homePopularPrefsEmpty": "لما يتوفر اتصال ويشارك المستخدمون تفضيلاتهم، هتظهر هنا إحصائيات عامة فقط (بدون بيانات شخصية).",
+  "homeCloudPlansHint": "خططك الأسبوعية تتزامن مع السحابة عند تسجيل الدخول.",
+  "homeAccountEntry": "الحساب والمزامنة",
+  "mealPlanSyncLocalOnly": "الخطة محفوظة على جهازك. سجّلي دخولًا اختياريًا للمزامنة مع السحابة.",
+  "mealPlanSyncCloud": "مزامنة سحابية: تُحفظ الخطة على جهازك وتُرفع تلقائيًا عند توفر الشبكة.",
+  "authEmailLabel": "البريد",
+  "authEmailNone": "غير مرتبط",
+  "authSyncStatusGuest": "وضع ضيف: المفضلة والخطط محليًا على الجهاز.",
+  "authSyncStatusCloud": "متصل بالسحابة: المفضلة والخطط والتقييمات العامة تتزامن عند توفر الشبكة.",
+  "authGoogleTodo": "تسجيل الدخول بجوجل قريبًا",
   "settingsTitle": "الإعدادات",
   "settingsLanguageSection": "لغة التطبيق",
   "settingsLanguageArabic": "العربية",

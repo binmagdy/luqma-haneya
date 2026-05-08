@@ -8,14 +8,17 @@ import '../../domain/entities/auth_session_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_datasource.dart';
 import '../datasources/user_identity_local_datasource.dart';
+import '../datasources/user_profile_remote_datasource.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({
     required AuthLocalDataSource local,
     required UserIdentityLocalDataSource identity,
+    UserProfileRemoteDataSource? userProfileRemote,
     FirebaseAuth? firebaseAuth,
   })  : _local = local,
         _identity = identity,
+        _userProfileRemote = userProfileRemote,
         _auth =
             firebaseAuth ?? (firebaseAppReady ? FirebaseAuth.instance : null) {
     final auth = _auth;
@@ -29,6 +32,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   final AuthLocalDataSource _local;
   final UserIdentityLocalDataSource _identity;
+  final UserProfileRemoteDataSource? _userProfileRemote;
   final FirebaseAuth? _auth;
 
   final _controller = StreamController<AuthSessionEntity>.broadcast();
@@ -46,6 +50,7 @@ class AuthRepositoryImpl implements AuthRepository {
       firebaseUid: u.uid,
       firebaseIsAnonymous: u.isAnonymous,
       displayName: u.displayName ?? u.email,
+      email: u.email,
     );
   }
 
@@ -78,6 +83,15 @@ class AuthRepositoryImpl implements AuthRepository {
     }
     await _local.setPreferGuestOnly(false);
     await _auth.signInAnonymously();
+    final u = _auth.currentUser;
+    if (u != null && _userProfileRemote?.isAvailable == true) {
+      await _userProfileRemote!.ensureUserDocument(
+        userId: u.uid,
+        displayName: u.displayName ?? u.email,
+        email: u.email,
+        isAnonymous: u.isAnonymous,
+      );
+    }
     await _emit();
   }
 

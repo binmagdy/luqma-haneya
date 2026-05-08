@@ -22,6 +22,10 @@ class TrendingRepositoryImpl implements TrendingRepository {
     }
 
     if (_remote.isAvailable) {
+      final denorm = await _remote.recipeIdsSortedByDenormalizedFields();
+      if (denorm.isNotEmpty) {
+        return byIds(denorm);
+      }
       final weekly = await _remote.recipeIdsTrendingThisWeek();
       if (weekly.isNotEmpty) {
         return byIds(weekly);

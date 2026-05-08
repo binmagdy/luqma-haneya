@@ -52,6 +52,31 @@ class AuthScreen extends ConsumerWidget {
                         color: AppColors.inkMuted,
                       ),
                 ),
+                const SizedBox(height: 8),
+                Text(
+                  '${l10n.authEmailLabel}: ${s.email?.isNotEmpty == true ? s.email! : l10n.authEmailNone}',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  s.isGuest
+                      ? l10n.authSyncStatusGuest
+                      : l10n.authSyncStatusCloud,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.inkMuted,
+                        height: 1.45,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.authGoogleTodo,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: AppColors.inkMuted,
+                      ),
+                ),
                 const SizedBox(height: 32),
                 if (s.isGuest) ...[
                   LhPrimaryButton(
@@ -63,6 +88,23 @@ class AuthScreen extends ConsumerWidget {
                         await ref
                             .read(authRepositoryProvider)
                             .signInAnonymously();
+                        final session = await ref
+                            .read(authRepositoryProvider)
+                            .readSession();
+                        final uid = session.firebaseUid;
+                        if (uid != null) {
+                          final remote = ref.read(userProfileRemoteDsProvider);
+                          if (remote.isAvailable) {
+                            final prefs = await ref
+                                .read(preferencesRepositoryProvider)
+                                .loadPreferences();
+                            await remote.mergePreferencesFromLocal(uid, prefs);
+                          }
+                          await ref
+                              .read(favoritesRepositoryProvider)
+                              .pushLocalFavoritesToCloud();
+                          ref.invalidate(favoriteIdsProvider);
+                        }
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(l10n.authSignedInSnackbar)),

@@ -60,4 +60,28 @@ class TrendingRemoteDataSource {
       return const [];
     }
   }
+
+  /// Sort by weeklyRatingAverage, weeklyRatingCount, averageRating, ratingCount (in-memory, no composite index).
+  Future<List<String>> recipeIdsSortedByDenormalizedFields(
+      {int limit = 24}) async {
+    if (!isAvailable) return const [];
+    try {
+      final snap = await _firestore!.collection('recipes').limit(80).get();
+      final scored = <MapEntry<String, double>>[];
+      for (final d in snap.docs) {
+        final m = d.data();
+        final wAvg = (m['weeklyRatingAverage'] as num?)?.toDouble() ?? 0;
+        final wCnt = (m['weeklyRatingCount'] as num?)?.toInt() ?? 0;
+        final avg = (m['averageRating'] as num?)?.toDouble() ?? 0;
+        final cnt = (m['ratingCount'] as num?)?.toInt() ?? 0;
+        final rank = wAvg * 1e9 + wCnt * 1e6 + avg * 1e3 + cnt;
+        if (rank <= 0) continue;
+        scored.add(MapEntry(d.id, rank));
+      }
+      scored.sort((a, b) => b.value.compareTo(a.value));
+      return scored.take(limit).map((e) => e.key).toList();
+    } catch (_) {
+      return const [];
+    }
+  }
 }

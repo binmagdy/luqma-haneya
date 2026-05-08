@@ -8,12 +8,14 @@ import '../data/datasources/favorites_remote_datasource.dart';
 import '../data/datasources/meal_plan_local_datasource.dart';
 import '../data/datasources/meal_plan_remote_datasource.dart';
 import '../data/datasources/preferences_local_datasource.dart';
+import '../data/datasources/public_stats_remote_datasource.dart';
 import '../data/datasources/rating_local_datasource.dart';
 import '../data/datasources/rating_remote_datasource.dart';
 import '../data/datasources/recipe_local_datasource.dart';
 import '../data/datasources/recipe_remote_datasource.dart';
 import '../data/datasources/trending_remote_datasource.dart';
 import '../data/datasources/user_identity_local_datasource.dart';
+import '../data/datasources/user_profile_remote_datasource.dart';
 import '../data/datasources/user_recipe_local_datasource.dart';
 import '../data/datasources/user_recipe_remote_datasource.dart';
 import '../data/datasources/viewed_recipes_local_datasource.dart';
@@ -41,8 +43,30 @@ final preferencesLocalDsProvider = Provider<PreferencesLocalDataSource>(
   (ref) => PreferencesLocalDataSource(),
 );
 
+final userProfileRemoteDsProvider = Provider<UserProfileRemoteDataSource>(
+  (ref) => UserProfileRemoteDataSource(
+    firebaseAppReady ? FirebaseFirestore.instance : null,
+  ),
+);
+
+final publicStatsRemoteDsProvider = Provider<PublicStatsRemoteDataSource>(
+  (ref) => PublicStatsRemoteDataSource(
+    firebaseAppReady ? FirebaseFirestore.instance : null,
+  ),
+);
+
+/// Community tag counts from Firestore (aggregated only; no PII).
+final popularPreferencesProvider =
+    FutureProvider<List<({String key, String label, int count})>>((ref) async {
+  return ref.read(publicStatsRemoteDsProvider).fetchTopTags(limit: 16);
+});
+
 final preferencesRepositoryProvider = Provider<PreferencesRepository>(
-  (ref) => PreferencesRepositoryImpl(ref.watch(preferencesLocalDsProvider)),
+  (ref) => PreferencesRepositoryImpl(
+    ref.watch(preferencesLocalDsProvider),
+    publicStats: ref.watch(publicStatsRemoteDsProvider),
+    auth: ref.watch(authRepositoryProvider),
+  ),
 );
 
 final userIdentityDsProvider = Provider<UserIdentityLocalDataSource>(
@@ -57,6 +81,7 @@ final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepositoryImpl(
     local: ref.watch(authLocalDsProvider),
     identity: ref.watch(userIdentityDsProvider),
+    userProfileRemote: ref.watch(userProfileRemoteDsProvider),
   ),
 );
 

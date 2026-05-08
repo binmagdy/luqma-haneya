@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luqma_haneya/l10n/app_localizations.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/week_calendar.dart';
@@ -127,120 +128,187 @@ class MealPlanScreen extends ConsumerWidget {
         icon: const Icon(Icons.auto_fix_high_rounded),
         label: const Text('توليد ذكي'),
       ),
-      body: async.when(
-        data: (map) {
-          if (map.isEmpty) {
-            return _EmptyMealPlanBody(
-              onGenerate: () => context.push('/smart-meal-plan'),
-            );
-          }
-          if (_isStructuredPlan(map)) {
-            final keys = map.keys.where((k) => _slotKeyRe.hasMatch(k)).toList()
-              ..sort();
-            if (keys.isEmpty) {
-              return _legacyBody(context, ref, weekKey, days, map);
-            }
-            final byDate = <String, List<String>>{};
-            for (final k in keys) {
-              final m = _slotKeyRe.firstMatch(k)!;
-              final date = m.group(1)!;
-              byDate.putIfAbsent(date, () => []).add(k);
-            }
-            final dateList = byDate.keys.toList()..sort();
-            return ListView.builder(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 88),
-              itemCount: dateList.length + 1,
-              itemBuilder: (context, i) {
-                if (i == 0) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      'خطة ذكية متعددة الوجبات. اضغطي للاستبدال، القفل يمنع التغيير عند إعادة التوليد.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.inkMuted,
-                            height: 1.45,
-                          ),
-                    ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _MealPlanSyncBanner(),
+          Expanded(
+            child: async.when(
+              data: (map) {
+                if (map.isEmpty) {
+                  return _EmptyMealPlanBody(
+                    onGenerate: () => context.push('/smart-meal-plan'),
                   );
                 }
-                final date = dateList[i - 1];
-                final slotKeys = byDate[date]!..sort();
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
+                if (_isStructuredPlan(map)) {
+                  final keys = map.keys
+                      .where((k) => _slotKeyRe.hasMatch(k))
+                      .toList()
+                    ..sort();
+                  if (keys.isEmpty) {
+                    return _legacyBody(context, ref, weekKey, days, map);
+                  }
+                  final byDate = <String, List<String>>{};
+                  for (final k in keys) {
+                    final m = _slotKeyRe.firstMatch(k)!;
+                    final date = m.group(1)!;
+                    byDate.putIfAbsent(date, () => []).add(k);
+                  }
+                  final dateList = byDate.keys.toList()..sort();
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 88),
+                    itemCount: dateList.length + 1,
+                    itemBuilder: (context, i) {
+                      if (i == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            'خطة ذكية متعددة الوجبات. اضغطي للاستبدال، القفل يمنع التغيير عند إعادة التوليد.',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: AppColors.inkMuted,
+                                  height: 1.45,
+                                ),
+                          ),
+                        );
+                      }
+                      final date = dateList[i - 1];
+                      final slotKeys = byDate[date]!..sort();
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                date,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                              const SizedBox(height: 8),
+                              for (final sk in slotKeys)
+                                _StructuredSlotRow(
+                                  slotKey: sk,
+                                  raw: map[sk] ?? '',
+                                  onPick: () => pickMealPlanSlot(
+                                    context,
+                                    ref,
+                                    weekKey: weekKey,
+                                    slotKey: sk,
+                                  ),
+                                  onToggleLock: () async {
+                                    final raw = map[sk];
+                                    if (raw == null || raw.isEmpty) return;
+                                    final p = MealPlanSlotCodec.decode(raw);
+                                    if (p == null) return;
+                                    await ref
+                                        .read(mealPlanRepositoryProvider)
+                                        .setSlotLocked(weekKey, sk, !p.locked);
+                                    ref.invalidate(
+                                        mealPlanWeekAssignmentsProvider(
+                                            weekKey));
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+                return _legacyBody(context, ref, weekKey, days, map);
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, st) {
+                if (kDebugMode) {
+                  debugPrint('MealPlanScreen load error week=$weekKey $e\n$st');
+                }
+                return Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(24),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          date,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.right,
+                          'ما قدرناش نحمّل الخطة.\n$e',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                        const SizedBox(height: 8),
-                        for (final sk in slotKeys)
-                          _StructuredSlotRow(
-                            slotKey: sk,
-                            raw: map[sk] ?? '',
-                            onPick: () => pickMealPlanSlot(
-                              context,
-                              ref,
-                              weekKey: weekKey,
-                              slotKey: sk,
-                            ),
-                            onToggleLock: () async {
-                              final raw = map[sk];
-                              if (raw == null || raw.isEmpty) return;
-                              final p = MealPlanSlotCodec.decode(raw);
-                              if (p == null) return;
-                              await ref
-                                  .read(mealPlanRepositoryProvider)
-                                  .setSlotLocked(weekKey, sk, !p.locked);
-                              ref.invalidate(
-                                  mealPlanWeekAssignmentsProvider(weekKey));
-                            },
-                          ),
+                        const SizedBox(height: 16),
+                        FilledButton.icon(
+                          onPressed: () => ref.invalidate(
+                              mealPlanWeekAssignmentsProvider(weekKey)),
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text('إعادة المحاولة'),
+                        ),
                       ],
                     ),
                   ),
                 );
               },
-            );
-          }
-          return _legacyBody(context, ref, weekKey, days, map);
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) {
-          if (kDebugMode) {
-            debugPrint('MealPlanScreen load error week=$weekKey $e\n$st');
-          }
-          return Center(
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MealPlanSyncBanner extends ConsumerWidget {
+  const _MealPlanSyncBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(authSessionProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    return session.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (s) {
+        final msg =
+            s.isGuest ? l10n.mealPlanSyncLocalOnly : l10n.mealPlanSyncCloud;
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.cream.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.oliveLight.withValues(alpha: 0.35),
+              ),
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                textDirection: TextDirection.rtl,
                 children: [
-                  Text(
-                    'ما قدرناش نحمّل الخطة.\n$e',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  Icon(
+                    s.isGuest ? Icons.phone_android_rounded : Icons.cloud_done,
+                    size: 20,
+                    color: AppColors.olive,
                   ),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: () => ref
-                        .invalidate(mealPlanWeekAssignmentsProvider(weekKey)),
-                    icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('إعادة المحاولة'),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      msg,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            height: 1.4,
+                          ),
+                    ),
                   ),
                 ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -19,38 +19,67 @@ class MealPlanRepositoryImpl implements MealPlanRepository {
   final MealPlanRemoteDataSource _remote;
   final AuthRepository _auth;
 
-  Future<String> _syncId() async => (await _auth.readSession()).firestoreSyncId;
+  /// Firebase Auth uid when signed in; guests use **local-only** meal plans.
+  Future<String?> _firebaseUid() async {
+    final s = await _auth.readSession();
+    if (s.isGuest) return null;
+    return s.firebaseUid;
+  }
 
   Future<Map<String, String>> _merged(String weekKey) async {
     final local = await _local.load(weekKey);
-    final deviceId = await _syncId();
-    final remote = await _remote.tryLoad(deviceId, weekKey);
+    final uid = await _firebaseUid();
+    if (uid == null) {
+      if (kDebugMode) {
+        debugPrint(
+          'MealPlanRepositoryImpl._merged week=$weekKey guest localKeys=${local.length}',
+        );
+      }
+      return local;
+    }
+
+    final v2 = await _remote.tryLoadMealPlanV2(uid, weekKey);
+    final legacy = await _remote.tryLoad(uid, weekKey);
     if (kDebugMode) {
       debugPrint(
-        'MealPlanRepositoryImpl._merged week=$weekKey '
-        'localKeys=${local.length} remoteKeys=${remote?.length ?? 0}',
+        'MealPlanRepositoryImpl._merged week=$weekKey uid=$uid '
+        'local=${local.length} v2=${v2?.length ?? 0} legacy=${legacy?.length ?? 0}',
       );
     }
-    if (remote == null || remote.isEmpty) return local;
-    if (local.isEmpty) return remote;
-    return {...remote, ...local};
+
+    final merged = <String, String>{};
+    if (v2 != null && v2.isNotEmpty) merged.addAll(v2);
+    if (legacy != null && legacy.isNotEmpty) merged.addAll(legacy);
+    merged.addAll(local);
+    return merged;
   }
 
   Future<void> _persist(String weekKey, Map<String, String> next) async {
     await _local.save(weekKey, next);
-    if (!_remote.isAvailable) {
-      if (kDebugMode) {
+    final uid = await _firebaseUid();
+    if (uid == null || !_remote.isAvailable) {
+      if (kDebugMode && uid == null) {
         debugPrint(
-            'MealPlanRepositoryImpl._persist: skip remote (unavailable)');
+          'MealPlanRepositoryImpl._persist: local-only (guest) week=$weekKey',
+        );
+      }
+      if (!_remote.isAvailable && kDebugMode) {
+        debugPrint(
+          'MealPlanRepositoryImpl._persist: skip remote (unavailable)',
+        );
       }
       return;
     }
     try {
-      final deviceId = await _syncId();
-      await _remote.upsert(deviceId, weekKey, next);
+      await _remote.upsert(uid, weekKey, next);
+      await _remote.upsertMealPlanV2(
+        userId: uid,
+        weekKey: weekKey,
+        assignments: next,
+      );
       if (kDebugMode) {
         debugPrint(
-          'MealPlanRepositoryImpl._persist: remote ok week=$weekKey keys=${next.length}',
+          'MealPlanRepositoryImpl._persist: cloud ok week=$weekKey keys=${next.length}',
         );
       }
     } catch (e, st) {

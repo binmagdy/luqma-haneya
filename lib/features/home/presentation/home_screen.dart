@@ -61,6 +61,10 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               const _HomeTrendingSection(),
+              const SizedBox(height: 20),
+              const _HomePopularPrefsSection(),
+              const SizedBox(height: 12),
+              const _HomeCloudHintCard(),
               const SizedBox(height: 24),
               if (!firebaseOn)
                 Padding(
@@ -231,7 +235,7 @@ class _HomeAccountStrip extends ConsumerWidget {
                     if (s.isGuest)
                       TextButton(
                         onPressed: () => context.push('/auth'),
-                        child: Text(l10n.homeLogin),
+                        child: Text(l10n.homeAccountEntry),
                       )
                     else
                       TextButton(
@@ -279,7 +283,16 @@ class _HomeTrendingSection extends ConsumerWidget {
               error: (_, __) => const SizedBox.shrink(),
               data: (favSet) {
                 if (list.isEmpty) {
-                  return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      l10n.homeTrendingEmpty,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.inkMuted,
+                          ),
+                    ),
+                  );
                 }
                 final slice = list.length > 12 ? list.sublist(0, 12) : list;
                 final wk = isoWeekKey(DateTime.now());
@@ -341,6 +354,104 @@ class _HomeTrendingSection extends ConsumerWidget {
               },
             );
           },
+        );
+      },
+    );
+  }
+}
+
+class _HomePopularPrefsSection extends ConsumerWidget {
+  const _HomePopularPrefsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(popularPreferencesProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    return async.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (tags) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.homePopularPrefsTitle,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+              textAlign: TextAlign.right,
+            ),
+            const SizedBox(height: 8),
+            if (tags.isEmpty)
+              Text(
+                l10n.homePopularPrefsEmpty,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.inkMuted,
+                      height: 1.45,
+                    ),
+              )
+            else
+              Wrap(
+                alignment: WrapAlignment.end,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final t in tags)
+                    Chip(
+                      label: Text('${t.label} · ${t.count}'),
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                ],
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _HomeCloudHintCard extends ConsumerWidget {
+  const _HomeCloudHintCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(authSessionProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    return session.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (s) {
+        if (!s.isGuest) return const SizedBox.shrink();
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.cream.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: AppColors.oliveLight.withValues(alpha: 0.35),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              textDirection: TextDirection.rtl,
+              children: [
+                const Icon(Icons.cloud_outlined, color: AppColors.olive),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    l10n.homeCloudPlansHint,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          height: 1.4,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

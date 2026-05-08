@@ -21,18 +21,20 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   @override
   Future<Set<String>> favoriteRecipeIds() async {
     final local = await _local.load();
-    if (_remote.isAvailable) {
-      try {
-        final uid = (await _auth.readSession()).firestoreSyncId;
-        final remote = await _remote.fetchFavorites(uid);
-        if (remote.isNotEmpty) {
-          final merged = {...local, ...remote};
-          await _local.save(merged);
-          return merged;
-        }
-      } catch (e, st) {
-        debugPrint('FavoritesRepositoryImpl remote fetch failed: $e $st');
+    final session = await _auth.readSession();
+    if (session.isGuest || !_remote.isAvailable) {
+      return local;
+    }
+    final uid = session.firebaseUid!;
+    try {
+      final remote = await _remote.fetchFavorites(uid);
+      if (remote.isNotEmpty) {
+        final merged = {...local, ...remote};
+        await _local.save(merged);
+        return merged;
       }
+    } catch (e, st) {
+      debugPrint('FavoritesRepositoryImpl remote fetch failed: $e $st');
     }
     return local;
   }
@@ -50,8 +52,7 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   Future<void> addFavorite(String recipeId) => setFavorite(recipeId, true);
 
   @override
-  Future<void> removeFavorite(String recipeId) =>
-      setFavorite(recipeId, false);
+  Future<void> removeFavorite(String recipeId) => setFavorite(recipeId, false);
 
   @override
   Future<void> setFavorite(String recipeId, bool value) async {
@@ -62,14 +63,43 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
       cur.remove(recipeId);
     }
     await _local.save(cur);
-    if (_remote.isAvailable) {
-      try {
-        final uid = (await _auth.readSession()).firestoreSyncId;
-        await _remote.setFavorite(
-            userId: uid, recipeId: recipeId, value: value);
-      } catch (e, st) {
-        debugPrint('FavoritesRepositoryImpl remote sync failed: $e $st');
+    final session = await _auth.readSession();
+    if (session.isGuest || !_remote.isAvailable) {
+      return;
+    }
+    try {
+      final uid = session.firebaseUid!;
+      await _remote.setFavorite(
+        userId: uid,
+        recipeId: recipeId,
+        value: value,
+      );
+    } catch (e, st) {
+      debugPrint('FavoritesRepositoryImpl remote sync failed: $e $st');
+    }
+  }
+
+  @override
+  Future<void> pushLocalFavoritesToCloud() async {
+    final session = await _auth.readSession();
+    if (session.isGuest || !_remote.isAvailable) return;
+    final uid = session.firebaseUid!;
+    final local = await _local.load();
+    try {
+      final remote = await _remote.fetchFavorites(uid);
+      for (final id in local) {
+        if (!remote.contains(id)) {
+          await _remote.setFavorite(userId: uid, recipeId: id, value: true);
+        }
       }
+      if (kDebugMode) {
+        debugPrint(
+          'FavoritesRepositoryImpl.pushLocalFavoritesToCloud: uploaded '
+          '${local.length} local ids',
+        );
+      }
+    } catch (e, st) {
+      debugPrint('FavoritesRepositoryImpl.pushLocalFavoritesToCloud: $e $st');
     }
   }
 }

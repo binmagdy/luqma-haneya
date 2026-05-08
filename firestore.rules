@@ -1,0 +1,45 @@
+rules_version = '2';
+// لقمة هنية — MVP rules. TODO: tighten recipe writes and public_stats writes via Cloud Functions.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Own profile + subcollections (favorites, meal_plans, meal_weeks, …)
+    match /users/{userId} {
+      allow read, write: if isSelf(userId);
+
+      match /{subcollection=**} {
+        allow read, write: if isSelf(userId);
+      }
+    }
+
+    match /recipes/{recipeId} {
+      allow read: if true;
+      // Aggregates patched from the client when a user submits a rating (MVP).
+      // TODO: restrict to Cloud Functions / field masks for production.
+      allow create, delete: if false;
+      allow update: if signedIn();
+
+      match /ratings/{ratingUserId} {
+        allow read: if true;
+        allow create, update: if isSelf(ratingUserId)
+          && request.resource.data.userId == ratingUserId
+          && request.resource.data.recipeId == recipeId;
+        allow delete: if isSelf(ratingUserId);
+      }
+    }
+
+    // Aggregated community preference counts (no per-user docs here).
+    match /public_stats/{document=**} {
+      allow read: if true;
+      // TODO: writes should be Cloud Functions only; temporary MVP allows any signed-in client.
+      allow write: if signedIn();
+    }
+  }
+}

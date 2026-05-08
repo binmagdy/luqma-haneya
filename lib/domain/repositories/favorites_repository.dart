@@ -10,4 +10,7 @@ abstract class FavoritesRepository {
   Future<void> addFavorite(String recipeId) => setFavorite(recipeId, true);
 
   Future<void> removeFavorite(String recipeId) => setFavorite(recipeId, false);
+
+  /// After optional login: push device-local favorites to `users/{uid}/favorites`.
+  Future<void> pushLocalFavoritesToCloud();
 }
