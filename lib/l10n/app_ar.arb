@@ -90,6 +90,7 @@
   "navSettings": "الإعدادات",
   "recipeDetailTitle": "تفاصيل الوصفة",
   "recipeNotAvailable": "الوصفة مش متاحة",
+  "recipeContentLoadFailed": "تعذر تحميل بيانات الوصفة",
   "recipeError": "خطأ: {error}",
   "@recipeError": {
     "placeholders": {

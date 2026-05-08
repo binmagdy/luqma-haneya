@@ -55,6 +55,7 @@
   "navSettings": "Settings",
   "recipeDetailTitle": "Recipe details",
   "recipeNotAvailable": "Recipe not available",
+  "recipeContentLoadFailed": "Could not load recipe details",
   "recipeError": "Error: {error}",
   "ratingPublicTitle": "Public rating",
   "ratingPublicMessage": "Sign in so your rating can appear to others.",

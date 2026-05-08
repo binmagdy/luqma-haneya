@@ -102,24 +102,47 @@ class RecipeModel extends RecipeEntity {
     );
   }
 
+  static List<String> _firestoreStringList(dynamic value) {
+    if (value == null) {
+      return const [];
+    }
+    if (value is List) {
+      return value
+          .map((e) => e == null ? '' : e.toString().trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+    return const [];
+  }
+
+  static String _firestoreString(dynamic value, {String fallback = ''}) {
+    if (value == null) {
+      return fallback;
+    }
+    if (value is String) {
+      return value.trim();
+    }
+    return value.toString().trim();
+  }
+
   factory RecipeModel.fromFirestore(String id, Map<String, dynamic> data) {
-    final tags = List<String>.from(data['tags'] as List? ?? const []);
-    final main = List<String>.from(
-      data['mainIngredients'] as List? ??
-          data['ingredients'] as List? ??
-          const [],
+    final tags = _firestoreStringList(data['tags']);
+    final main = _firestoreStringList(
+      data['mainIngredients'] ?? data['ingredients'],
     );
-    final optional =
-        List<String>.from(data['optionalIngredients'] as List? ?? const []);
+    final optional = _firestoreStringList(data['optionalIngredients']);
+    final steps = _firestoreStringList(data['steps']);
     final minutes = (data['minutes'] as num?)?.toInt() ?? 30;
+    final title = _firestoreString(data['title']);
+    final description = _firestoreString(data['description']);
 
     return RecipeModel(
       id: id,
-      title: data['title'] as String? ?? '',
-      description: data['description'] as String? ?? '',
+      title: title,
+      description: description,
       minutes: minutes,
       servings: (data['servings'] as num?)?.toInt() ?? 4,
-      steps: List<String>.from(data['steps'] as List? ?? const []),
+      steps: steps,
       tags: tags,
       mealType: data['mealType'] as String? ?? _inferMealType(tags),
       difficulty: data['difficulty'] as String? ?? _inferDifficulty(minutes),

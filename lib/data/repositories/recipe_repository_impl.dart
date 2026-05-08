@@ -12,6 +12,7 @@ import '../datasources/recipe_local_datasource.dart';
 import '../datasources/recipe_remote_datasource.dart';
 import '../datasources/viewed_recipes_local_datasource.dart';
 import '../models/recipe_model.dart';
+import '../recipe_content_merge.dart';
 
 class RecipeRepositoryImpl implements RecipeRepository {
   RecipeRepositoryImpl({
@@ -45,7 +46,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
     }
     for (final e in submitted) {
       final m = RecipeModel.fromEntity(e);
-      byId[m.id] = m;
+      byId[m.id] = RecipeContentMerge.mergeByRecipeId(byId[m.id], m);
     }
 
     if (firebaseAppReady && _remote.isAvailable) {
@@ -59,7 +60,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
           );
         }
         for (final r in remote) {
-          byId[r.id] = r;
+          byId[r.id] = RecipeContentMerge.mergeByRecipeId(byId[r.id], r);
         }
       } catch (e, st) {
         if (kDebugMode) {

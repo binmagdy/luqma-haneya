@@ -18,6 +18,17 @@ final _recipeProvider = FutureProvider.family<RecipeEntity?, String>((ref, id) {
   return ref.watch(recipeRepositoryProvider).getRecipeById(id);
 });
 
+/// True when title or core body is missing (partial Firestore / bad merge).
+bool _recipeContentIncomplete(RecipeEntity r) {
+  if (r.title.trim().isEmpty) {
+    return true;
+  }
+  final hasIngredients =
+      r.mainIngredients.isNotEmpty || r.optionalIngredients.isNotEmpty;
+  final hasSteps = r.steps.isNotEmpty;
+  return !hasIngredients || !hasSteps;
+}
+
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   const RecipeDetailScreen({super.key, required this.recipeId});
 
@@ -73,6 +84,18 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
         data: (recipe) {
           if (recipe == null) {
             return Center(child: Text(l10n.recipeNotAvailable));
+          }
+          if (_recipeContentIncomplete(recipe)) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  l10n.recipeContentLoadFailed,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+            );
           }
           return sums.when(
             loading: () => const Center(child: CircularProgressIndicator()),
