@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../core/bootstrap.dart';
+import '../../core/google_server_client_id.dart';
 import '../../domain/auth/auth_exceptions.dart';
 import '../../domain/entities/auth_session_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -84,7 +85,17 @@ class AuthRepositoryImpl implements AuthRepository {
 
   Future<void> _ensureGoogleSignInMobileReady() async {
     if (_googleMobileInitialized) return;
-    await GoogleSignIn.instance.initialize();
+    await GoogleSignIn.instance.initialize(
+      serverClientId:
+          kGoogleServerClientId.isNotEmpty ? kGoogleServerClientId : null,
+    );
+    if (kDebugMode && kGoogleServerClientId.isEmpty) {
+      debugPrint(
+        'AuthRepositoryImpl: GOOGLE_SERVER_CLIENT_ID is empty — '
+        'Android/iOS Google Sign-In often needs the Web OAuth client id. '
+        'Use --dart-define=GOOGLE_SERVER_CLIENT_ID=... or set in google_server_client_id.dart',
+      );
+    }
     _googleMobileInitialized = true;
   }
 
@@ -171,12 +182,24 @@ class AuthRepositoryImpl implements AuthRepository {
     }
 
     if (kIsWeb) {
-      final provider = GoogleAuthProvider()
-        ..addScope('email')
-        ..addScope('profile');
-      final cred = await auth.signInWithPopup(provider);
-      final u = cred.user;
-      if (u != null) await _afterFirebaseSignIn(u);
+      try {
+        final provider = GoogleAuthProvider()
+          ..addScope('email')
+          ..addScope('profile');
+        final cred = await auth.signInWithPopup(provider);
+        final u = cred.user;
+        if (kDebugMode) {
+          debugPrint(
+            'AuthRepositoryImpl: Google web sign-in uid=${u?.uid} email=${u?.email}',
+          );
+        }
+        if (u != null) await _afterFirebaseSignIn(u);
+      } catch (e, st) {
+        if (kDebugMode) {
+          debugPrint('AuthRepositoryImpl: Google web sign-in failed $e $st');
+        }
+        rethrow;
+      }
       return;
     }
 
@@ -187,6 +210,11 @@ class AuthRepositoryImpl implements AuthRepository {
       account = await GoogleSignIn.instance.authenticate(
         scopeHint: const ['email', 'profile'],
       );
+      if (kDebugMode) {
+        debugPrint(
+          'AuthRepositoryImpl: Google mobile picker ok email=${account.email}',
+        );
+      }
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled ||
           e.code == GoogleSignInExceptionCode.interrupted ||
@@ -210,8 +238,16 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final cred = await auth.signInWithCredential(oauth);
       final u = cred.user;
+      if (kDebugMode) {
+        debugPrint(
+          'AuthRepositoryImpl: Firebase Google credential ok uid=${u?.uid}',
+        );
+      }
       if (u != null) await _afterFirebaseSignIn(u);
     } on FirebaseAuthException catch (e) {
+      if (kDebugMode) {
+        debugPrint('AuthRepositoryImpl: Firebase Google credential failed $e');
+      }
       if (e.code == 'account-exists-with-different-credential') {
         await GoogleSignIn.instance.signOut();
       }

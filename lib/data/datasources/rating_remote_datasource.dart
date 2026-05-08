@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../core/bootstrap.dart';
+import '../../domain/entities/recipe_rating_summary.dart';
 
 /// Firestore: `recipes/{recipeId}/ratings/{userId}` plus denormalized counters on the recipe doc.
 ///
@@ -12,6 +14,65 @@ class RatingRemoteDataSource {
   final FirebaseFirestore? _firestore;
 
   bool get isAvailable => firebaseAppReady && _firestore != null;
+
+  static const int _maxRatingsDocsPerRecipe = 500;
+
+  /// Client-side truth for public display (Option A): average + count from
+  /// `recipes/{recipeId}/ratings/*`. Falls back to denormalized recipe doc fields.
+  Future<RecipeRatingSummary?> summarizePublicRatingsForRecipe(
+    String recipeId,
+  ) async {
+    if (!isAvailable) return null;
+    try {
+      final snap = await _firestore!
+          .collection('recipes')
+          .doc(recipeId)
+          .collection('ratings')
+          .limit(_maxRatingsDocsPerRecipe)
+          .get();
+      var sum = 0;
+      var n = 0;
+      for (final d in snap.docs) {
+        final v = (d.data()['rating'] as num?)?.toInt();
+        if (v == null || v < 1 || v > 5) continue;
+        sum += v;
+        n++;
+      }
+      if (n > 0) {
+        if (kDebugMode) {
+          debugPrint(
+            'RatingRemoteDataSource: recipe=$recipeId ratingsFetched=$n avg=${sum / n}',
+          );
+        }
+        return RecipeRatingSummary(average: sum / n, count: n);
+      }
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('RatingRemoteDataSource.summarizePublic $recipeId: $e $st');
+      }
+    }
+    return _summaryFromRecipeDocOnly(recipeId);
+  }
+
+  Future<RecipeRatingSummary?> _summaryFromRecipeDocOnly(
+    String recipeId,
+  ) async {
+    if (!isAvailable) return null;
+    try {
+      final doc = await _firestore!.collection('recipes').doc(recipeId).get();
+      final d = doc.data();
+      if (d == null) return null;
+      final c = (d['ratingCount'] as num?)?.toInt() ??
+          (d['ratingsCount'] as num?)?.toInt() ??
+          0;
+      if (c <= 0) return null;
+      final avg = (d['averageRating'] as num?)?.toDouble() ??
+          (((d['ratingSum'] as num?)?.toDouble() ?? 0) / c);
+      return RecipeRatingSummary(average: avg, count: c);
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<void> upsertRating({
     required String recipeId,
@@ -63,6 +124,7 @@ class RatingRemoteDataSource {
         {
           'ratingSum': sum,
           'ratingCount': count,
+          'ratingsCount': count,
           'averageRating': avg,
           'lastRatedAt': now,
         },
@@ -113,7 +175,9 @@ class RatingRemoteDataSource {
     final doc = await _firestore!.collection('recipes').doc(recipeId).get();
     final d = doc.data();
     if (d == null) return null;
-    final c = (d['ratingCount'] as num?)?.toInt() ?? 0;
+    final c = (d['ratingCount'] as num?)?.toInt() ??
+        (d['ratingsCount'] as num?)?.toInt() ??
+        0;
     if (c <= 0) return null;
     final avg = (d['averageRating'] as num?)?.toDouble() ??
         (((d['ratingSum'] as num?)?.toDouble() ?? 0) / c);

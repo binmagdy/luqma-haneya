@@ -218,13 +218,20 @@ final trendingRepositoryProvider = Provider<TrendingRepository>(
 
 final trendingRecipesProvider = FutureProvider<List<RecipeEntity>>((ref) async {
   final cat = await ref.watch(allRecipesCatalogProvider.future);
-  return ref.watch(trendingRepositoryProvider).trendingRecipes(cat);
+  final sums = await ref.watch(ratingSummariesProvider.future);
+  return ref.watch(trendingRepositoryProvider).trendingRecipes(
+        cat,
+        ratingSummaries: sums,
+      );
 });
 
 final ratingSummariesProvider =
-    FutureProvider<Map<String, RecipeRatingSummary>>(
-  (ref) => ref.watch(ratingRepositoryProvider).getAllCachedSummaries(),
-);
+    FutureProvider<Map<String, RecipeRatingSummary>>((ref) async {
+  final catalog = await ref.watch(allRecipesCatalogProvider.future);
+  return ref
+      .watch(ratingRepositoryProvider)
+      .buildMergedSummariesForCatalog(catalog);
+});
 
 final favoriteIdsProvider = FutureProvider<Set<String>>(
   (ref) => ref.watch(favoritesRepositoryProvider).favoriteRecipeIds(),
@@ -249,8 +256,7 @@ final suggestionBundleProvider = FutureProvider<
       );
   final favorites =
       await ref.read(favoritesRepositoryProvider).favoriteRecipeIds();
-  final summaries =
-      await ref.read(ratingRepositoryProvider).getAllCachedSummaries();
+  final summaries = await ref.watch(ratingSummariesProvider.future);
   return (
     suggestions: suggestions,
     favorites: favorites,

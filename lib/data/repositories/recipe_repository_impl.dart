@@ -51,14 +51,28 @@ class RecipeRepositoryImpl implements RecipeRepository {
     if (firebaseAppReady && _remote.isAvailable) {
       try {
         final remote = await _remote.fetchRecipes();
+        if (kDebugMode) {
+          debugPrint(
+            'RecipeRepositoryImpl._resolvedCatalog: bundled=${bundled.length} '
+            'submitted=${submitted.length} remote=${remote.length} '
+            'idsAfterLocal=${byId.length}',
+          );
+        }
         for (final r in remote) {
           byId[r.id] = r;
         }
-      } catch (_) {
-        /* keep bundled + user */
+      } catch (e, st) {
+        if (kDebugMode) {
+          debugPrint('RecipeRepositoryImpl._resolvedCatalog remote: $e $st');
+        }
       }
     }
 
+    if (kDebugMode) {
+      debugPrint(
+        'RecipeRepositoryImpl._resolvedCatalog: total merged=${byId.length}',
+      );
+    }
     return byId.values.toList();
   }
 

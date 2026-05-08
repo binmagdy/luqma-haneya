@@ -1,5 +1,5 @@
 rules_version = '2';
-// لقمة هنية — MVP rules. TODO: tighten recipe writes and public_stats writes via Cloud Functions.
+// لقمة هنية — development-safe rules (MVP). Deploy with: firebase deploy --only firestore:rules
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() {
@@ -8,6 +8,10 @@ service cloud.firestore {
 
     function isSelf(uid) {
       return signedIn() && request.auth.uid == uid;
+    }
+
+    function approvedRecipeRead() {
+      return !('approved' in resource.data) || resource.data.approved == true;
     }
 
     // Own profile + subcollections (favorites, meal_plans, meal_weeks, …)
@@ -20,25 +24,39 @@ service cloud.firestore {
     }
 
     match /recipes/{recipeId} {
-      allow read: if true;
-      // Aggregates patched from the client when a user submits a rating (MVP).
-      // TODO: restrict to Cloud Functions / field masks for production.
-      allow create, delete: if false;
+      // Public catalogue: approved (or legacy docs without `approved`)
+      allow get, list: if approvedRecipeRead();
+
+      // Authenticated users can publish recipes they created
+      allow create: if signedIn()
+        && request.resource.data.createdBy == request.auth.uid;
+
+      // MVP: any signed-in client may update (rating aggregates + owner edits).
+      // Replace with field masks / Cloud Functions before production.
       allow update: if signedIn();
 
+      allow delete: if signedIn()
+        && (!('createdBy' in resource.data)
+          || resource.data.createdBy == request.auth.uid);
+
+      // Public ratings: anyone can read for aggregates; only author can write own doc
       match /ratings/{ratingUserId} {
         allow read: if true;
-        allow create, update: if isSelf(ratingUserId)
-          && request.resource.data.userId == ratingUserId
-          && request.resource.data.recipeId == recipeId;
-        allow delete: if isSelf(ratingUserId);
+
+        allow create, update: if signedIn()
+          && ratingUserId == request.auth.uid
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.recipeId == recipeId
+          && request.resource.data.rating is int
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5;
+
+        allow delete: if signedIn() && ratingUserId == request.auth.uid;
       }
     }
 
-    // Aggregated community preference counts (no per-user docs here).
     match /public_stats/{document=**} {
       allow read: if true;
-      // TODO: writes should be Cloud Functions only; temporary MVP allows any signed-in client.
       allow write: if signedIn();
     }
   }

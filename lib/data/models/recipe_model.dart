@@ -95,7 +95,8 @@ class RecipeModel extends RecipeEntity {
       isApproved:
           json['isApproved'] as bool? ?? json['approved'] as bool? ?? true,
       averageRating: (json['averageRating'] as num?)?.toDouble(),
-      ratingCount: (json['ratingCount'] as num?)?.toInt(),
+      ratingCount: (json['ratingCount'] as num?)?.toInt() ??
+          (json['ratingsCount'] as num?)?.toInt(),
       imageUrl: json['imageUrl'] as String?,
       creatorName: json['creatorName'] as String?,
     );
@@ -134,7 +135,8 @@ class RecipeModel extends RecipeEntity {
       isApproved:
           data['isApproved'] as bool? ?? data['approved'] as bool? ?? true,
       averageRating: (data['averageRating'] as num?)?.toDouble(),
-      ratingCount: (data['ratingCount'] as num?)?.toInt(),
+      ratingCount: (data['ratingCount'] as num?)?.toInt() ??
+          (data['ratingsCount'] as num?)?.toInt(),
       imageUrl: data['imageUrl'] as String?,
       creatorName: data['creatorName'] as String?,
     );
@@ -164,6 +166,7 @@ class RecipeModel extends RecipeEntity {
       'approved': isApproved,
       if (averageRating != null) 'averageRating': averageRating,
       if (ratingCount != null) 'ratingCount': ratingCount,
+      if (ratingCount != null) 'ratingsCount': ratingCount,
       if (imageUrl != null && imageUrl!.isNotEmpty) 'imageUrl': imageUrl,
     };
   }

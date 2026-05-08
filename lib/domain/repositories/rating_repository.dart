@@ -1,3 +1,4 @@
+import '../entities/recipe_entity.dart';
 import '../entities/recipe_rating_summary.dart';
 
 abstract class RatingRepository {
@@ -11,6 +12,16 @@ abstract class RatingRepository {
 
   /// All cached summaries (for browse lists). May be sparse offline.
   Future<Map<String, RecipeRatingSummary>> getAllCachedSummaries();
+
+  /// Merges local cache with Firestore-backed public aggregates (Option A:
+  /// ratings subcollection) for [catalog], up to [maxRemoteHydrate] recipes.
+  Future<Map<String, RecipeRatingSummary>> buildMergedSummariesForCatalog(
+    List<RecipeEntity> catalog, {
+    int maxRemoteHydrate = 120,
+  });
+
+  /// Single-recipe public aggregate (subcollection first, then recipe doc).
+  Future<RecipeRatingSummary?> fetchPublicSummaryForRecipe(String recipeId);
 
   /// Persists locally. If [publishPublic] is true, syncs to Firestore as a public
   /// rating (requires signed-in Firebase user). Otherwise stays local-only.

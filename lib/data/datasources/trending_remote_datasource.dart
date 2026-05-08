@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../core/bootstrap.dart';
 import '../../core/utils/week_calendar.dart';
@@ -13,7 +14,7 @@ class TrendingRemoteDataSource {
 
   /// Returns recipe ids sorted by weekly score (avg desc, count desc).
   Future<List<String>> recipeIdsTrendingThisWeek(
-      {int minWeeklyCount = 3}) async {
+      {int minWeeklyCount = 1}) async {
     if (!isAvailable) return const [];
     final wk = isoWeekKey(DateTime.now());
     try {
@@ -39,9 +40,17 @@ class TrendingRemoteDataSource {
         scored.add(MapEntry(e.key, avg * 1000 + n));
       }
       scored.sort((a, b) => b.value.compareTo(a.value));
+      if (kDebugMode) {
+        debugPrint(
+          'TrendingRemoteDataSource: week=$wk groupedRecipes=${byRecipe.length} '
+          'ranked=${scored.length}',
+        );
+      }
       return scored.map((e) => e.key).toList();
-    } catch (e) {
-      // Missing composite index or offline — caller falls back.
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('TrendingRemoteDataSource.recipeIdsTrendingThisWeek $e $st');
+      }
       return const [];
     }
   }
@@ -56,7 +65,10 @@ class TrendingRemoteDataSource {
           .limit(limit)
           .get();
       return snap.docs.map((d) => d.id).toList();
-    } catch (_) {
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('TrendingRemoteDataSource.recipeIdsByAllTimeRating $e $st');
+      }
       return const [];
     }
   }
@@ -73,7 +85,9 @@ class TrendingRemoteDataSource {
         final wAvg = (m['weeklyRatingAverage'] as num?)?.toDouble() ?? 0;
         final wCnt = (m['weeklyRatingCount'] as num?)?.toInt() ?? 0;
         final avg = (m['averageRating'] as num?)?.toDouble() ?? 0;
-        final cnt = (m['ratingCount'] as num?)?.toInt() ?? 0;
+        final cnt = (m['ratingCount'] as num?)?.toInt() ??
+            (m['ratingsCount'] as num?)?.toInt() ??
+            0;
         final fav = (m['favoritesCount'] as num?)?.toInt() ??
             (m['favoriteCount'] as num?)?.toInt() ??
             0;
