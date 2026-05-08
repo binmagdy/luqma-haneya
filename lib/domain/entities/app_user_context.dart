@@ -9,13 +9,15 @@ class AppUserContext {
 
   final AuthSessionEntity session;
 
-  /// `user` or `admin` from Firestore; missing field treated as `user`.
+  /// From Firestore `users/{uid}.role`; only the literal `"admin"` is elevated.
+  /// Missing or any other value is treated as non-admin (`user` in UI).
   final String role;
 
   bool get isLoggedIn => session.isLoggedIn;
 
   String? get userId => session.firebaseUid;
 
+  /// Admin UI only when Firestore `role` is exactly `admin`.
   bool get isAdmin =>
       isLoggedIn && !session.firebaseIsAnonymous && role == 'admin';
 }

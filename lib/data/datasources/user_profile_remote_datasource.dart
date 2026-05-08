@@ -19,9 +19,16 @@ class UserProfileRemoteDataSource {
 
   static const String defaultRole = 'user';
 
+  /// Only `"admin"` grants admin UI; missing or any other value → [defaultRole].
   String _normalizeRole(String? raw) {
     if (raw == 'admin') return 'admin';
     return defaultRole;
+  }
+
+  /// True when Firestore has no `role` field (treat as [defaultRole] in app only).
+  bool _roleFieldMissing(Map<String, dynamic>? data) {
+    if (data == null) return true;
+    return !data.containsKey('role');
   }
 
   /// Firestore `users/{userId}.role` — defaults to [defaultRole] if missing.
@@ -49,30 +56,46 @@ class UserProfileRemoteDataSource {
   }
 
   /// Full profile after email registration (creates doc with defaults).
+  ///
+  /// New documents always get `role: "user"`. If the document already exists,
+  /// identity fields are merged but [role] is never sent (preserves e.g. admin).
   Future<void> writeRegisteredUserProfile({
     required User user,
     required String displayName,
   }) async {
     final ref = _userRef(user.uid);
     if (ref == null) return;
+    final snap = await ref.get();
     final now = FieldValue.serverTimestamp();
+    if (!snap.exists) {
+      await ref.set({
+        'uid': user.uid,
+        'displayName': displayName,
+        'email': user.email,
+        'provider': 'password',
+        'role': defaultRole,
+        'isGuest': false,
+        'isAnonymous': user.isAnonymous,
+        'createdAt': now,
+        'updatedAt': now,
+        'favoriteRecipeIds': <String>[],
+        'likedRecipeIds': <String>[],
+        'viewedRecipeIds': <String>[],
+        'preferredTags': <String>[],
+        'savedMealPlans': <String>[],
+        'uploadedRecipesCount': 0,
+        'ratingsCount': 0,
+      }, SetOptions(merge: true));
+      return;
+    }
     await ref.set({
       'uid': user.uid,
       'displayName': displayName,
       'email': user.email,
       'provider': 'password',
-      'role': defaultRole,
       'isGuest': false,
       'isAnonymous': user.isAnonymous,
-      'createdAt': now,
       'updatedAt': now,
-      'favoriteRecipeIds': <String>[],
-      'likedRecipeIds': <String>[],
-      'viewedRecipeIds': <String>[],
-      'preferredTags': <String>[],
-      'savedMealPlans': <String>[],
-      'uploadedRecipesCount': 0,
-      'ratingsCount': 0,
     }, SetOptions(merge: true));
   }
 
@@ -101,6 +124,8 @@ class UserProfileRemoteDataSource {
       payload['savedMealPlans'] = <String>[];
       payload['uploadedRecipesCount'] = 0;
       payload['ratingsCount'] = 0;
+    } else if (_roleFieldMissing(snap.data())) {
+      payload['role'] = defaultRole;
     }
     await ref.set(payload, SetOptions(merge: true));
   }
@@ -135,6 +160,8 @@ class UserProfileRemoteDataSource {
       payload['savedMealPlans'] = <String>[];
       payload['uploadedRecipesCount'] = 0;
       payload['ratingsCount'] = 0;
+    } else if (_roleFieldMissing(snap.data())) {
+      payload['role'] = defaultRole;
     }
     await ref.set(payload, SetOptions(merge: true));
   }
