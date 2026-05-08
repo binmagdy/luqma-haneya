@@ -9,16 +9,15 @@ import '../../../core/widgets/lh_primary_button.dart';
 import '../../../core/widgets/lh_section_header.dart';
 import '../../../data/models/recipe_model.dart';
 import '../../../di/providers.dart';
+import '../../../domain/value_objects/recipe_moderation.dart';
 import '../../../domain/value_objects/recipe_schema.dart';
 import '../../../domain/value_objects/recipe_source.dart';
 
-/// User-submitted recipe form. Persists locally and optionally syncs to Firestore.
-///
-/// **Production note:** submitted recipes should use `isApproved: false` until a
-/// moderation step publishes them. MVP keeps `isApproved: true` so testers see
-/// entries immediately in browse/search.
+/// User-submitted recipe form; optional [initialRecipe] for admin/user edits.
 class AddRecipeScreen extends ConsumerStatefulWidget {
-  const AddRecipeScreen({super.key});
+  const AddRecipeScreen({super.key, this.initialRecipe});
+
+  final RecipeModel? initialRecipe;
 
   @override
   ConsumerState<AddRecipeScreen> createState() => _AddRecipeScreenState();
@@ -42,6 +41,30 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   String _budget = RecipeBudget.medium;
   bool _spicy = false;
   bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final i = widget.initialRecipe;
+    if (i != null) {
+      _title.text = i.title;
+      _desc.text = i.description;
+      _minutes.text = '${i.minutes}';
+      _servings.text = '${i.servings}';
+      _mainIng.text = i.mainIngredients.join('\n');
+      _optIng.text = i.optionalIngredients.join('\n');
+      _steps.text = i.steps.join('\n');
+      _tags.text = i.tags.join('، ');
+      _cuisine.text = i.cuisine;
+      _meal = i.mealType;
+      _difficulty = i.difficulty;
+      _budget = i.budget;
+      _spicy = i.spicy;
+      if (i.imageUrl != null && i.imageUrl!.isNotEmpty) {
+        _imageUrl.text = i.imageUrl!;
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -82,7 +105,6 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
 
     setState(() => _saving = true);
     try {
-      final id = const Uuid().v4();
       final uid = session.firebaseUid!;
       final now = DateTime.now();
       final main = _lines(_mainIng.text);
@@ -90,42 +112,107 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
       final steps = _lines(_steps.text);
       final tags = _lines(_tags.text);
       final img = _imageUrl.text.trim();
+      final existing = widget.initialRecipe;
 
-      final recipe = RecipeModel(
-        id: id,
-        title: _title.text.trim(),
-        description: _desc.text.trim(),
-        minutes: int.parse(_minutes.text.trim()),
-        servings: int.parse(_servings.text.trim()),
-        steps: steps,
-        tags: tags,
-        mealType: _meal,
-        difficulty: _difficulty,
-        budget: _budget,
-        spicy: _spicy,
-        cuisine: _cuisine.text.trim().isEmpty ? 'mixed' : _cuisine.text.trim(),
-        mainIngredients: main,
-        optionalIngredients: opt,
-        source: RecipeSource.user,
-        createdByUserId: uid,
-        createdAt: now,
-        isApproved: true,
-        imageUrl: img.isEmpty ? null : img,
-        creatorName: session.resolvedDisplayName ?? session.email,
-      );
+      if (existing != null) {
+        final admin =
+            ref.read(appUserContextProvider).valueOrNull?.isAdmin == true;
+        final recipe = RecipeModel(
+          id: existing.id,
+          title: _title.text.trim(),
+          description: _desc.text.trim(),
+          minutes: int.parse(_minutes.text.trim()),
+          servings: int.parse(_servings.text.trim()),
+          steps: steps,
+          tags: tags,
+          mealType: _meal,
+          difficulty: _difficulty,
+          budget: _budget,
+          spicy: _spicy,
+          cuisine:
+              _cuisine.text.trim().isEmpty ? 'mixed' : _cuisine.text.trim(),
+          mainIngredients: main,
+          optionalIngredients: opt,
+          source: existing.source,
+          createdByUserId: existing.createdByUserId ?? uid,
+          createdAt: existing.createdAt ?? now,
+          isApproved: existing.isApproved,
+          moderationStatus: existing.moderationStatus,
+          visibility: existing.visibility,
+          rejectedReason: existing.rejectedReason,
+          updatedAt: now,
+          approvedBy: existing.approvedBy,
+          approvedAt: existing.approvedAt,
+          rejectedBy: existing.rejectedBy,
+          rejectedAt: existing.rejectedAt,
+          averageRating: existing.averageRating,
+          ratingCount: existing.ratingCount,
+          imageUrl: img.isEmpty ? null : img,
+          creatorName: existing.creatorName ??
+              session.resolvedDisplayName ??
+              session.email,
+        );
+        if (admin) {
+          await ref
+              .read(adminModerationRepositoryProvider)
+              .saveRecipeDocument(recipe);
+          ref.invalidate(
+              adminRecipesByStatusProvider(RecipeModerationStatus.pending));
+          ref.invalidate(
+              adminRecipesByStatusProvider(RecipeModerationStatus.approved));
+          ref.invalidate(
+              adminRecipesByStatusProvider(RecipeModerationStatus.rejected));
+        } else {
+          await ref.read(userRecipeRepositoryProvider).submit(recipe);
+        }
+      } else {
+        final id = const Uuid().v4();
+        final recipe = RecipeModel(
+          id: id,
+          title: _title.text.trim(),
+          description: _desc.text.trim(),
+          minutes: int.parse(_minutes.text.trim()),
+          servings: int.parse(_servings.text.trim()),
+          steps: steps,
+          tags: tags,
+          mealType: _meal,
+          difficulty: _difficulty,
+          budget: _budget,
+          spicy: _spicy,
+          cuisine:
+              _cuisine.text.trim().isEmpty ? 'mixed' : _cuisine.text.trim(),
+          mainIngredients: main,
+          optionalIngredients: opt,
+          source: RecipeSource.user,
+          createdByUserId: uid,
+          createdAt: now,
+          isApproved: false,
+          moderationStatus: RecipeModerationStatus.pending,
+          visibility: RecipeVisibility.public,
+          imageUrl: img.isEmpty ? null : img,
+          creatorName: session.resolvedDisplayName ?? session.email,
+        );
+        await ref.read(userRecipeRepositoryProvider).submit(recipe);
+      }
 
-      await ref.read(userRecipeRepositoryProvider).submit(recipe);
       ref.invalidate(allRecipesCatalogProvider);
       ref.invalidate(suggestionBundleProvider);
+      ref.invalidate(mySubmittedRecipesProvider);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حفظ الوصفة')),
+        SnackBar(
+          content: Text(
+            existing == null
+                ? l10n.addRecipeSubmittedPending
+                : l10n.addRecipeUpdated,
+          ),
+        ),
       );
       context.pop();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('تعذر الحفظ: $e')),
+        SnackBar(content: Text(l10n.authError(e.toString()))),
       );
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -135,17 +222,21 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final editing = widget.initialRecipe != null;
     return Scaffold(
-      appBar: AppBar(title: const Text('إضافة وصفة')),
+      appBar: AppBar(
+        title: Text(editing ? l10n.addRecipeEditTitle : l10n.addRecipeTitle),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
           children: [
-            const LhSectionHeader(
-              title: 'وصفة جديدة',
-              subtitle:
-                  'البيانات تتسجل على الجهاز أولًا، وتتزامن مع السحابة لو Firebase شغال.',
+            LhSectionHeader(
+              title: editing ? l10n.addRecipeEditTitle : l10n.addRecipeTitle,
+              subtitle: editing
+                  ? l10n.authSyncStatusCloud
+                  : 'البيانات تتسجل على الجهاز أولًا، وتتزامن مع السحابة لو Firebase شغال.',
             ),
             const SizedBox(height: 16),
             TextFormField(

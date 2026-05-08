@@ -17,6 +17,29 @@ class UserProfileRemoteDataSource {
     return _firestore!.collection('users').doc(userId);
   }
 
+  static const String defaultRole = 'user';
+
+  String _normalizeRole(String? raw) {
+    if (raw == 'admin') return 'admin';
+    return defaultRole;
+  }
+
+  /// Firestore `users/{userId}.role` — defaults to [defaultRole] if missing.
+  Future<String> getRole(String userId) async {
+    final ref = _userRef(userId);
+    if (ref == null) return defaultRole;
+    final snap = await ref.get();
+    return _normalizeRole(snap.data()?['role'] as String?);
+  }
+
+  Stream<String> watchRole(String userId) {
+    final ref = _userRef(userId);
+    if (ref == null) return Stream.value(defaultRole);
+    return ref.snapshots().map(
+          (s) => _normalizeRole(s.data()?['role'] as String?),
+        );
+  }
+
   static String providerKind(User user) {
     for (final p in user.providerData) {
       if (p.providerId == 'google.com') return 'google';
@@ -38,6 +61,7 @@ class UserProfileRemoteDataSource {
       'displayName': displayName,
       'email': user.email,
       'provider': 'password',
+      'role': defaultRole,
       'isGuest': false,
       'isAnonymous': user.isAnonymous,
       'createdAt': now,
@@ -69,6 +93,7 @@ class UserProfileRemoteDataSource {
     };
     if (!snap.exists) {
       payload['createdAt'] = now;
+      payload['role'] = defaultRole;
       payload['favoriteRecipeIds'] = <String>[];
       payload['likedRecipeIds'] = <String>[];
       payload['viewedRecipeIds'] = <String>[];
@@ -102,6 +127,7 @@ class UserProfileRemoteDataSource {
     };
     if (!snap.exists) {
       payload['createdAt'] = FieldValue.serverTimestamp();
+      payload['role'] = defaultRole;
       payload['favoriteRecipeIds'] = <String>[];
       payload['likedRecipeIds'] = <String>[];
       payload['viewedRecipeIds'] = <String>[];

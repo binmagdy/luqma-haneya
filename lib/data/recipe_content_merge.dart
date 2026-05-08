@@ -151,7 +151,7 @@ abstract class RecipeContentMerge {
       );
     }
 
-    final merged = RecipeModel(
+    var merged = RecipeModel(
       id: primary.id,
       title: _pickText(primary.title, secondary.title),
       description: _pickText(primary.description, secondary.description),
@@ -173,12 +173,35 @@ abstract class RecipeContentMerge {
       source: _pickSource(existing, incoming),
       createdByUserId: primary.createdByUserId ?? secondary.createdByUserId,
       createdAt: primary.createdAt ?? secondary.createdAt,
-      isApproved: primary.isApproved || secondary.isApproved,
+      isApproved: sa >= sb ? primary.isApproved : secondary.isApproved,
+      moderationStatus:
+          sa >= sb ? primary.moderationStatus : secondary.moderationStatus,
+      visibility: sa >= sb ? primary.visibility : secondary.visibility,
+      rejectedReason: primary.rejectedReason ?? secondary.rejectedReason,
+      updatedAt: primary.updatedAt ?? secondary.updatedAt,
+      approvedBy: primary.approvedBy ?? secondary.approvedBy,
+      approvedAt: primary.approvedAt ?? secondary.approvedAt,
+      rejectedBy: primary.rejectedBy ?? secondary.rejectedBy,
+      rejectedAt: primary.rejectedAt ?? secondary.rejectedAt,
       averageRating: _pickAverageRating(existing, incoming),
       ratingCount: _pickRatingCount(existing, incoming),
       imageUrl: primary.imageUrl ?? secondary.imageUrl,
       creatorName: primary.creatorName ?? secondary.creatorName,
     );
+
+    if (incoming.source != RecipeSource.asset) {
+      merged = merged.copyWith(
+        isApproved: incoming.isApproved,
+        moderationStatus: incoming.moderationStatus,
+        visibility: incoming.visibility,
+        rejectedReason: incoming.rejectedReason,
+        updatedAt: incoming.updatedAt ?? merged.updatedAt,
+        approvedBy: incoming.approvedBy ?? merged.approvedBy,
+        approvedAt: incoming.approvedAt ?? merged.approvedAt,
+        rejectedBy: incoming.rejectedBy ?? merged.rejectedBy,
+        rejectedAt: incoming.rejectedAt ?? merged.rejectedAt,
+      );
+    }
 
     if (kDebugMode) {
       final ms = completenessScore(merged);

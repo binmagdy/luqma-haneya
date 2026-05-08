@@ -1,3 +1,4 @@
+import '../value_objects/recipe_moderation.dart';
 import '../value_objects/recipe_schema.dart';
 import '../value_objects/recipe_source.dart';
 
@@ -21,6 +22,14 @@ class RecipeEntity {
     this.createdByUserId,
     this.createdAt,
     this.isApproved = true,
+    this.moderationStatus = RecipeModerationStatus.approved,
+    this.visibility = RecipeVisibility.public,
+    this.rejectedReason,
+    this.updatedAt,
+    this.approvedBy,
+    this.approvedAt,
+    this.rejectedBy,
+    this.rejectedAt,
     this.averageRating,
     this.ratingCount,
     this.imageUrl,
@@ -61,6 +70,24 @@ class RecipeEntity {
 
   /// In production, user-submitted rows should stay false until moderation.
   final bool isApproved;
+
+  /// Firestore `status`: pending | approved | rejected.
+  final String moderationStatus;
+
+  /// Firestore `visibility`: public | hidden.
+  final String visibility;
+
+  final String? rejectedReason;
+
+  final DateTime? updatedAt;
+
+  final String? approvedBy;
+
+  final DateTime? approvedAt;
+
+  final String? rejectedBy;
+
+  final DateTime? rejectedAt;
 
   /// Denormalized community average from Firestore recipe doc when present.
   final double? averageRating;

@@ -136,5 +136,45 @@
   "homeRecommendedSubtitle": "Based on your tastes, history, and what is trending",
   "addRecipeAuthRequired": "Sign in to publish a recipe",
   "addRecipeImageUrl": "Image URL (optional)",
-  "addRecipeIngredientsMin2": "Add at least two main ingredients"
+  "addRecipeIngredientsMin2": "Add at least two main ingredients",
+  "addRecipeTitle": "Add recipe",
+  "addRecipeEditTitle": "Edit recipe",
+  "addRecipeSubmittedPending": "Recipe submitted for review",
+  "addRecipeUpdated": "Recipe updated",
+  "accountAdminPanel": "Admin dashboard",
+  "accountMySubmissions": "My submitted recipes",
+  "adminDashboardTitle": "Admin dashboard",
+  "adminSectionPending": "Pending",
+  "adminSectionApproved": "Approved",
+  "adminSectionRejected": "Rejected",
+  "adminSectionStats": "App statistics",
+  "adminReview": "Review",
+  "adminApprove": "Approve",
+  "adminReject": "Reject",
+  "adminEdit": "Edit",
+  "adminDelete": "Delete",
+  "adminHide": "Hide from public",
+  "adminRejectTitle": "Rejection reason",
+  "adminRejectHint": "Enter a reason for the submitter",
+  "adminStatsTitle": "Statistics",
+  "adminStatsUsers": "Users",
+  "adminStatsRecipes": "Recipes",
+  "adminStatsPending": "Pending",
+  "adminStatsApproved": "Approved",
+  "adminStatsRejected": "Rejected",
+  "adminStatsRatingsNote": "Detailed rating counts need extra indexing (TODO).",
+  "adminStatsTopRatedTodo": "Top rated: TODO — cloud aggregation",
+  "adminStatsFavoritesTodo": "Most favorited: TODO — aggregate users.favoriteRecipeIds",
+  "mySubmittedTitle": "My submitted recipes",
+  "recipeStatusPending": "Under review",
+  "recipeStatusApproved": "Approved",
+  "recipeStatusRejected": "Rejected",
+  "recipeRejectedReason": "Rejection reason: {reason}",
+  "@recipeRejectedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  }
 }

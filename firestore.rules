@@ -1,7 +1,8 @@
 rules_version = '2';
-// لقمة هنية — development-safe rules (MVP). Deploy with: firebase deploy --only firestore:rules
+// لقمة هنية — moderation + roles. Deploy: firebase deploy --only firestore:rules
 service cloud.firestore {
   match /databases/{database}/documents {
+
     function signedIn() {
       return request.auth != null;
     }
@@ -10,13 +11,46 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
-    function approvedRecipeRead() {
-      return !('approved' in resource.data) || resource.data.approved == true;
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'user') == 'admin';
     }
 
-    // Own profile + subcollections (favorites, meal_plans, meal_weeks, …)
+    function recipeCreatorId(r) {
+      return r.get('createdBy', r.get('createdByUserId', ''));
+    }
+
+    function recipeOwnerRead(r) {
+      return signedIn() && recipeCreatorId(r) == request.auth.uid;
+    }
+
+    function recipePublic(r) {
+      return r.get('visibility', 'public') == 'public'
+        && (
+          (!('status' in r)
+            && (r.get('approved', r.get('isApproved', true)) != false))
+          || (r.get('status', '') == 'approved'
+            && r.get('approved', r.get('isApproved', false)) == true)
+        );
+    }
+
+    function recipeReadable(r) {
+      return recipePublic(r) || isAdmin() || recipeOwnerRead(r);
+    }
+
+    function recipeDoc(recipeId) {
+      return get(/databases/$(database)/documents/recipes/$(recipeId)).data;
+    }
+
     match /users/{userId} {
-      allow read, write: if isSelf(userId);
+      allow get: if isSelf(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isSelf(userId)
+        && request.resource.data.get('role', 'user') == 'user';
+      allow update: if isSelf(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
+      allow delete: if isSelf(userId);
 
       match /{subcollection=**} {
         allow read, write: if isSelf(userId);
@@ -24,26 +58,41 @@ service cloud.firestore {
     }
 
     match /recipes/{recipeId} {
-      // Public catalogue: approved (or legacy docs without `approved`)
-      allow get, list: if approvedRecipeRead();
 
-      // Authenticated users can publish recipes they created
+      allow get: if recipeReadable(resource.data);
+      allow list: if recipeReadable(resource.data);
+
       allow create: if signedIn()
-        && request.resource.data.createdBy == request.auth.uid;
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.approved == false
+        && request.resource.data.isApproved == false
+        && request.resource.data.visibility == 'public'
+        && request.resource.data.source == 'user';
 
-      // MVP: any signed-in client may update (rating aggregates + owner edits).
-      // Replace with field masks / Cloud Functions before production.
-      allow update: if signedIn();
+      allow update: if isAdmin()
+        || (recipeOwnerRead(resource.data)
+          && resource.data.status == 'pending'
+          && request.resource.data.status == 'pending'
+          && request.resource.data.approved == false
+          && request.resource.data.isApproved == false
+          && recipeCreatorId(request.resource.data) == request.auth.uid
+          && recipeCreatorId(request.resource.data) == recipeCreatorId(resource.data)
+          && !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['approved', 'isApproved', 'status', 'visibility',
+              'rejectedReason', 'rejectedAt', 'rejectedBy',
+              'approvedBy', 'approvedAt']));
 
-      allow delete: if signedIn()
-        && (!('createdBy' in resource.data)
-          || resource.data.createdBy == request.auth.uid);
+      allow delete: if isAdmin()
+        || (recipeOwnerRead(resource.data) && resource.data.status == 'pending');
 
-      // Public ratings: anyone can read for aggregates; only author can write own doc
       match /ratings/{ratingUserId} {
-        allow read: if true;
+        allow read: if recipePublic(recipeDoc(recipeId))
+          || isAdmin()
+          || recipeOwnerRead(recipeDoc(recipeId));
 
         allow create, update: if signedIn()
+          && recipePublic(recipeDoc(recipeId))
           && ratingUserId == request.auth.uid
           && request.resource.data.userId == request.auth.uid
           && request.resource.data.recipeId == recipeId

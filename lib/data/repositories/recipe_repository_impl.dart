@@ -3,13 +3,16 @@ import 'package:flutter/foundation.dart';
 import '../../core/bootstrap.dart';
 import '../../domain/entities/recipe_entity.dart';
 import '../../domain/entities/user_preferences_entity.dart';
+import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/favorites_repository.dart';
 import '../../domain/repositories/rating_repository.dart';
 import '../../domain/repositories/recipe_repository.dart';
 import '../../domain/repositories/user_recipe_repository.dart';
 import '../../domain/services/recipe_scoring_service.dart';
 import '../datasources/recipe_local_datasource.dart';
-import '../datasources/recipe_remote_datasource.dart';
+import '../datasources/recipe_remote_datasource.dart'
+    show RecipeRemoteDataSource, recipeRowIsPublicCatalog;
+import '../datasources/user_profile_remote_datasource.dart';
 import '../datasources/viewed_recipes_local_datasource.dart';
 import '../models/recipe_model.dart';
 import '../recipe_content_merge.dart';
@@ -22,12 +25,16 @@ class RecipeRepositoryImpl implements RecipeRepository {
     required RatingRepository ratingRepository,
     required FavoritesRepository favoritesRepository,
     required ViewedRecipesLocalDataSource viewedRecipesLocal,
+    required AuthRepository authRepository,
+    required UserProfileRemoteDataSource userProfileRemote,
   })  : _local = local,
         _remote = remote,
         _userRecipes = userRecipes,
         _rating = ratingRepository,
         _favorites = favoritesRepository,
-        _viewed = viewedRecipesLocal;
+        _viewed = viewedRecipesLocal,
+        _auth = authRepository,
+        _profile = userProfileRemote;
 
   final RecipeLocalDataSource _local;
   final RecipeRemoteDataSource _remote;
@@ -35,8 +42,11 @@ class RecipeRepositoryImpl implements RecipeRepository {
   final RatingRepository _rating;
   final FavoritesRepository _favorites;
   final ViewedRecipesLocalDataSource _viewed;
+  final AuthRepository _auth;
+  final UserProfileRemoteDataSource _profile;
 
-  Future<List<RecipeModel>> _resolvedCatalog() async {
+  /// Merged catalog (bundled + local submissions + remote); not filtered by moderation.
+  Future<List<RecipeModel>> _mergedCatalogUnfiltered() async {
     final bundled = await _local.loadBundledRecipes();
     final submitted = await _userRecipes.submittedRecipes();
     final byId = <String, RecipeModel>{};
@@ -54,7 +64,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
         final remote = await _remote.fetchRecipes();
         if (kDebugMode) {
           debugPrint(
-            'RecipeRepositoryImpl._resolvedCatalog: bundled=${bundled.length} '
+            'RecipeRepositoryImpl._mergedCatalog: bundled=${bundled.length} '
             'submitted=${submitted.length} remote=${remote.length} '
             'idsAfterLocal=${byId.length}',
           );
@@ -64,17 +74,22 @@ class RecipeRepositoryImpl implements RecipeRepository {
         }
       } catch (e, st) {
         if (kDebugMode) {
-          debugPrint('RecipeRepositoryImpl._resolvedCatalog remote: $e $st');
+          debugPrint('RecipeRepositoryImpl._mergedCatalog remote: $e $st');
         }
       }
     }
 
     if (kDebugMode) {
       debugPrint(
-        'RecipeRepositoryImpl._resolvedCatalog: total merged=${byId.length}',
+        'RecipeRepositoryImpl._mergedCatalog: total merged=${byId.length}',
       );
     }
     return byId.values.toList();
+  }
+
+  Future<List<RecipeModel>> _resolvedPublicCatalog() async {
+    final all = await _mergedCatalogUnfiltered();
+    return all.where(recipeRowIsPublicCatalog).toList();
   }
 
   Future<RecipeSuggestionContext> _suggestionContext(
@@ -117,15 +132,29 @@ class RecipeRepositoryImpl implements RecipeRepository {
   }
 
   @override
-  Future<List<RecipeEntity>> getAllRecipes() => _resolvedCatalog();
+  Future<List<RecipeEntity>> getAllRecipes() => _resolvedPublicCatalog();
 
   @override
   Future<RecipeEntity?> getRecipeById(String id) async {
-    final all = await _resolvedCatalog();
+    final all = await _resolvedPublicCatalog();
     for (final r in all) {
       if (r.id == id) return r;
     }
-    return null;
+    final session = _auth.currentSession;
+    final uid = session?.firebaseUid;
+    if (uid == null || !firebaseAppReady || !_remote.isAvailable) {
+      return null;
+    }
+    final role = _profile.isAvailable ? await _profile.getRole(uid) : 'user';
+    final admin = role == 'admin' && (session?.firebaseIsAnonymous == false);
+    final extra = await _remote.tryFetchRecipeById(id);
+    if (extra == null) {
+      return null;
+    }
+    if (!admin && extra.createdByUserId != uid) {
+      return null;
+    }
+    return extra;
   }
 
   @override
@@ -133,7 +162,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
     UserPreferencesEntity prefs, {
     Set<String> trendingRecipeIds = const {},
   }) async {
-    final all = await _resolvedCatalog();
+    final all = await _resolvedPublicCatalog();
     final viewed = await _viewed.loadOrdered();
     final penalized = viewed.take(6).toSet();
     final ctx = await _suggestionContext(
@@ -191,7 +220,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
         .toList();
     if (normalized.isEmpty) return const [];
 
-    final all = await _resolvedCatalog();
+    final all = await _resolvedPublicCatalog();
     final ranked = <MapEntry<RecipeModel, double>>[];
 
     for (final r in all) {

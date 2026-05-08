@@ -185,5 +185,45 @@
   "homeRecommendedSubtitle": "حسب تفضيلاتك ومشاهداتك والرائج",
   "addRecipeAuthRequired": "سجّل الدخول لإضافة وصفة للمجتمع",
   "addRecipeImageUrl": "رابط صورة (اختياري)",
-  "addRecipeIngredientsMin2": "أضف مكونتين على الأقل في الأساسي"
+  "addRecipeIngredientsMin2": "أضف مكونتين على الأقل في الأساسي",
+  "addRecipeTitle": "إضافة وصفة",
+  "addRecipeEditTitle": "تعديل وصفة",
+  "addRecipeSubmittedPending": "تم إرسال الوصفة للمراجعة",
+  "addRecipeUpdated": "تم تحديث الوصفة",
+  "accountAdminPanel": "لوحة التحكم",
+  "accountMySubmissions": "وصفاتي المرسلة",
+  "adminDashboardTitle": "لوحة التحكم",
+  "adminSectionPending": "قيد المراجعة",
+  "adminSectionApproved": "مقبولة",
+  "adminSectionRejected": "مرفوضة",
+  "adminSectionStats": "إحصائيات التطبيق",
+  "adminReview": "مراجعة",
+  "adminApprove": "قبول",
+  "adminReject": "رفض",
+  "adminEdit": "تعديل",
+  "adminDelete": "حذف",
+  "adminHide": "إخفاء عن العامة",
+  "adminRejectTitle": "سبب الرفض",
+  "adminRejectHint": "اكتبي سبب الرفض للمستخدمة",
+  "adminStatsTitle": "إحصائيات",
+  "adminStatsUsers": "المستخدمون",
+  "adminStatsRecipes": "الوصفات",
+  "adminStatsPending": "قيد المراجعة",
+  "adminStatsApproved": "مقبولة",
+  "adminStatsRejected": "مرفوضة",
+  "adminStatsRatingsNote": "عدد التقييمات التفصيلي يحتاج فهرسة إضافية (TODO).",
+  "adminStatsTopRatedTodo": "أعلى التقييم: TODO — تجميع سحابي",
+  "adminStatsFavoritesTodo": "الأكثر مفضلة: TODO — تجميع من users.favoriteRecipeIds",
+  "mySubmittedTitle": "وصفاتي المرسلة",
+  "recipeStatusPending": "قيد المراجعة",
+  "recipeStatusApproved": "مقبولة",
+  "recipeStatusRejected": "مرفوضة",
+  "recipeRejectedReason": "سبب الرفض: {reason}",
+  "@recipeRejectedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  }
 }

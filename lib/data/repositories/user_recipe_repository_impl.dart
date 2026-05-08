@@ -22,6 +22,32 @@ class UserRecipeRepositoryImpl implements UserRecipeRepository {
   }
 
   @override
+  Future<List<RecipeEntity>> mySubmittedFromRemote(String uid) async {
+    if (!_remote.isAvailable) {
+      final local = await _local.loadAll();
+      return local.where((r) => r.createdByUserId == uid).toList();
+    }
+    try {
+      final remote = await _remote.fetchByCreator(uid);
+      final byId = {for (final r in remote) r.id: r as RecipeEntity};
+      final local = await _local.loadAll();
+      for (final l in local) {
+        if (l.createdByUserId != uid) continue;
+        final m = RecipeModel.fromEntity(l);
+        byId.putIfAbsent(m.id, () => m);
+      }
+      final list = byId.values.toList();
+      int ts(RecipeEntity e) => e.createdAt?.millisecondsSinceEpoch ?? 0;
+      list.sort((a, b) => ts(b).compareTo(ts(a)));
+      return list;
+    } catch (e, st) {
+      debugPrint('UserRecipeRepositoryImpl.mySubmittedFromRemote: $e $st');
+      final local = await _local.loadAll();
+      return local.where((r) => r.createdByUserId == uid).toList();
+    }
+  }
+
+  @override
   Future<void> submit(RecipeEntity recipe) async {
     final model = recipe is RecipeModel
         ? recipe
@@ -44,6 +70,14 @@ class UserRecipeRepositoryImpl implements UserRecipeRepository {
             createdByUserId: recipe.createdByUserId,
             createdAt: recipe.createdAt,
             isApproved: recipe.isApproved,
+            moderationStatus: recipe.moderationStatus,
+            visibility: recipe.visibility,
+            rejectedReason: recipe.rejectedReason,
+            updatedAt: recipe.updatedAt,
+            approvedBy: recipe.approvedBy,
+            approvedAt: recipe.approvedAt,
+            rejectedBy: recipe.rejectedBy,
+            rejectedAt: recipe.rejectedAt,
             averageRating: recipe.averageRating,
             ratingCount: recipe.ratingCount,
           );

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/bootstrap.dart';
-import '../core/go_router_refresh.dart';
 import '../data/datasources/auth_local_datasource.dart';
 import '../data/datasources/favorites_local_datasource.dart';
 import '../data/datasources/favorites_remote_datasource.dart';
@@ -20,6 +20,7 @@ import '../data/datasources/user_profile_remote_datasource.dart';
 import '../data/datasources/user_recipe_local_datasource.dart';
 import '../data/datasources/user_recipe_remote_datasource.dart';
 import '../data/datasources/viewed_recipes_local_datasource.dart';
+import '../data/repositories/admin_moderation_repository_impl.dart';
 import '../data/repositories/auth_repository_impl.dart';
 import '../data/repositories/favorites_repository_impl.dart';
 import '../data/repositories/meal_plan_repository_impl.dart';
@@ -28,9 +29,11 @@ import '../data/repositories/rating_repository_impl.dart';
 import '../data/repositories/recipe_repository_impl.dart';
 import '../data/repositories/trending_repository_impl.dart';
 import '../data/repositories/user_recipe_repository_impl.dart';
+import '../domain/entities/app_user_context.dart';
 import '../domain/entities/auth_session_entity.dart';
 import '../domain/entities/recipe_entity.dart';
 import '../domain/entities/recipe_rating_summary.dart';
+import '../domain/repositories/admin_moderation_repository.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../domain/repositories/favorites_repository.dart';
 import '../domain/repositories/meal_plan_repository.dart';
@@ -92,11 +95,44 @@ final authSessionProvider = StreamProvider<AuthSessionEntity>((ref) {
       .asyncExpand((_) => repo.watchSession());
 });
 
-final goRouterAuthRefreshProvider = Provider<GoRouterAuthRefresh>((ref) {
-  final repo = ref.watch(authRepositoryProvider);
-  final notifier = GoRouterAuthRefresh(repo.watchSession());
-  ref.onDispose(notifier.dispose);
-  return notifier;
+/// Auth session + Firestore `users/{uid}.role` (for admin UI and GoRouter).
+final appUserContextProvider = StreamProvider<AppUserContext>((ref) {
+  final auth = ref.watch(authRepositoryProvider);
+  final profile = ref.watch(userProfileRemoteDsProvider);
+  return auth.watchSession().asyncExpand((session) {
+    if (session.firebaseUid == null || !profile.isAvailable) {
+      return Stream.value(AppUserContext(session: session));
+    }
+    return profile
+        .watchRole(session.firebaseUid!)
+        .map((role) => AppUserContext(session: session, role: role));
+  });
+});
+
+class _GoRouterRefreshBridge extends ChangeNotifier {
+  _GoRouterRefreshBridge(this._ref) {
+    _sub = _ref.listen(
+      appUserContextProvider,
+      (_, __) => notifyListeners(),
+      fireImmediately: true,
+    );
+  }
+
+  final Ref _ref;
+  late final ProviderSubscription<AsyncValue<AppUserContext>> _sub;
+
+  @override
+  void dispose() {
+    _sub.close();
+    super.dispose();
+  }
+}
+
+/// Notifies GoRouter when auth or admin role changes.
+final goRouterAuthRefreshProvider = Provider<ChangeNotifier>((ref) {
+  final bridge = _GoRouterRefreshBridge(ref);
+  ref.onDispose(bridge.dispose);
+  return bridge;
 });
 
 final viewedRecipesLocalDsProvider = Provider<ViewedRecipesLocalDataSource>(
@@ -174,7 +210,33 @@ final recipeRepositoryProvider = Provider<RecipeRepository>(
     ratingRepository: ref.watch(ratingRepositoryProvider),
     favoritesRepository: ref.watch(favoritesRepositoryProvider),
     viewedRecipesLocal: ref.watch(viewedRecipesLocalDsProvider),
+    authRepository: ref.watch(authRepositoryProvider),
+    userProfileRemote: ref.watch(userProfileRemoteDsProvider),
   ),
+);
+
+final adminModerationRepositoryProvider = Provider<AdminModerationRepository>(
+  (ref) => AdminModerationRepositoryImpl(
+    firebaseAppReady ? FirebaseFirestore.instance : null,
+  ),
+);
+
+final adminRecipesByStatusProvider =
+    FutureProvider.family<List<RecipeEntity>, String>((ref, status) async {
+  final ctx = await ref.watch(appUserContextProvider.future);
+  if (!ctx.isAdmin) return const [];
+  final list =
+      await ref.read(recipeRemoteDsProvider).fetchRecipesByStatus(status);
+  return List<RecipeEntity>.from(list);
+});
+
+final mySubmittedRecipesProvider = FutureProvider<List<RecipeEntity>>(
+  (ref) async {
+    final session = await ref.watch(authSessionProvider.future);
+    final uid = session.firebaseUid;
+    if (uid == null) return const [];
+    return ref.read(userRecipeRepositoryProvider).mySubmittedFromRemote(uid);
+  },
 );
 
 final mealPlanLocalDsProvider = Provider<MealPlanLocalDataSource>(

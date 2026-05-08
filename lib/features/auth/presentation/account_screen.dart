@@ -130,6 +130,29 @@ class AccountScreen extends ConsumerWidget {
                         height: 1.45,
                       ),
                 ),
+                if (!s.firebaseIsAnonymous) ...[
+                  const SizedBox(height: 16),
+                  ListTile(
+                    leading: const Icon(Icons.outbox_rounded),
+                    title: Text(l10n.accountMySubmissions),
+                    onTap: () => context.push('/my-recipes'),
+                  ),
+                  ref.watch(appUserContextProvider).when(
+                        data: (c) {
+                          if (!c.isAdmin) {
+                            return const SizedBox.shrink();
+                          }
+                          return ListTile(
+                            leading:
+                                const Icon(Icons.admin_panel_settings_rounded),
+                            title: Text(l10n.accountAdminPanel),
+                            onTap: () => context.push('/admin'),
+                          );
+                        },
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+                ],
                 const SizedBox(height: 28),
                 LhPrimaryButton(
                   label: l10n.accountSignOut,
