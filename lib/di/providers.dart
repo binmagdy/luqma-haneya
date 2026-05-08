@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/bootstrap.dart';
+import '../core/go_router_refresh.dart';
 import '../data/datasources/auth_local_datasource.dart';
 import '../data/datasources/favorites_local_datasource.dart';
 import '../data/datasources/favorites_remote_datasource.dart';
@@ -89,6 +90,13 @@ final authSessionProvider = StreamProvider<AuthSessionEntity>((ref) {
   final repo = ref.watch(authRepositoryProvider);
   return Stream.fromFuture(repo.readSession())
       .asyncExpand((_) => repo.watchSession());
+});
+
+final goRouterAuthRefreshProvider = Provider<GoRouterAuthRefresh>((ref) {
+  final repo = ref.watch(authRepositoryProvider);
+  final notifier = GoRouterAuthRefresh(repo.watchSession());
+  ref.onDispose(notifier.dispose);
+  return notifier;
 });
 
 final viewedRecipesLocalDsProvider = Provider<ViewedRecipesLocalDataSource>(
@@ -233,8 +241,12 @@ final suggestionBundleProvider = FutureProvider<
       Map<String, RecipeRatingSummary> summaries,
     })>((ref) async {
   final prefs = await ref.read(preferencesRepositoryProvider).loadPreferences();
-  final suggestions =
-      await ref.read(recipeRepositoryProvider).suggestForToday(prefs);
+  final trendingList = await ref.watch(trendingRecipesProvider.future);
+  final trendingIds = trendingList.map((e) => e.id).toSet();
+  final suggestions = await ref.read(recipeRepositoryProvider).suggestForToday(
+        prefs,
+        trendingRecipeIds: trendingIds,
+      );
   final favorites =
       await ref.read(favoritesRepositoryProvider).favoriteRecipeIds();
   final summaries =

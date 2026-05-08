@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luqma_haneya/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,10 +15,11 @@ class RecipeSuggestionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(suggestionBundleProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('اقتراحات لي'),
+        title: Text(l10n.homeSuggestions),
       ),
       body: async.when(
         data: (bundle) {
@@ -31,12 +33,12 @@ class RecipeSuggestionScreen extends ConsumerWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, i) {
               if (i == 0) {
-                return const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: LhSectionHeader(
-                    title: 'اختاروا أكلة تناسب المود',
+                    title: l10n.homeRecommendedForYou,
                     subtitle:
-                        'مرتبة من الأنسب لتفضيلاتك ومفضلاتك وتقييماتك — حتى $kDailySuggestionDisplayLimit وصفات في الشاشة دي فقط (مش كل الكتالوج).',
+                        '${l10n.homeRecommendedSubtitle} — $kDailySuggestionDisplayLimit',
                   ),
                 );
               }

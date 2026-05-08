@@ -41,7 +41,11 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
     if (stats == null || !stats.isAvailable || auth == null) return;
     try {
       final session = await auth.readSession();
-      if (session.isGuest) return;
+      if (session.isGuest ||
+          session.firebaseIsAnonymous ||
+          !session.canPublishPublicRatings) {
+        return;
+      }
       for (final t in prefs.favoriteTags) {
         final n = ArabicTextNormalize.forMatch(t);
         if (n.length < 2) continue;

@@ -32,7 +32,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeAllRecipes => 'كل الوصفات';
 
   @override
-  String get homeSuggestions => 'اقتراحات لي';
+  String get homeSuggestions => 'اقتراحات لك';
 
   @override
   String get homePantrySearch => 'بحث بالمكونات';
@@ -62,9 +62,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeSignOut => 'خروج';
 
   @override
-  String homeTrendingTitle(String weekKey) {
-    return 'وصفات تريندي هذا الأسبوع ($weekKey)';
-  }
+  String get homeTrendingTitle => 'الوصفات الرائجة هذا الأسبوع';
 
   @override
   String get homeTrendingSeeAll => 'عرض الكل';
@@ -258,4 +256,130 @@ class AppLocalizationsAr extends AppLocalizations {
   String recipeServingsChip(int count) {
     return '$count أشخاص';
   }
+
+  @override
+  String get loginTitle => 'تسجيل الدخول';
+
+  @override
+  String get registerTitle => 'إنشاء حساب';
+
+  @override
+  String get forgotPasswordTitle => 'استعادة كلمة المرور';
+
+  @override
+  String get accountTitle => 'الحساب';
+
+  @override
+  String get loginEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get loginPasswordLabel => 'كلمة المرور';
+
+  @override
+  String get registerNameLabel => 'الاسم';
+
+  @override
+  String get registerConfirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get loginSubmit => 'تسجيل الدخول';
+
+  @override
+  String get loginGoogle => 'تسجيل الدخول بجوجل';
+
+  @override
+  String get loginRegisterCta => 'إنشاء حساب جديد';
+
+  @override
+  String get loginForgotCta => 'نسيت كلمة المرور؟';
+
+  @override
+  String get loginGuestCta => 'متابعة كضيف';
+
+  @override
+  String get forgotSubmit => 'إرسال الرابط';
+
+  @override
+  String get registerSubmit => 'إنشاء الحساب';
+
+  @override
+  String get accountSignInCta => 'تسجيل الدخول';
+
+  @override
+  String get accountRegisterCta => 'إنشاء حساب';
+
+  @override
+  String get accountSignOut => 'تسجيل الخروج';
+
+  @override
+  String get accountGuestTitle => 'أنت ضيف';
+
+  @override
+  String get accountGuestBody =>
+      'أنشئ حسابًا لمزامنة المفضلة والخطط عبر الأجهزة، ونشر الوصفات والتقييمات.';
+
+  @override
+  String get accountProviderLabel => 'طريقة الدخول';
+
+  @override
+  String get accountEmailSection => 'البريد';
+
+  @override
+  String get forgotPasswordSuccess => 'تم إرسال رابط استعادة كلمة المرور';
+
+  @override
+  String get registerSuccess => 'تم إنشاء الحساب';
+
+  @override
+  String get authValEmailRequired => 'أدخل البريد الإلكتروني';
+
+  @override
+  String get authValEmailInvalid => 'البريد الإلكتروني غير صالح';
+
+  @override
+  String get authValPasswordMin => 'كلمة المرور 6 أحرف على الأقل';
+
+  @override
+  String get authValNameRequired => 'الاسم مطلوب';
+
+  @override
+  String get authValPasswordMismatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get authErrorWrongPassword => 'كلمة المرور غير صحيحة';
+
+  @override
+  String get authErrorUserNotFound => 'الحساب غير موجود';
+
+  @override
+  String get authErrorNetwork => 'تحقق من اتصال الإنترنت';
+
+  @override
+  String get authErrorEmailInUse => 'البريد مستخدم بالفعل';
+
+  @override
+  String get authErrorWeakPassword => 'كلمة المرور ضعيفة';
+
+  @override
+  String get authErrorInvalidCredential => 'بيانات الدخول غير صحيحة';
+
+  @override
+  String authErrorGeneric(String message) {
+    return '$message';
+  }
+
+  @override
+  String get homeRecommendedForYou => 'اقتراحات لك';
+
+  @override
+  String get homeRecommendedSubtitle => 'حسب تفضيلاتك ومشاهداتك والرائج';
+
+  @override
+  String get addRecipeAuthRequired => 'سجّل الدخول لإضافة وصفة للمجتمع';
+
+  @override
+  String get addRecipeImageUrl => 'رابط صورة (اختياري)';
+
+  @override
+  String get addRecipeIngredientsMin2 => 'أضف مكونتين على الأقل في الأساسي';
 }

@@ -6,6 +6,7 @@ class AuthSessionEntity {
     this.firebaseIsAnonymous = false,
     this.displayName,
     this.email,
+    this.primaryProviderId,
   });
 
   /// Stable id from local storage (guests).
@@ -15,12 +16,16 @@ class AuthSessionEntity {
   final bool firebaseIsAnonymous;
   final String? displayName;
 
-  /// Email when linked credential (null for anonymous / guest).
+  /// Email when linked credential (null for guest-only / some OAuth edge cases).
   final String? email;
 
-  /// Firebase session active (anonymous or future Google).
+  /// Firebase `UserInfo.providerId`, e.g. `password`, `google.com`.
+  final String? primaryProviderId;
+
+  /// Firebase session active (email, Google, etc.).
   bool get isLoggedIn => firebaseUid != null;
 
+  /// Guest = no Firebase account on this device session (local-only identity).
   bool get isGuest => firebaseUid == null;
 
   /// Same id used for Firestore user paths when logged in; local device id as guest.
@@ -34,5 +39,7 @@ class AuthSessionEntity {
     return displayName ?? email ?? firebaseUid!.substring(0, 8);
   }
 
-  bool get canPublishPublicRatings => firebaseUid != null;
+  /// Public cloud ratings require a real (non-anonymous) Firebase user.
+  bool get canPublishPublicRatings =>
+      firebaseUid != null && !firebaseIsAnonymous;
 }

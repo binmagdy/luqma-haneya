@@ -26,7 +26,12 @@ class RecipeModel extends RecipeEntity {
     super.isApproved = true,
     super.averageRating,
     super.ratingCount,
+    super.imageUrl,
+    this.creatorName,
   });
+
+  /// Display name for `creatorName` in Firestore (user-submitted recipes).
+  final String? creatorName;
 
   factory RecipeModel.fromEntity(RecipeEntity e) {
     if (e is RecipeModel) return e;
@@ -51,6 +56,8 @@ class RecipeModel extends RecipeEntity {
       isApproved: e.isApproved,
       averageRating: e.averageRating,
       ratingCount: e.ratingCount,
+      imageUrl: e.imageUrl,
+      creatorName: e is RecipeModel ? e.creatorName : null,
     );
   }
 
@@ -82,11 +89,15 @@ class RecipeModel extends RecipeEntity {
       mainIngredients: main,
       optionalIngredients: optional,
       source: json['source'] as String? ?? RecipeSource.asset,
-      createdByUserId: json['createdByUserId'] as String?,
+      createdByUserId:
+          json['createdByUserId'] as String? ?? json['createdBy'] as String?,
       createdAt: _parseDate(json['createdAt']),
-      isApproved: json['isApproved'] as bool? ?? true,
+      isApproved:
+          json['isApproved'] as bool? ?? json['approved'] as bool? ?? true,
       averageRating: (json['averageRating'] as num?)?.toDouble(),
       ratingCount: (json['ratingCount'] as num?)?.toInt(),
+      imageUrl: json['imageUrl'] as String?,
+      creatorName: json['creatorName'] as String?,
     );
   }
 
@@ -117,11 +128,15 @@ class RecipeModel extends RecipeEntity {
       mainIngredients: main,
       optionalIngredients: optional,
       source: data['source'] as String? ?? RecipeSource.remote,
-      createdByUserId: data['createdByUserId'] as String?,
+      createdByUserId:
+          data['createdByUserId'] as String? ?? data['createdBy'] as String?,
       createdAt: _parseFirestoreDate(data['createdAt']),
-      isApproved: data['isApproved'] as bool? ?? true,
+      isApproved:
+          data['isApproved'] as bool? ?? data['approved'] as bool? ?? true,
       averageRating: (data['averageRating'] as num?)?.toDouble(),
       ratingCount: (data['ratingCount'] as num?)?.toInt(),
+      imageUrl: data['imageUrl'] as String?,
+      creatorName: data['creatorName'] as String?,
     );
   }
 
@@ -142,10 +157,14 @@ class RecipeModel extends RecipeEntity {
       'optionalIngredients': optionalIngredients,
       'source': source,
       if (createdByUserId != null) 'createdByUserId': createdByUserId,
+      if (createdByUserId != null) 'createdBy': createdByUserId,
+      if (creatorName != null) 'creatorName': creatorName,
       if (createdAt != null) 'createdAt': createdAt,
       'isApproved': isApproved,
+      'approved': isApproved,
       if (averageRating != null) 'averageRating': averageRating,
       if (ratingCount != null) 'ratingCount': ratingCount,
+      if (imageUrl != null && imageUrl!.isNotEmpty) 'imageUrl': imageUrl,
     };
   }
 
@@ -171,6 +190,8 @@ class RecipeModel extends RecipeEntity {
       'isApproved': isApproved,
       if (averageRating != null) 'averageRating': averageRating,
       if (ratingCount != null) 'ratingCount': ratingCount,
+      if (imageUrl != null) 'imageUrl': imageUrl,
+      if (creatorName != null) 'creatorName': creatorName,
     };
   }
 

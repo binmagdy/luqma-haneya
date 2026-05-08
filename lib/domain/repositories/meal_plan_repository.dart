@@ -29,4 +29,7 @@ abstract class MealPlanRepository {
     String slotKey,
     bool locked,
   );
+
+  /// Uploads every locally stored week to Firestore for the signed-in user.
+  Future<void> pushAllLocalWeeksToCloud();
 }

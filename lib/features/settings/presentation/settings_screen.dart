@@ -59,7 +59,7 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.person_outline_rounded),
             title: Text(l10n.settingsOpenFromAccount),
-            onTap: () => context.push('/auth'),
+            onTap: () => context.push('/account'),
           ),
         ],
       ),

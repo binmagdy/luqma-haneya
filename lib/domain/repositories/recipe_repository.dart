@@ -9,7 +9,10 @@ abstract class RecipeRepository {
 
   Future<RecipeEntity?> getRecipeById(String id);
 
-  Future<List<RecipeEntity>> suggestForToday(UserPreferencesEntity prefs);
+  Future<List<RecipeEntity>> suggestForToday(
+    UserPreferencesEntity prefs, {
+    Set<String> trendingRecipeIds = const {},
+  });
 
   Future<List<RecipeEntity>> findByPantryIngredients(
     List<String> ingredients,

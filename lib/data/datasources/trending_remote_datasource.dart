@@ -74,7 +74,18 @@ class TrendingRemoteDataSource {
         final wCnt = (m['weeklyRatingCount'] as num?)?.toInt() ?? 0;
         final avg = (m['averageRating'] as num?)?.toDouble() ?? 0;
         final cnt = (m['ratingCount'] as num?)?.toInt() ?? 0;
-        final rank = wAvg * 1e9 + wCnt * 1e6 + avg * 1e3 + cnt;
+        final fav = (m['favoritesCount'] as num?)?.toInt() ??
+            (m['favoriteCount'] as num?)?.toInt() ??
+            0;
+        final savesWk = (m['savesThisWeek'] as num?)?.toInt() ?? 0;
+        final viewsWk = (m['viewsThisWeek'] as num?)?.toInt() ?? 0;
+        final rank = wAvg * 1e9 +
+            wCnt * 1e6 +
+            avg * 1e3 +
+            cnt +
+            fav * 50 +
+            savesWk * 80 +
+            viewsWk * 12;
         if (rank <= 0) continue;
         scored.add(MapEntry(d.id, rank));
       }

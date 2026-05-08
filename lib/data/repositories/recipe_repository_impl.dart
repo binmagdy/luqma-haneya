@@ -63,7 +63,10 @@ class RecipeRepositoryImpl implements RecipeRepository {
   }
 
   Future<RecipeSuggestionContext> _suggestionContext(
-      List<RecipeModel> all) async {
+    List<RecipeModel> all, {
+    Set<String> trendingRecipeIds = const {},
+    Set<String> penalizedRecipeIds = const {},
+  }) async {
     final favIds = await _favorites.favoriteRecipeIds();
     final favRecipes = <RecipeEntity>[];
     for (final r in all) {
@@ -93,6 +96,8 @@ class RecipeRepositoryImpl implements RecipeRepository {
       favoriteRecipes: favRecipes,
       highRatedRecipes: highRated,
       recentlyViewedRecipes: recent,
+      trendingRecipeIds: trendingRecipeIds,
+      penalizedRecipeIds: penalizedRecipeIds,
     );
   }
 
@@ -110,10 +115,17 @@ class RecipeRepositoryImpl implements RecipeRepository {
 
   @override
   Future<List<RecipeEntity>> suggestForToday(
-    UserPreferencesEntity prefs,
-  ) async {
+    UserPreferencesEntity prefs, {
+    Set<String> trendingRecipeIds = const {},
+  }) async {
     final all = await _resolvedCatalog();
-    final ctx = await _suggestionContext(all);
+    final viewed = await _viewed.loadOrdered();
+    final penalized = viewed.take(6).toSet();
+    final ctx = await _suggestionContext(
+      all,
+      trendingRecipeIds: trendingRecipeIds,
+      penalizedRecipeIds: penalized,
+    );
     final ranked = <MapEntry<RecipeModel, double>>[];
 
     for (final r in all) {

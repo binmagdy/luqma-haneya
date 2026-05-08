@@ -143,7 +143,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeSuggestions.
   ///
   /// In ar, this message translates to:
-  /// **'اقتراحات لي'**
+  /// **'اقتراحات لك'**
   String get homeSuggestions;
 
   /// No description provided for @homePantrySearch.
@@ -203,8 +203,8 @@ abstract class AppLocalizations {
   /// No description provided for @homeTrendingTitle.
   ///
   /// In ar, this message translates to:
-  /// **'وصفات تريندي هذا الأسبوع ({weekKey})'**
-  String homeTrendingTitle(String weekKey);
+  /// **'الوصفات الرائجة هذا الأسبوع'**
+  String get homeTrendingTitle;
 
   /// No description provided for @homeTrendingSeeAll.
   ///
@@ -541,6 +541,252 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'{count} أشخاص'**
   String recipeServingsChip(int count);
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الدخول'**
+  String get loginTitle;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء حساب'**
+  String get registerTitle;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'استعادة كلمة المرور'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @accountTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب'**
+  String get accountTitle;
+
+  /// No description provided for @loginEmailLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد الإلكتروني'**
+  String get loginEmailLabel;
+
+  /// No description provided for @loginPasswordLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور'**
+  String get loginPasswordLabel;
+
+  /// No description provided for @registerNameLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم'**
+  String get registerNameLabel;
+
+  /// No description provided for @registerConfirmPassword.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد كلمة المرور'**
+  String get registerConfirmPassword;
+
+  /// No description provided for @loginSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الدخول'**
+  String get loginSubmit;
+
+  /// No description provided for @loginGoogle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الدخول بجوجل'**
+  String get loginGoogle;
+
+  /// No description provided for @loginRegisterCta.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء حساب جديد'**
+  String get loginRegisterCta;
+
+  /// No description provided for @loginForgotCta.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسيت كلمة المرور؟'**
+  String get loginForgotCta;
+
+  /// No description provided for @loginGuestCta.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة كضيف'**
+  String get loginGuestCta;
+
+  /// No description provided for @forgotSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الرابط'**
+  String get forgotSubmit;
+
+  /// No description provided for @registerSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء الحساب'**
+  String get registerSubmit;
+
+  /// No description provided for @accountSignInCta.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الدخول'**
+  String get accountSignInCta;
+
+  /// No description provided for @accountRegisterCta.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء حساب'**
+  String get accountRegisterCta;
+
+  /// No description provided for @accountSignOut.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الخروج'**
+  String get accountSignOut;
+
+  /// No description provided for @accountGuestTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت ضيف'**
+  String get accountGuestTitle;
+
+  /// No description provided for @accountGuestBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنشئ حسابًا لمزامنة المفضلة والخطط عبر الأجهزة، ونشر الوصفات والتقييمات.'**
+  String get accountGuestBody;
+
+  /// No description provided for @accountProviderLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'طريقة الدخول'**
+  String get accountProviderLabel;
+
+  /// No description provided for @accountEmailSection.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد'**
+  String get accountEmailSection;
+
+  /// No description provided for @forgotPasswordSuccess.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال رابط استعادة كلمة المرور'**
+  String get forgotPasswordSuccess;
+
+  /// No description provided for @registerSuccess.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إنشاء الحساب'**
+  String get registerSuccess;
+
+  /// No description provided for @authValEmailRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل البريد الإلكتروني'**
+  String get authValEmailRequired;
+
+  /// No description provided for @authValEmailInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد الإلكتروني غير صالح'**
+  String get authValEmailInvalid;
+
+  /// No description provided for @authValPasswordMin.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور 6 أحرف على الأقل'**
+  String get authValPasswordMin;
+
+  /// No description provided for @authValNameRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم مطلوب'**
+  String get authValNameRequired;
+
+  /// No description provided for @authValPasswordMismatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمتا المرور غير متطابقتين'**
+  String get authValPasswordMismatch;
+
+  /// No description provided for @authErrorWrongPassword.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور غير صحيحة'**
+  String get authErrorWrongPassword;
+
+  /// No description provided for @authErrorUserNotFound.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب غير موجود'**
+  String get authErrorUserNotFound;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق من اتصال الإنترنت'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorEmailInUse.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد مستخدم بالفعل'**
+  String get authErrorEmailInUse;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور ضعيفة'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorInvalidCredential.
+  ///
+  /// In ar, this message translates to:
+  /// **'بيانات الدخول غير صحيحة'**
+  String get authErrorInvalidCredential;
+
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In ar, this message translates to:
+  /// **'{message}'**
+  String authErrorGeneric(String message);
+
+  /// No description provided for @homeRecommendedForYou.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقتراحات لك'**
+  String get homeRecommendedForYou;
+
+  /// No description provided for @homeRecommendedSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسب تفضيلاتك ومشاهداتك والرائج'**
+  String get homeRecommendedSubtitle;
+
+  /// No description provided for @addRecipeAuthRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجّل الدخول لإضافة وصفة للمجتمع'**
+  String get addRecipeAuthRequired;
+
+  /// No description provided for @addRecipeImageUrl.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط صورة (اختياري)'**
+  String get addRecipeImageUrl;
+
+  /// No description provided for @addRecipeIngredientsMin2.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف مكونتين على الأقل في الأساسي'**
+  String get addRecipeIngredientsMin2;
 }
 
 class _AppLocalizationsDelegate

@@ -12,12 +12,20 @@ class RecipeSuggestionContext {
     this.favoriteRecipes = const [],
     this.highRatedRecipes = const [],
     this.recentlyViewedRecipes = const [],
+    this.trendingRecipeIds = const {},
+    this.penalizedRecipeIds = const {},
   });
 
   final Set<String> favoriteRecipeIds;
   final List<RecipeEntity> favoriteRecipes;
   final List<RecipeEntity> highRatedRecipes;
   final List<RecipeEntity> recentlyViewedRecipes;
+
+  /// Cloud/local trending ids for this week (best-effort).
+  final Set<String> trendingRecipeIds;
+
+  /// Down-rank recently shown suggestions to reduce repetition.
+  final Set<String> penalizedRecipeIds;
 
   static const RecipeSuggestionContext empty = RecipeSuggestionContext();
 }
@@ -56,6 +64,8 @@ class RecipeScoringService {
   static const int _highRatedSimilarTagCap = 18;
   static const double _recentViewMealOrCuisineBoost = 4;
   static const int _recentViewBoostCap = 12;
+  static const double _trendingBoost = 12;
+  static const double _repeatSuggestionPenalty = 18;
 
   static const List<String> _meatHints = [
     'لحم',
@@ -206,6 +216,13 @@ class RecipeScoringService {
     );
 
     score += _recentViewAffinity(recipe, ctx.recentlyViewedRecipes);
+
+    if (ctx.trendingRecipeIds.contains(recipe.id)) {
+      score += _trendingBoost;
+    }
+    if (ctx.penalizedRecipeIds.contains(recipe.id)) {
+      score -= _repeatSuggestionPenalty;
+    }
 
     return score;
   }

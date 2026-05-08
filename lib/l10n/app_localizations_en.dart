@@ -63,9 +63,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSignOut => 'Sign out';
 
   @override
-  String homeTrendingTitle(String weekKey) {
-    return 'Trending recipes this week ($weekKey)';
-  }
+  String get homeTrendingTitle => 'Trending recipes this week';
 
   @override
   String get homeTrendingSeeAll => 'See all';
@@ -260,4 +258,131 @@ class AppLocalizationsEn extends AppLocalizations {
   String recipeServingsChip(int count) {
     return '$count servings';
   }
+
+  @override
+  String get loginTitle => 'Sign in';
+
+  @override
+  String get registerTitle => 'Create account';
+
+  @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get accountTitle => 'Account';
+
+  @override
+  String get loginEmailLabel => 'Email';
+
+  @override
+  String get loginPasswordLabel => 'Password';
+
+  @override
+  String get registerNameLabel => 'Name';
+
+  @override
+  String get registerConfirmPassword => 'Confirm password';
+
+  @override
+  String get loginSubmit => 'Sign in';
+
+  @override
+  String get loginGoogle => 'Sign in with Google';
+
+  @override
+  String get loginRegisterCta => 'Create new account';
+
+  @override
+  String get loginForgotCta => 'Forgot password?';
+
+  @override
+  String get loginGuestCta => 'Continue as guest';
+
+  @override
+  String get forgotSubmit => 'Send reset link';
+
+  @override
+  String get registerSubmit => 'Create account';
+
+  @override
+  String get accountSignInCta => 'Sign in';
+
+  @override
+  String get accountRegisterCta => 'Create account';
+
+  @override
+  String get accountSignOut => 'Sign out';
+
+  @override
+  String get accountGuestTitle => 'Guest mode';
+
+  @override
+  String get accountGuestBody =>
+      'Create an account to sync favorites and plans, publish recipes, and post public ratings.';
+
+  @override
+  String get accountProviderLabel => 'Sign-in method';
+
+  @override
+  String get accountEmailSection => 'Email';
+
+  @override
+  String get forgotPasswordSuccess => 'Password reset link sent';
+
+  @override
+  String get registerSuccess => 'Account created';
+
+  @override
+  String get authValEmailRequired => 'Email is required';
+
+  @override
+  String get authValEmailInvalid => 'Invalid email address';
+
+  @override
+  String get authValPasswordMin => 'Password must be at least 6 characters';
+
+  @override
+  String get authValNameRequired => 'Name is required';
+
+  @override
+  String get authValPasswordMismatch => 'Passwords do not match';
+
+  @override
+  String get authErrorWrongPassword => 'Incorrect password';
+
+  @override
+  String get authErrorUserNotFound => 'Account not found';
+
+  @override
+  String get authErrorNetwork => 'Check your internet connection';
+
+  @override
+  String get authErrorEmailInUse => 'Email is already in use';
+
+  @override
+  String get authErrorWeakPassword => 'Password is too weak';
+
+  @override
+  String get authErrorInvalidCredential => 'Invalid sign-in credentials';
+
+  @override
+  String authErrorGeneric(String message) {
+    return '$message';
+  }
+
+  @override
+  String get homeRecommendedForYou => 'Suggestions for you';
+
+  @override
+  String get homeRecommendedSubtitle =>
+      'Based on your tastes, history, and what is trending';
+
+  @override
+  String get addRecipeAuthRequired => 'Sign in to publish a recipe';
+
+  @override
+  String get addRecipeImageUrl => 'Image URL (optional)';
+
+  @override
+  String get addRecipeIngredientsMin2 => 'Add at least two main ingredients';
 }

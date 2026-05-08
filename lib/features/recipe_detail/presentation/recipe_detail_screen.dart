@@ -109,7 +109,7 @@ class _RecipeBody extends ConsumerStatefulWidget {
   ConsumerState<_RecipeBody> createState() => _RecipeBodyState();
 }
 
-enum _GuestRatingChoice { cancel, localOnly, login }
+enum _GuestRatingChoice { cancel, login }
 
 class _RecipeBodyState extends ConsumerState<_RecipeBody> {
   int? _draftStars;
@@ -133,10 +133,6 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
               onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.cancel),
               child: Text(l10n.ratingCancel),
             ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.localOnly),
-              child: Text(l10n.ratingLocalOnly),
-            ),
             FilledButton(
               onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.login),
               child: Text(l10n.ratingLogin),
@@ -147,11 +143,8 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
       if (!mounted) return;
       switch (choice) {
         case _GuestRatingChoice.login:
-          context.push('/auth');
+          context.push('/login');
           return;
-        case _GuestRatingChoice.localOnly:
-          publishPublic = false;
-          break;
         case _GuestRatingChoice.cancel:
         case null:
           return;

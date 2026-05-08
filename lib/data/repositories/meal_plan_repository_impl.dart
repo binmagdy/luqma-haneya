@@ -180,4 +180,29 @@ class MealPlanRepositoryImpl implements MealPlanRepository {
     );
     await _persist(weekKey, next);
   }
+
+  @override
+  Future<void> pushAllLocalWeeksToCloud() async {
+    final uid = await _firebaseUid();
+    if (uid == null || !_remote.isAvailable) return;
+    final weeks = await _local.listStoredWeekKeys();
+    for (final weekKey in weeks) {
+      final local = await _local.load(weekKey);
+      if (local.isEmpty) continue;
+      try {
+        await _remote.upsert(uid, weekKey, local);
+        await _remote.upsertMealPlanV2(
+          userId: uid,
+          weekKey: weekKey,
+          assignments: local,
+        );
+      } catch (e, st) {
+        if (kDebugMode) {
+          debugPrint(
+            'MealPlanRepositoryImpl.pushAllLocalWeeksToCloud week=$weekKey $e $st',
+          );
+        }
+      }
+    }
+  }
 }

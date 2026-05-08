@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/arabic_text_normalize.dart';
 import '../../../core/recipe_labels_ar.dart';
 import '../../../core/recipe_rating_resolve.dart';
 import '../../../core/widgets/lh_recipe_tile.dart';
@@ -50,7 +51,17 @@ class _AllRecipesScreenState extends ConsumerState<AllRecipesScreen> {
       ...r.mainIngredients,
       ...r.optionalIngredients,
     ].join(' '));
-    return blob.contains(nq);
+    if (blob.contains(nq)) return true;
+    if (ArabicTextNormalize.fuzzyContains(blob, nq)) return true;
+    for (final line in [...r.mainIngredients, ...r.optionalIngredients]) {
+      final nl = RecipeScoringService.normalize(line);
+      if (ArabicTextNormalize.fuzzyContains(nl, nq)) return true;
+    }
+    for (final t in r.tags) {
+      final nt = RecipeScoringService.normalize(t);
+      if (ArabicTextNormalize.fuzzyContains(nt, nq)) return true;
+    }
+    return false;
   }
 
   bool _passesFilters(RecipeEntity r) {

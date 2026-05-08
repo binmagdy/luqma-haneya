@@ -23,6 +23,7 @@ class RecipeEntity {
     this.isApproved = true,
     this.averageRating,
     this.ratingCount,
+    this.imageUrl,
   });
 
   final String id;
@@ -66,6 +67,9 @@ class RecipeEntity {
 
   /// Denormalized count from Firestore recipe doc when present.
   final int? ratingCount;
+
+  /// Optional cover image (user recipes / remote).
+  final String? imageUrl;
 
   /// All ingredient lines (main then optional) for lists and legacy call sites.
   List<String> get ingredients => [...mainIngredients, ...optionalIngredients];

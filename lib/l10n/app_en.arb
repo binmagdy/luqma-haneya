@@ -17,7 +17,7 @@
   "homeGuestAccount": "Sign-in is optional — you are browsing as a guest",
   "homeLogin": "Sign in",
   "homeSignOut": "Sign out",
-  "homeTrendingTitle": "Trending recipes this week ({weekKey})",
+  "homeTrendingTitle": "Trending recipes this week",
   "homeTrendingSeeAll": "See all",
   "homeTrendingEmpty": "No cloud trending data right now.",
   "homeTrendingError": "Trending: {error}",
@@ -87,5 +87,53 @@
         "type": "int"
       }
     }
-  }
+  },
+  "loginTitle": "Sign in",
+  "registerTitle": "Create account",
+  "forgotPasswordTitle": "Reset password",
+  "accountTitle": "Account",
+  "loginEmailLabel": "Email",
+  "loginPasswordLabel": "Password",
+  "registerNameLabel": "Name",
+  "registerConfirmPassword": "Confirm password",
+  "loginSubmit": "Sign in",
+  "loginGoogle": "Sign in with Google",
+  "loginRegisterCta": "Create new account",
+  "loginForgotCta": "Forgot password?",
+  "loginGuestCta": "Continue as guest",
+  "forgotSubmit": "Send reset link",
+  "registerSubmit": "Create account",
+  "accountSignInCta": "Sign in",
+  "accountRegisterCta": "Create account",
+  "accountSignOut": "Sign out",
+  "accountGuestTitle": "Guest mode",
+  "accountGuestBody": "Create an account to sync favorites and plans, publish recipes, and post public ratings.",
+  "accountProviderLabel": "Sign-in method",
+  "accountEmailSection": "Email",
+  "forgotPasswordSuccess": "Password reset link sent",
+  "registerSuccess": "Account created",
+  "authValEmailRequired": "Email is required",
+  "authValEmailInvalid": "Invalid email address",
+  "authValPasswordMin": "Password must be at least 6 characters",
+  "authValNameRequired": "Name is required",
+  "authValPasswordMismatch": "Passwords do not match",
+  "authErrorWrongPassword": "Incorrect password",
+  "authErrorUserNotFound": "Account not found",
+  "authErrorNetwork": "Check your internet connection",
+  "authErrorEmailInUse": "Email is already in use",
+  "authErrorWeakPassword": "Password is too weak",
+  "authErrorInvalidCredential": "Invalid sign-in credentials",
+  "authErrorGeneric": "{message}",
+  "@authErrorGeneric": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "homeRecommendedForYou": "Suggestions for you",
+  "homeRecommendedSubtitle": "Based on your tastes, history, and what is trending",
+  "addRecipeAuthRequired": "Sign in to publish a recipe",
+  "addRecipeImageUrl": "Image URL (optional)",
+  "addRecipeIngredientsMin2": "Add at least two main ingredients"
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luqma_haneya/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
@@ -34,6 +35,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   final _steps = TextEditingController();
   final _tags = TextEditingController();
   final _cuisine = TextEditingController(text: 'egyptian');
+  final _imageUrl = TextEditingController();
 
   String _meal = RecipeMealType.any;
   String _difficulty = RecipeDifficulty.easy;
@@ -52,6 +54,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
     _steps.dispose();
     _tags.dispose();
     _cuisine.dispose();
+    _imageUrl.dispose();
     super.dispose();
   }
 
@@ -64,17 +67,29 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   }
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final session = await ref.read(authSessionProvider.future);
+    if (!mounted) return;
+    if (session.isGuest || !session.canPublishPublicRatings) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.addRecipeAuthRequired)),
+      );
+      context.push('/login');
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final id = const Uuid().v4();
-      final userId =
-          await ref.read(userIdentityDsProvider).getOrCreateDeviceId();
+      final uid = session.firebaseUid!;
       final now = DateTime.now();
       final main = _lines(_mainIng.text);
       final opt = _lines(_optIng.text);
       final steps = _lines(_steps.text);
       final tags = _lines(_tags.text);
+      final img = _imageUrl.text.trim();
 
       final recipe = RecipeModel(
         id: id,
@@ -92,10 +107,11 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
         mainIngredients: main,
         optionalIngredients: opt,
         source: RecipeSource.user,
-        createdByUserId: userId,
+        createdByUserId: uid,
         createdAt: now,
-        // MVP: show immediately; production should default false + moderation.
         isApproved: true,
+        imageUrl: img.isEmpty ? null : img,
+        creatorName: session.resolvedDisplayName ?? session.email,
       );
 
       await ref.read(userRecipeRepositoryProvider).submit(recipe);
@@ -118,6 +134,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(title: const Text('إضافة وصفة')),
       body: Form(
@@ -283,7 +300,8 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
               ),
               validator: (v) {
                 final lines = _lines(v ?? '');
-                return lines.isEmpty ? 'أضيفي مكونة واحدة على الأقل' : null;
+                if (lines.length < 2) return l10n.addRecipeIngredientsMin2;
+                return null;
               },
             ),
             TextFormField(
@@ -312,6 +330,11 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
               decoration: const InputDecoration(
                 labelText: 'وسوم (اختياري، مفصولة بفاصلة)',
               ),
+            ),
+            TextFormField(
+              controller: _imageUrl,
+              textDirection: TextDirection.ltr,
+              decoration: InputDecoration(labelText: l10n.addRecipeImageUrl),
             ),
             const SizedBox(height: 20),
             LhPrimaryButton(

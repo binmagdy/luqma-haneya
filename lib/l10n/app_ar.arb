@@ -7,7 +7,7 @@
   "homeSubtitle": "تصفحي كل الوصفات، خذي اقتراحات ذكية، دوري بالمكونات، خطّطي الأسبوع، أو ضيفي وصفتك.",
   "homeFirebaseBanner": "وضع تجريبي: شغّل Firebase (flutterfire configure) عشان تتزامن خطط الوجبات والمفضلة والتقييمات مع السحابة.",
   "homeAllRecipes": "كل الوصفات",
-  "homeSuggestions": "اقتراحات لي",
+  "homeSuggestions": "اقتراحات لك",
   "homePantrySearch": "بحث بالمكونات",
   "homeSmartMealPlan": "الخطة الأسبوعية الذكية",
   "homeManualMealPlan": "تعديل الخطة يدوياً",
@@ -17,14 +17,7 @@
   "homeGuestAccount": "تسجيل الدخول اختياري — أنتِ ضيفة على الجهاز",
   "homeLogin": "دخول",
   "homeSignOut": "خروج",
-  "homeTrendingTitle": "وصفات تريندي هذا الأسبوع ({weekKey})",
-  "@homeTrendingTitle": {
-    "placeholders": {
-      "weekKey": {
-        "type": "String"
-      }
-    }
-  },
+  "homeTrendingTitle": "الوصفات الرائجة هذا الأسبوع",
   "homeTrendingSeeAll": "عرض الكل",
   "homeTrendingEmpty": "لا يوجد تريندي من السحابة حاليًا.",
   "homeTrendingError": "تريندي: {error}",
@@ -143,5 +136,53 @@
         "type": "int"
       }
     }
-  }
+  },
+  "loginTitle": "تسجيل الدخول",
+  "registerTitle": "إنشاء حساب",
+  "forgotPasswordTitle": "استعادة كلمة المرور",
+  "accountTitle": "الحساب",
+  "loginEmailLabel": "البريد الإلكتروني",
+  "loginPasswordLabel": "كلمة المرور",
+  "registerNameLabel": "الاسم",
+  "registerConfirmPassword": "تأكيد كلمة المرور",
+  "loginSubmit": "تسجيل الدخول",
+  "loginGoogle": "تسجيل الدخول بجوجل",
+  "loginRegisterCta": "إنشاء حساب جديد",
+  "loginForgotCta": "نسيت كلمة المرور؟",
+  "loginGuestCta": "متابعة كضيف",
+  "forgotSubmit": "إرسال الرابط",
+  "registerSubmit": "إنشاء الحساب",
+  "accountSignInCta": "تسجيل الدخول",
+  "accountRegisterCta": "إنشاء حساب",
+  "accountSignOut": "تسجيل الخروج",
+  "accountGuestTitle": "أنت ضيف",
+  "accountGuestBody": "أنشئ حسابًا لمزامنة المفضلة والخطط عبر الأجهزة، ونشر الوصفات والتقييمات.",
+  "accountProviderLabel": "طريقة الدخول",
+  "accountEmailSection": "البريد",
+  "forgotPasswordSuccess": "تم إرسال رابط استعادة كلمة المرور",
+  "registerSuccess": "تم إنشاء الحساب",
+  "authValEmailRequired": "أدخل البريد الإلكتروني",
+  "authValEmailInvalid": "البريد الإلكتروني غير صالح",
+  "authValPasswordMin": "كلمة المرور 6 أحرف على الأقل",
+  "authValNameRequired": "الاسم مطلوب",
+  "authValPasswordMismatch": "كلمتا المرور غير متطابقتين",
+  "authErrorWrongPassword": "كلمة المرور غير صحيحة",
+  "authErrorUserNotFound": "الحساب غير موجود",
+  "authErrorNetwork": "تحقق من اتصال الإنترنت",
+  "authErrorEmailInUse": "البريد مستخدم بالفعل",
+  "authErrorWeakPassword": "كلمة المرور ضعيفة",
+  "authErrorInvalidCredential": "بيانات الدخول غير صحيحة",
+  "authErrorGeneric": "{message}",
+  "@authErrorGeneric": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "homeRecommendedForYou": "اقتراحات لك",
+  "homeRecommendedSubtitle": "حسب تفضيلاتك ومشاهداتك والرائج",
+  "addRecipeAuthRequired": "سجّل الدخول لإضافة وصفة للمجتمع",
+  "addRecipeImageUrl": "رابط صورة (اختياري)",
+  "addRecipeIngredientsMin2": "أضف مكونتين على الأقل في الأساسي"
 }

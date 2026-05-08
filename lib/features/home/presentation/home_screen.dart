@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/recipe_rating_resolve.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/utils/week_calendar.dart';
 import '../../../core/widgets/lh_primary_button.dart';
 import '../../../core/widgets/lh_recipe_tile.dart';
 import '../../../di/providers.dart';
@@ -61,6 +60,8 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               const _HomeTrendingSection(),
+              const SizedBox(height: 20),
+              const _HomeRecommendedSection(),
               const SizedBox(height: 20),
               const _HomePopularPrefsSection(),
               const SizedBox(height: 12),
@@ -200,7 +201,7 @@ class _HomeAccountStrip extends ConsumerWidget {
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(14),
-            onTap: () => context.push('/auth'),
+            onTap: () => context.push('/account'),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: AppColors.cream.withValues(alpha: 0.65),
@@ -234,7 +235,7 @@ class _HomeAccountStrip extends ConsumerWidget {
                     ),
                     if (s.isGuest)
                       TextButton(
-                        onPressed: () => context.push('/auth'),
+                        onPressed: () => context.push('/account'),
                         child: Text(l10n.homeAccountEntry),
                       )
                     else
@@ -295,7 +296,6 @@ class _HomeTrendingSection extends ConsumerWidget {
                   );
                 }
                 final slice = list.length > 12 ? list.sublist(0, 12) : list;
-                final wk = isoWeekKey(DateTime.now());
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -304,7 +304,7 @@ class _HomeTrendingSection extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            l10n.homeTrendingTitle(wk),
+                            l10n.homeTrendingTitle,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -406,6 +406,86 @@ class _HomePopularPrefsSection extends ConsumerWidget {
                     ),
                 ],
               ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _HomeRecommendedSection extends ConsumerWidget {
+  const _HomeRecommendedSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bundle = ref.watch(suggestionBundleProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    return bundle.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (b) {
+        if (b.suggestions.isEmpty) return const SizedBox.shrink();
+        final slice = b.suggestions.length > 6
+            ? b.suggestions.sublist(0, 6)
+            : b.suggestions;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              textDirection: TextDirection.rtl,
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.homeRecommendedForYou,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => context.push('/suggest'),
+                  child: Text(l10n.homeTrendingSeeAll),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.homeRecommendedSubtitle,
+              textAlign: TextAlign.right,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.inkMuted,
+                    height: 1.4,
+                  ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 200,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: slice.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, i) {
+                  final r = slice[i];
+                  return SizedBox(
+                    width: 280,
+                    child: LhRecipeTile(
+                      recipe: r,
+                      ratingSummary: resolveRatingDisplay(r, b.summaries),
+                      isFavorite: b.favorites.contains(r.id),
+                      onFavoriteTap: () async {
+                        await ref
+                            .read(favoritesRepositoryProvider)
+                            .setFavorite(r.id, !b.favorites.contains(r.id));
+                        ref.invalidate(favoriteIdsProvider);
+                        ref.invalidate(suggestionBundleProvider);
+                      },
+                      onTap: () => context.push('/recipe/${r.id}'),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         );
       },

@@ -1,9 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../di/providers.dart';
 import '../../features/add_recipe/presentation/add_recipe_screen.dart';
-import '../../features/auth/presentation/auth_screen.dart';
+import '../../features/auth/presentation/account_screen.dart';
+import '../../features/auth/presentation/forgot_password_screen.dart';
+import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/register_screen.dart';
 import '../../features/browse/presentation/all_recipes_screen.dart';
 import '../../features/favorites/presentation/favorites_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -16,13 +21,29 @@ import '../../features/recipe_detail/presentation/recipe_detail_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/suggestion/presentation/recipe_suggestion_screen.dart';
+import '../bootstrap.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
+  final refresh = ref.watch(goRouterAuthRefreshProvider);
+
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/splash',
+    refreshListenable: refresh,
+    redirect: (context, state) {
+      if (!firebaseAppReady) return null;
+      final loc = state.matchedLocation;
+      if (loc == '/auth') return '/account';
+      final onLoginFlow =
+          loc == '/login' || loc == '/register' || loc == '/forgot-password';
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null && onLoginFlow) {
+        return '/home';
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/splash',
@@ -76,8 +97,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const TrendingScreen(),
       ),
       GoRoute(
-        path: '/auth',
-        builder: (context, state) => const AuthScreen(),
+        path: '/account',
+        builder: (context, state) => const AccountScreen(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
       ),
       GoRoute(
         path: '/settings',
