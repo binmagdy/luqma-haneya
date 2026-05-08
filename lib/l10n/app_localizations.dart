@@ -428,6 +428,12 @@ abstract class AppLocalizations {
   /// **'الوصفة مش متاحة'**
   String get recipeNotAvailable;
 
+  /// No description provided for @recipeContentLoadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحميل بيانات الوصفة'**
+  String get recipeContentLoadFailed;
+
   /// No description provided for @recipeError.
   ///
   /// In ar, this message translates to:
@@ -787,6 +793,204 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أضف مكونتين على الأقل في الأساسي'**
   String get addRecipeIngredientsMin2;
+
+  /// No description provided for @addRecipeTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة وصفة'**
+  String get addRecipeTitle;
+
+  /// No description provided for @addRecipeEditTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل وصفة'**
+  String get addRecipeEditTitle;
+
+  /// No description provided for @addRecipeSubmittedPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال الوصفة للمراجعة'**
+  String get addRecipeSubmittedPending;
+
+  /// No description provided for @addRecipeUpdated.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تحديث الوصفة'**
+  String get addRecipeUpdated;
+
+  /// No description provided for @accountAdminPanel.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة التحكم'**
+  String get accountAdminPanel;
+
+  /// No description provided for @accountMySubmissions.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصفاتي المرسلة'**
+  String get accountMySubmissions;
+
+  /// No description provided for @adminDashboardTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة التحكم'**
+  String get adminDashboardTitle;
+
+  /// No description provided for @adminSectionPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المراجعة'**
+  String get adminSectionPending;
+
+  /// No description provided for @adminSectionApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقبولة'**
+  String get adminSectionApproved;
+
+  /// No description provided for @adminSectionRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرفوضة'**
+  String get adminSectionRejected;
+
+  /// No description provided for @adminSectionStats.
+  ///
+  /// In ar, this message translates to:
+  /// **'إحصائيات التطبيق'**
+  String get adminSectionStats;
+
+  /// No description provided for @adminReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراجعة'**
+  String get adminReview;
+
+  /// No description provided for @adminApprove.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبول'**
+  String get adminApprove;
+
+  /// No description provided for @adminReject.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض'**
+  String get adminReject;
+
+  /// No description provided for @adminEdit.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل'**
+  String get adminEdit;
+
+  /// No description provided for @adminDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف'**
+  String get adminDelete;
+
+  /// No description provided for @adminHide.
+  ///
+  /// In ar, this message translates to:
+  /// **'إخفاء عن العامة'**
+  String get adminHide;
+
+  /// No description provided for @adminRejectTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب الرفض'**
+  String get adminRejectTitle;
+
+  /// No description provided for @adminRejectHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتبي سبب الرفض للمستخدمة'**
+  String get adminRejectHint;
+
+  /// No description provided for @adminStatsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إحصائيات'**
+  String get adminStatsTitle;
+
+  /// No description provided for @adminStatsUsers.
+  ///
+  /// In ar, this message translates to:
+  /// **'المستخدمون'**
+  String get adminStatsUsers;
+
+  /// No description provided for @adminStatsRecipes.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوصفات'**
+  String get adminStatsRecipes;
+
+  /// No description provided for @adminStatsPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المراجعة'**
+  String get adminStatsPending;
+
+  /// No description provided for @adminStatsApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقبولة'**
+  String get adminStatsApproved;
+
+  /// No description provided for @adminStatsRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرفوضة'**
+  String get adminStatsRejected;
+
+  /// No description provided for @adminStatsRatingsNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد التقييمات التفصيلي يحتاج فهرسة إضافية (TODO).'**
+  String get adminStatsRatingsNote;
+
+  /// No description provided for @adminStatsTopRatedTodo.
+  ///
+  /// In ar, this message translates to:
+  /// **'أعلى التقييم: TODO — تجميع سحابي'**
+  String get adminStatsTopRatedTodo;
+
+  /// No description provided for @adminStatsFavoritesTodo.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأكثر مفضلة: TODO — تجميع من users.favoriteRecipeIds'**
+  String get adminStatsFavoritesTodo;
+
+  /// No description provided for @mySubmittedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصفاتي المرسلة'**
+  String get mySubmittedTitle;
+
+  /// No description provided for @recipeStatusPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المراجعة'**
+  String get recipeStatusPending;
+
+  /// No description provided for @recipeStatusApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقبولة'**
+  String get recipeStatusApproved;
+
+  /// No description provided for @recipeStatusRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرفوضة'**
+  String get recipeStatusRejected;
+
+  /// No description provided for @recipeRejectedReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب الرفض: {reason}'**
+  String recipeRejectedReason(String reason);
 }
 
 class _AppLocalizationsDelegate

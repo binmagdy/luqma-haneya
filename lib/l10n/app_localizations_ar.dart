@@ -193,6 +193,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recipeNotAvailable => 'الوصفة مش متاحة';
 
   @override
+  String get recipeContentLoadFailed => 'تعذر تحميل بيانات الوصفة';
+
+  @override
   String recipeError(String error) {
     return 'خطأ: $error';
   }
@@ -382,4 +385,107 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addRecipeIngredientsMin2 => 'أضف مكونتين على الأقل في الأساسي';
+
+  @override
+  String get addRecipeTitle => 'إضافة وصفة';
+
+  @override
+  String get addRecipeEditTitle => 'تعديل وصفة';
+
+  @override
+  String get addRecipeSubmittedPending => 'تم إرسال الوصفة للمراجعة';
+
+  @override
+  String get addRecipeUpdated => 'تم تحديث الوصفة';
+
+  @override
+  String get accountAdminPanel => 'لوحة التحكم';
+
+  @override
+  String get accountMySubmissions => 'وصفاتي المرسلة';
+
+  @override
+  String get adminDashboardTitle => 'لوحة التحكم';
+
+  @override
+  String get adminSectionPending => 'قيد المراجعة';
+
+  @override
+  String get adminSectionApproved => 'مقبولة';
+
+  @override
+  String get adminSectionRejected => 'مرفوضة';
+
+  @override
+  String get adminSectionStats => 'إحصائيات التطبيق';
+
+  @override
+  String get adminReview => 'مراجعة';
+
+  @override
+  String get adminApprove => 'قبول';
+
+  @override
+  String get adminReject => 'رفض';
+
+  @override
+  String get adminEdit => 'تعديل';
+
+  @override
+  String get adminDelete => 'حذف';
+
+  @override
+  String get adminHide => 'إخفاء عن العامة';
+
+  @override
+  String get adminRejectTitle => 'سبب الرفض';
+
+  @override
+  String get adminRejectHint => 'اكتبي سبب الرفض للمستخدمة';
+
+  @override
+  String get adminStatsTitle => 'إحصائيات';
+
+  @override
+  String get adminStatsUsers => 'المستخدمون';
+
+  @override
+  String get adminStatsRecipes => 'الوصفات';
+
+  @override
+  String get adminStatsPending => 'قيد المراجعة';
+
+  @override
+  String get adminStatsApproved => 'مقبولة';
+
+  @override
+  String get adminStatsRejected => 'مرفوضة';
+
+  @override
+  String get adminStatsRatingsNote =>
+      'عدد التقييمات التفصيلي يحتاج فهرسة إضافية (TODO).';
+
+  @override
+  String get adminStatsTopRatedTodo => 'أعلى التقييم: TODO — تجميع سحابي';
+
+  @override
+  String get adminStatsFavoritesTodo =>
+      'الأكثر مفضلة: TODO — تجميع من users.favoriteRecipeIds';
+
+  @override
+  String get mySubmittedTitle => 'وصفاتي المرسلة';
+
+  @override
+  String get recipeStatusPending => 'قيد المراجعة';
+
+  @override
+  String get recipeStatusApproved => 'مقبولة';
+
+  @override
+  String get recipeStatusRejected => 'مرفوضة';
+
+  @override
+  String recipeRejectedReason(String reason) {
+    return 'سبب الرفض: $reason';
+  }
 }

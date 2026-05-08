@@ -1,1 +1,37 @@
-{"firestore":{"rules":"firestore.rules"},"flutter":{"platforms":{"android":{"default":{"projectId":"luqma-haneya","appId":"1:602200012109:android:4b1fd31ffd21cf989c7304","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"luqma-haneya","appId":"1:602200012109:ios:af7adc67d9fef7149c7304","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"luqma-haneya","configurations":{"android":"1:602200012109:android:4b1fd31ffd21cf989c7304","ios":"1:602200012109:ios:af7adc67d9fef7149c7304","web":"1:602200012109:web:188b5773224df1759c7304"}}}}}}
+{
+  "firestore": {
+    "database": "(default)",
+    "location": "nam5",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "luqma-haneya",
+          "appId": "1:602200012109:android:4b1fd31ffd21cf989c7304",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "luqma-haneya",
+          "appId": "1:602200012109:ios:af7adc67d9fef7149c7304",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "luqma-haneya",
+          "configurations": {
+            "android": "1:602200012109:android:4b1fd31ffd21cf989c7304",
+            "ios": "1:602200012109:ios:af7adc67d9fef7149c7304",
+            "web": "1:602200012109:web:188b5773224df1759c7304"
+          }
+        }
+      }
+    }
+  }
+}

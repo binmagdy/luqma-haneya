@@ -194,6 +194,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recipeNotAvailable => 'Recipe not available';
 
   @override
+  String get recipeContentLoadFailed => 'Could not load recipe details';
+
+  @override
   String recipeError(String error) {
     return 'Error: $error';
   }
@@ -385,4 +388,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addRecipeIngredientsMin2 => 'Add at least two main ingredients';
+
+  @override
+  String get addRecipeTitle => 'Add recipe';
+
+  @override
+  String get addRecipeEditTitle => 'Edit recipe';
+
+  @override
+  String get addRecipeSubmittedPending => 'Recipe submitted for review';
+
+  @override
+  String get addRecipeUpdated => 'Recipe updated';
+
+  @override
+  String get accountAdminPanel => 'Admin dashboard';
+
+  @override
+  String get accountMySubmissions => 'My submitted recipes';
+
+  @override
+  String get adminDashboardTitle => 'Admin dashboard';
+
+  @override
+  String get adminSectionPending => 'Pending';
+
+  @override
+  String get adminSectionApproved => 'Approved';
+
+  @override
+  String get adminSectionRejected => 'Rejected';
+
+  @override
+  String get adminSectionStats => 'App statistics';
+
+  @override
+  String get adminReview => 'Review';
+
+  @override
+  String get adminApprove => 'Approve';
+
+  @override
+  String get adminReject => 'Reject';
+
+  @override
+  String get adminEdit => 'Edit';
+
+  @override
+  String get adminDelete => 'Delete';
+
+  @override
+  String get adminHide => 'Hide from public';
+
+  @override
+  String get adminRejectTitle => 'Rejection reason';
+
+  @override
+  String get adminRejectHint => 'Enter a reason for the submitter';
+
+  @override
+  String get adminStatsTitle => 'Statistics';
+
+  @override
+  String get adminStatsUsers => 'Users';
+
+  @override
+  String get adminStatsRecipes => 'Recipes';
+
+  @override
+  String get adminStatsPending => 'Pending';
+
+  @override
+  String get adminStatsApproved => 'Approved';
+
+  @override
+  String get adminStatsRejected => 'Rejected';
+
+  @override
+  String get adminStatsRatingsNote =>
+      'Detailed rating counts need extra indexing (TODO).';
+
+  @override
+  String get adminStatsTopRatedTodo => 'Top rated: TODO — cloud aggregation';
+
+  @override
+  String get adminStatsFavoritesTodo =>
+      'Most favorited: TODO — aggregate users.favoriteRecipeIds';
+
+  @override
+  String get mySubmittedTitle => 'My submitted recipes';
+
+  @override
+  String get recipeStatusPending => 'Under review';
+
+  @override
+  String get recipeStatusApproved => 'Approved';
+
+  @override
+  String get recipeStatusRejected => 'Rejected';
+
+  @override
+  String recipeRejectedReason(String reason) {
+    return 'Rejection reason: $reason';
+  }
 }
