@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luqma_haneya/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,15 +17,21 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firebaseOn = ref.watch(firebaseReadyProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('لقمة هنية'),
+        title: Text(l10n.appTitle),
         actions: [
           IconButton(
-            tooltip: 'خطة الأسبوع',
+            tooltip: l10n.homeWeekPlanTooltip,
             onPressed: () => context.push('/meal-plan'),
             icon: const Icon(Icons.calendar_month_rounded),
+          ),
+          IconButton(
+            tooltip: l10n.homeSettingsTooltip,
+            onPressed: () => context.push('/settings'),
+            icon: const Icon(Icons.settings_outlined),
           ),
         ],
       ),
@@ -37,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
               const _HomeAccountStrip(),
               const SizedBox(height: 12),
               Text(
-                'يوم سعيد ونفسك في لقمة حلوة؟',
+                l10n.homeHeadline,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
@@ -45,7 +52,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'تصفحي كل الوصفات، خذي اقتراحات ذكية، دوري بالمكونات، خطّطي الأسبوع، أو ضيفي وصفتك.',
+                l10n.homeSubtitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.inkMuted,
@@ -66,7 +73,7 @@ class HomeScreen extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
-                        'وضع تجريبي: شغّل Firebase (flutterfire configure) عشان تتزامن خطط الوجبات والمفضلة والتقييمات مع السحابة.',
+                        l10n.homeFirebaseBanner,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
@@ -74,14 +81,14 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
               LhPrimaryButton(
-                label: 'كل الوصفات',
+                label: l10n.homeAllRecipes,
                 icon: Icons.menu_book_rounded,
                 expanded: true,
                 onPressed: () => context.push('/recipes'),
               ),
               const SizedBox(height: 12),
               LhPrimaryButton(
-                label: 'اقتراحات لي',
+                label: l10n.homeSuggestions,
                 icon: Icons.auto_awesome_rounded,
                 expanded: true,
                 onPressed: () => context.push('/suggest'),
@@ -90,7 +97,7 @@ class HomeScreen extends ConsumerWidget {
               OutlinedButton.icon(
                 onPressed: () => context.push('/pantry'),
                 icon: const Icon(Icons.kitchen_rounded),
-                label: const Text('بحث بالمكونات'),
+                label: Text(l10n.homePantrySearch),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.olive,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -104,7 +111,7 @@ class HomeScreen extends ConsumerWidget {
               OutlinedButton.icon(
                 onPressed: () => context.push('/smart-meal-plan'),
                 icon: const Icon(Icons.auto_graph_rounded),
-                label: const Text('الخطة الأسبوعية الذكية'),
+                label: Text(l10n.homeSmartMealPlan),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.olive,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -118,7 +125,7 @@ class HomeScreen extends ConsumerWidget {
               OutlinedButton.icon(
                 onPressed: () => context.push('/meal-plan'),
                 icon: const Icon(Icons.edit_calendar_rounded),
-                label: const Text('تعديل الخطة يدوياً'),
+                label: Text(l10n.homeManualMealPlan),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.olive,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -132,7 +139,7 @@ class HomeScreen extends ConsumerWidget {
               OutlinedButton.icon(
                 onPressed: () => context.push('/favorites'),
                 icon: const Icon(Icons.favorite_rounded),
-                label: const Text('المفضلة'),
+                label: Text(l10n.homeFavorites),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.olive,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -146,7 +153,7 @@ class HomeScreen extends ConsumerWidget {
               OutlinedButton.icon(
                 onPressed: () => context.push('/add-recipe'),
                 icon: const Icon(Icons.add_circle_outline_rounded),
-                label: const Text('إضافة وصفة'),
+                label: Text(l10n.homeAddRecipe),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.olive,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -158,7 +165,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 28),
               Text(
-                'وصفات مصرية بلمسة دافية',
+                l10n.homeFooterTagline,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: AppColors.inkMuted,
@@ -179,6 +186,7 @@ class _HomeAccountStrip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return session.when(
       loading: () => const SizedBox.shrink(),
@@ -213,7 +221,7 @@ class _HomeAccountStrip extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         s.isGuest
-                            ? 'تسجيل الدخول اختياري — أنتِ ضيفة على الجهاز'
+                            ? l10n.homeGuestAccount
                             : (s.resolvedDisplayName ?? s.firestoreSyncId),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
@@ -223,13 +231,13 @@ class _HomeAccountStrip extends ConsumerWidget {
                     if (s.isGuest)
                       TextButton(
                         onPressed: () => context.push('/auth'),
-                        child: const Text('دخول'),
+                        child: Text(l10n.homeLogin),
                       )
                     else
                       TextButton(
                         onPressed: () =>
                             ref.read(authRepositoryProvider).signOut(),
-                        child: const Text('خروج'),
+                        child: Text(l10n.homeSignOut),
                       ),
                   ],
                 ),
@@ -250,6 +258,7 @@ class _HomeTrendingSection extends ConsumerWidget {
     final trending = ref.watch(trendingRecipesProvider);
     final sums = ref.watch(ratingSummariesProvider);
     final favs = ref.watch(favoriteIdsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return trending.when(
       loading: () => const Center(
@@ -258,7 +267,8 @@ class _HomeTrendingSection extends ConsumerWidget {
           child: CircularProgressIndicator(),
         ),
       ),
-      error: (e, _) => Text('تريندي: $e', textAlign: TextAlign.center),
+      error: (e, _) => Text(l10n.homeTrendingError(e.toString()),
+          textAlign: TextAlign.center),
       data: (list) {
         return sums.when(
           loading: () => const SizedBox.shrink(),
@@ -281,7 +291,7 @@ class _HomeTrendingSection extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'وصفات تريندي هذا الأسبوع ($wk)',
+                            l10n.homeTrendingTitle(wk),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -292,7 +302,7 @@ class _HomeTrendingSection extends ConsumerWidget {
                         ),
                         TextButton(
                           onPressed: () => context.push('/trending'),
-                          child: const Text('عرض الكل'),
+                          child: Text(l10n.homeTrendingSeeAll),
                         ),
                       ],
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luqma_haneya/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -42,10 +43,11 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
     final async = ref.watch(_recipeProvider(widget.recipeId));
     final sums = ref.watch(ratingSummariesProvider);
     final favs = ref.watch(favoriteIdsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تفاصيل الوصفة'),
+        title: Text(l10n.recipeDetailTitle),
         actions: [
           favs.when(
             data: (set) {
@@ -70,11 +72,12 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
       body: async.when(
         data: (recipe) {
           if (recipe == null) {
-            return const Center(child: Text('الوصفة مش متاحة'));
+            return Center(child: Text(l10n.recipeNotAvailable));
           }
           return sums.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('خطأ: $e')),
+            error: (e, _) =>
+                Center(child: Text(l10n.recipeError(e.toString()))),
             data: (sumMap) {
               return _RecipeBody(
                 recipe: recipe,
@@ -85,7 +88,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('خطأ: $e')),
+        error: (e, _) => Center(child: Text(l10n.recipeError(e.toString()))),
       ),
     );
   }
@@ -114,6 +117,8 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
 
   Future<void> _saveRating(int stars) async {
     final session = await ref.read(authSessionProvider.future);
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     var publishPublic = session.canPublishPublicRatings;
 
     if (!session.canPublishPublicRatings) {
@@ -121,22 +126,20 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
       final choice = await showDialog<_GuestRatingChoice>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('تقييم عام'),
-          content: const Text(
-            'سجّل دخولك عشان تقييمك يظهر للناس.',
-          ),
+          title: Text(l10n.ratingPublicTitle),
+          content: Text(l10n.ratingPublicMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.cancel),
-              child: const Text('إلغاء'),
+              child: Text(l10n.ratingCancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.localOnly),
-              child: const Text('حفظ محلي فقط'),
+              child: Text(l10n.ratingLocalOnly),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(ctx, _GuestRatingChoice.login),
-              child: const Text('تسجيل الدخول'),
+              child: Text(l10n.ratingLogin),
             ),
           ],
         ),
@@ -169,12 +172,12 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
       if (!mounted) return;
       setState(() => _draftStars = null);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حفظ التقييم')),
+        SnackBar(content: Text(l10n.ratingSavedSnackbar)),
       );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('تعذر الحفظ: $e')),
+        SnackBar(content: Text(l10n.ratingSaveFailed('$e'))),
       );
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -184,6 +187,7 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
   @override
   Widget build(BuildContext context) {
     final my = ref.watch(myRatingProvider(widget.recipeId));
+    final l10n = AppLocalizations.of(context)!;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
@@ -207,7 +211,7 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
         Row(
           textDirection: TextDirection.rtl,
           children: [
-            const Text('متوسط التقييم: '),
+            Text(l10n.recipeAverageRating),
             LhRatingSummaryRow(
               summary: widget.ratingSummary,
               compact: false,
@@ -215,7 +219,7 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
           ],
         ),
         const SizedBox(height: 16),
-        const LhSectionHeader(title: 'تقييمك'),
+        LhSectionHeader(title: l10n.recipeYourRating),
         const SizedBox(height: 6),
         my.when(
           data: (v) {
@@ -231,13 +235,15 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
                   onPressed: _saving || effective == null
                       ? null
                       : () => _saveRating(effective),
-                  child: Text(_saving ? 'جاري الحفظ…' : 'حفظ التقييم'),
+                  child: Text(
+                    _saving ? l10n.recipeSavingRating : l10n.recipeSaveRating,
+                  ),
                 ),
               ],
             );
           },
           loading: () => const CircularProgressIndicator(),
-          error: (e, _) => Text('خطأ: $e'),
+          error: (e, _) => Text(l10n.recipeError(e.toString())),
         ),
         const SizedBox(height: 20),
         Wrap(
@@ -247,10 +253,10 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
           children: [
             _MetaChip(
                 icon: Icons.schedule_rounded,
-                label: '${widget.recipe.minutes} دقيقة'),
+                label: l10n.recipeMinutesChip(widget.recipe.minutes)),
             _MetaChip(
               icon: Icons.people_alt_rounded,
-              label: '${widget.recipe.servings} أشخاص',
+              label: l10n.recipeServingsChip(widget.recipe.servings),
             ),
             _MetaChip(
               icon: Icons.wb_sunny_outlined,
@@ -269,9 +275,10 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
               label: RecipeLabelsAr.cuisine(widget.recipe.cuisine),
             ),
             if (widget.recipe.spicy)
-              const Chip(
-                avatar: Icon(Icons.local_fire_department_rounded, size: 18),
-                label: Text('حار'),
+              Chip(
+                avatar:
+                    const Icon(Icons.local_fire_department_rounded, size: 18),
+                label: Text(l10n.recipeSpicy),
               ),
             ...widget.recipe.tags.map(
               (t) => Chip(
@@ -282,7 +289,7 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
           ],
         ),
         const SizedBox(height: 24),
-        const LhSectionHeader(title: 'المكونات الأساسية'),
+        LhSectionHeader(title: l10n.recipeMainIngredients),
         const SizedBox(height: 10),
         ...widget.recipe.mainIngredients.map(
           (line) => Padding(
@@ -299,7 +306,7 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
         ),
         if (widget.recipe.optionalIngredients.isNotEmpty) ...[
           const SizedBox(height: 12),
-          const LhSectionHeader(title: 'مكونات اختيارية'),
+          LhSectionHeader(title: l10n.recipeOptionalIngredients),
           const SizedBox(height: 10),
           ...widget.recipe.optionalIngredients.map(
             (line) => Padding(
@@ -316,7 +323,7 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
           ),
         ],
         const SizedBox(height: 16),
-        const LhSectionHeader(title: 'الخطوات'),
+        LhSectionHeader(title: l10n.recipeSteps),
         const SizedBox(height: 10),
         ...List.generate(widget.recipe.steps.length, (i) {
           return Padding(
@@ -344,7 +351,7 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
         }),
         const SizedBox(height: 8),
         LhPrimaryButton(
-          label: 'رجوع',
+          label: l10n.recipeBack,
           expanded: true,
           onPressed: () =>
               context.canPop() ? context.pop() : context.go('/home'),

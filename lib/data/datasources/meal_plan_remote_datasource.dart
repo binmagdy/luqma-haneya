@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../core/bootstrap.dart';
 
@@ -19,16 +22,31 @@ class MealPlanRemoteDataSource {
         .doc(weekKey);
   }
 
+  static const Duration _networkTimeout = Duration(seconds: 12);
+
   Future<Map<String, String>?> tryLoad(String deviceId, String weekKey) async {
     final doc = _doc(deviceId, weekKey);
     if (doc == null) return null;
-    final snap = await doc.get();
-    if (!snap.exists) return null;
-    final data = snap.data();
-    if (data == null) return null;
-    final raw = data['assignments'];
-    if (raw is! Map) return null;
-    return raw.map((k, v) => MapEntry(k.toString(), v.toString()));
+    try {
+      final snap = await doc.get().timeout(_networkTimeout);
+      if (!snap.exists) return null;
+      final data = snap.data();
+      if (data == null) return null;
+      final raw = data['assignments'];
+      if (raw is! Map) return null;
+      return raw.map((k, v) => MapEntry(k.toString(), v.toString()));
+    } on TimeoutException catch (e) {
+      if (kDebugMode) {
+        debugPrint('MealPlanRemoteDataSource.tryLoad timeout week=$weekKey $e');
+      }
+      return null;
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint(
+            'MealPlanRemoteDataSource.tryLoad failed week=$weekKey $e\n$st');
+      }
+      return null;
+    }
   }
 
   Future<void> upsert(
@@ -38,11 +56,22 @@ class MealPlanRemoteDataSource {
   ) async {
     final doc = _doc(deviceId, weekKey);
     if (doc == null) return;
-    await doc.set({
-      'assignments': assignments,
-      'weekKey': weekKey,
-      'updatedAt': FieldValue.serverTimestamp(),
-      'generatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    try {
+      await doc.set({
+        'assignments': assignments,
+        'weekKey': weekKey,
+        'updatedAt': FieldValue.serverTimestamp(),
+        'generatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true)).timeout(_networkTimeout);
+    } on TimeoutException catch (e) {
+      if (kDebugMode) {
+        debugPrint('MealPlanRemoteDataSource.upsert timeout week=$weekKey $e');
+      }
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint(
+            'MealPlanRemoteDataSource.upsert failed week=$weekKey $e\n$st');
+      }
+    }
   }
 }

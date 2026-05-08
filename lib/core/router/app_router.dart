@@ -13,6 +13,7 @@ import '../../features/trending/presentation/trending_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/pantry/presentation/pantry_screen.dart';
 import '../../features/recipe_detail/presentation/recipe_detail_screen.dart';
+import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/suggestion/presentation/recipe_suggestion_screen.dart';
 
@@ -77,6 +78,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/auth',
         builder: (context, state) => const AuthScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );

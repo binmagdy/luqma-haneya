@@ -1,0 +1,135 @@
+{
+  "@@locale": "ar",
+  "appTitle": "لقمة هنية",
+  "homeWeekPlanTooltip": "خطة الأسبوع",
+  "homeSettingsTooltip": "الإعدادات",
+  "homeHeadline": "يوم سعيد ونفسك في لقمة حلوة؟",
+  "homeSubtitle": "تصفحي كل الوصفات، خذي اقتراحات ذكية، دوري بالمكونات، خطّطي الأسبوع، أو ضيفي وصفتك.",
+  "homeFirebaseBanner": "وضع تجريبي: شغّل Firebase (flutterfire configure) عشان تتزامن خطط الوجبات والمفضلة والتقييمات مع السحابة.",
+  "homeAllRecipes": "كل الوصفات",
+  "homeSuggestions": "اقتراحات لي",
+  "homePantrySearch": "بحث بالمكونات",
+  "homeSmartMealPlan": "الخطة الأسبوعية الذكية",
+  "homeManualMealPlan": "تعديل الخطة يدوياً",
+  "homeFavorites": "المفضلة",
+  "homeAddRecipe": "إضافة وصفة",
+  "homeFooterTagline": "وصفات مصرية بلمسة دافية",
+  "homeGuestAccount": "تسجيل الدخول اختياري — أنتِ ضيفة على الجهاز",
+  "homeLogin": "دخول",
+  "homeSignOut": "خروج",
+  "homeTrendingTitle": "وصفات تريندي هذا الأسبوع ({weekKey})",
+  "@homeTrendingTitle": {
+    "placeholders": {
+      "weekKey": {
+        "type": "String"
+      }
+    }
+  },
+  "homeTrendingSeeAll": "عرض الكل",
+  "homeTrendingError": "تريندي: {error}",
+  "@homeTrendingError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsTitle": "الإعدادات",
+  "settingsLanguageSection": "لغة التطبيق",
+  "settingsLanguageArabic": "العربية",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageHint": "يتم حفظ اختيارك على الجهاز.",
+  "settingsOpenFromAccount": "العودة للحساب",
+  "authTitle": "الحساب",
+  "authOpenSettings": "الإعدادات واللغة",
+  "authError": "خطأ: {error}",
+  "@authError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "authGuestIntro": "أنتِ ضيفة على الجهاز — التقييمات العامة والمزامنة المتقدمة تحتاج تسجيل دخول اختياري.",
+  "authSignedInIntro": "مسجّلة دخول: {name}",
+  "@authSignedInIntro": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "authSyncId": "معرّف المزامنة: {id}",
+  "@authSyncId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "authAnonymousSignIn": "تسجيل دخول مجهول (سريع)",
+  "authContinueGuest": "متابعة كضيفة",
+  "authSignOut": "تسجيل الخروج",
+  "authSignedInSnackbar": "تم تسجيل الدخول",
+  "authSignInFailed": "تعذر: {error}",
+  "@authSignInFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "navHome": "الرئيسية",
+  "navRecipes": "الوصفات",
+  "navAccount": "الحساب",
+  "navSettings": "الإعدادات",
+  "recipeDetailTitle": "تفاصيل الوصفة",
+  "recipeNotAvailable": "الوصفة مش متاحة",
+  "recipeError": "خطأ: {error}",
+  "@recipeError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingPublicTitle": "تقييم عام",
+  "ratingPublicMessage": "سجّل دخولك عشان تقييمك يظهر للناس.",
+  "ratingCancel": "إلغاء",
+  "ratingLocalOnly": "حفظ محلي فقط",
+  "ratingLogin": "تسجيل الدخول",
+  "ratingSavedSnackbar": "تم حفظ التقييم",
+  "ratingSaveFailed": "تعذر الحفظ: {error}",
+  "@ratingSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipeAverageRating": "متوسط التقييم: ",
+  "recipeYourRating": "تقييمك",
+  "recipeSavingRating": "جاري الحفظ…",
+  "recipeSaveRating": "حفظ التقييم",
+  "recipeSpicy": "حار",
+  "recipeMainIngredients": "المكونات الأساسية",
+  "recipeOptionalIngredients": "مكونات اختيارية",
+  "recipeSteps": "الخطوات",
+  "recipeBack": "رجوع",
+  "recipeMinutesChip": "{minutes} دقيقة",
+  "@recipeMinutesChip": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "recipeServingsChip": "{count} أشخاص",
+  "@recipeServingsChip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

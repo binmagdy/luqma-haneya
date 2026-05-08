@@ -24,8 +24,22 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  # Launcher icons: place your master PNG at assets/branding/app_icon.png (1024×1024 recommended),
+  # then run: dart run flutter_launcher_icons
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/recipes.json
+
+# Replaces default Flutter launcher icons on Android and iOS.
+# TODO: Replace assets/branding/app_icon.png with your final artwork (PNG, square, ≥1024px).
+# Visual direction: warm Egyptian home food; simple plate/bowl; steam as smile/heart;
+# colors: terracotta, cream, olive. Then run: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/branding/app_icon.png
+  remove_alpha_ios: true

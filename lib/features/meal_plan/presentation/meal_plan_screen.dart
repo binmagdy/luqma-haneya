@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -128,6 +129,11 @@ class MealPlanScreen extends ConsumerWidget {
       ),
       body: async.when(
         data: (map) {
+          if (map.isEmpty) {
+            return _EmptyMealPlanBody(
+              onGenerate: () => context.push('/smart-meal-plan'),
+            );
+          }
           if (_isStructuredPlan(map)) {
             final keys = map.keys.where((k) => _slotKeyRe.hasMatch(k)).toList()
               ..sort();
@@ -178,7 +184,7 @@ class MealPlanScreen extends ConsumerWidget {
                         for (final sk in slotKeys)
                           _StructuredSlotRow(
                             slotKey: sk,
-                            raw: map[sk]!,
+                            raw: map[sk] ?? '',
                             onPick: () => pickMealPlanSlot(
                               context,
                               ref,
@@ -186,7 +192,9 @@ class MealPlanScreen extends ConsumerWidget {
                               slotKey: sk,
                             ),
                             onToggleLock: () async {
-                              final p = MealPlanSlotCodec.decode(map[sk]!);
+                              final raw = map[sk];
+                              if (raw == null || raw.isEmpty) return;
+                              final p = MealPlanSlotCodec.decode(raw);
                               if (p == null) return;
                               await ref
                                   .read(mealPlanRepositoryProvider)
@@ -205,8 +213,77 @@ class MealPlanScreen extends ConsumerWidget {
           return _legacyBody(context, ref, weekKey, days, map);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('خطأ: $e')),
+        error: (e, st) {
+          if (kDebugMode) {
+            debugPrint('MealPlanScreen load error week=$weekKey $e\n$st');
+          }
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'ما قدرناش نحمّل الخطة.\n$e',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: () => ref
+                        .invalidate(mealPlanWeekAssignmentsProvider(weekKey)),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: const Text('إعادة المحاولة'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
+    );
+  }
+}
+
+class _EmptyMealPlanBody extends StatelessWidget {
+  const _EmptyMealPlanBody({required this.onGenerate});
+
+  final VoidCallback onGenerate;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(24, 48, 24, 88),
+      children: [
+        Icon(
+          Icons.restaurant_menu_rounded,
+          size: 56,
+          color: AppColors.olive.withValues(alpha: 0.65),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'لسه مفيش خطة للأسبوع ده',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'ولّدي خطة ذكية أو اختاري وصفة يدويًا لكل يوم.',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.inkMuted,
+                height: 1.45,
+              ),
+        ),
+        const SizedBox(height: 28),
+        FilledButton.icon(
+          onPressed: onGenerate,
+          icon: const Icon(Icons.auto_fix_high_rounded),
+          label: const Text('خطة ذكية'),
+        ),
+      ],
     );
   }
 }
@@ -287,7 +364,7 @@ class _StructuredSlotRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MealPlanSlotCodec.decode(raw);
     final slot = slotKey.split('__').last;
-    final title = p?.recipeTitle ?? raw;
+    final title = p?.recipeTitle ?? (raw.isEmpty ? '— بيانات ناقصة —' : raw);
     final locked = p?.locked ?? false;
     return ListTile(
       title: Text(

@@ -1,0 +1,79 @@
+{
+  "@@locale": "en",
+  "appTitle": "Luqma Haneya",
+  "homeWeekPlanTooltip": "Week plan",
+  "homeSettingsTooltip": "Settings",
+  "homeHeadline": "Hungry for something good today?",
+  "homeSubtitle": "Browse recipes, get smart suggestions, search by ingredients, plan your week, or add your own recipe.",
+  "homeFirebaseBanner": "Demo mode: run flutterfire configure so meal plans, favorites, and ratings sync to the cloud.",
+  "homeAllRecipes": "All recipes",
+  "homeSuggestions": "Suggestions for me",
+  "homePantrySearch": "Search by ingredients",
+  "homeSmartMealPlan": "Smart weekly plan",
+  "homeManualMealPlan": "Edit plan manually",
+  "homeFavorites": "Favorites",
+  "homeAddRecipe": "Add recipe",
+  "homeFooterTagline": "Egyptian home cooking, warmly",
+  "homeGuestAccount": "Sign-in is optional — you are browsing as a guest",
+  "homeLogin": "Sign in",
+  "homeSignOut": "Sign out",
+  "homeTrendingTitle": "Trending recipes this week ({weekKey})",
+  "homeTrendingSeeAll": "See all",
+  "homeTrendingError": "Trending: {error}",
+  "settingsTitle": "Settings",
+  "settingsLanguageSection": "App language",
+  "settingsLanguageArabic": "Arabic",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageHint": "Your choice is saved on this device.",
+  "settingsOpenFromAccount": "Back to account",
+  "authTitle": "Account",
+  "authOpenSettings": "Settings & language",
+  "authError": "Error: {error}",
+  "authGuestIntro": "You are a guest on this device — public ratings and advanced sync need optional sign-in.",
+  "authSignedInIntro": "Signed in: {name}",
+  "authSyncId": "Sync ID: {id}",
+  "authAnonymousSignIn": "Anonymous sign-in (quick)",
+  "authContinueGuest": "Continue as guest",
+  "authSignOut": "Sign out",
+  "authSignedInSnackbar": "Signed in",
+  "authSignInFailed": "Could not sign in: {error}",
+  "navHome": "Home",
+  "navRecipes": "Recipes",
+  "navAccount": "Account",
+  "navSettings": "Settings",
+  "recipeDetailTitle": "Recipe details",
+  "recipeNotAvailable": "Recipe not available",
+  "recipeError": "Error: {error}",
+  "ratingPublicTitle": "Public rating",
+  "ratingPublicMessage": "Sign in so your rating can appear to others.",
+  "ratingCancel": "Cancel",
+  "ratingLocalOnly": "Save locally only",
+  "ratingLogin": "Sign in",
+  "ratingSavedSnackbar": "Rating saved",
+  "ratingSaveFailed": "Could not save: {error}",
+  "recipeAverageRating": "Average rating: ",
+  "recipeYourRating": "Your rating",
+  "recipeSavingRating": "Saving…",
+  "recipeSaveRating": "Save rating",
+  "recipeSpicy": "Spicy",
+  "recipeMainIngredients": "Main ingredients",
+  "recipeOptionalIngredients": "Optional ingredients",
+  "recipeSteps": "Steps",
+  "recipeBack": "Back",
+  "recipeMinutesChip": "{minutes} min",
+  "@recipeMinutesChip": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "recipeServingsChip": "{count} servings",
+  "@recipeServingsChip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

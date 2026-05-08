@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/meal_plan_repository.dart';
 import '../../domain/services/meal_plan_slot_codec.dart';
@@ -23,6 +25,12 @@ class MealPlanRepositoryImpl implements MealPlanRepository {
     final local = await _local.load(weekKey);
     final deviceId = await _syncId();
     final remote = await _remote.tryLoad(deviceId, weekKey);
+    if (kDebugMode) {
+      debugPrint(
+        'MealPlanRepositoryImpl._merged week=$weekKey '
+        'localKeys=${local.length} remoteKeys=${remote?.length ?? 0}',
+      );
+    }
     if (remote == null || remote.isEmpty) return local;
     if (local.isEmpty) return remote;
     return {...remote, ...local};
@@ -30,8 +38,28 @@ class MealPlanRepositoryImpl implements MealPlanRepository {
 
   Future<void> _persist(String weekKey, Map<String, String> next) async {
     await _local.save(weekKey, next);
-    final deviceId = await _syncId();
-    await _remote.upsert(deviceId, weekKey, next);
+    if (!_remote.isAvailable) {
+      if (kDebugMode) {
+        debugPrint(
+            'MealPlanRepositoryImpl._persist: skip remote (unavailable)');
+      }
+      return;
+    }
+    try {
+      final deviceId = await _syncId();
+      await _remote.upsert(deviceId, weekKey, next);
+      if (kDebugMode) {
+        debugPrint(
+          'MealPlanRepositoryImpl._persist: remote ok week=$weekKey keys=${next.length}',
+        );
+      }
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint(
+          'MealPlanRepositoryImpl._persist: remote failed (local saved) week=$weekKey $e\n$st',
+        );
+      }
+    }
   }
 
   @override
@@ -63,11 +91,19 @@ class MealPlanRepositoryImpl implements MealPlanRepository {
     Map<String, String> generated,
   ) async {
     final current = await _merged(weekKey);
-    final next = Map<String, String>.from(generated);
-    for (final e in current.entries) {
-      if (MealPlanSlotCodec.isLocked(e.value)) {
-        next[e.key] = e.value;
+    final next = Map<String, String>.from(current);
+    for (final e in generated.entries) {
+      final prev = current[e.key];
+      if (prev != null && MealPlanSlotCodec.isLocked(prev)) {
+        continue;
       }
+      next[e.key] = e.value;
+    }
+    if (kDebugMode) {
+      debugPrint(
+        'MealPlanRepositoryImpl.applySmartAssignments week=$weekKey '
+        'generated=${generated.length} merged=${next.length}',
+      );
     }
     await _persist(weekKey, next);
   }

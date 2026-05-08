@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luqma_haneya/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,12 +13,21 @@ class AuthScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('الحساب')),
+      appBar: AppBar(
+        title: Text(l10n.authTitle),
+        actions: [
+          TextButton(
+            onPressed: () => context.push('/settings'),
+            child: Text(l10n.authOpenSettings),
+          ),
+        ],
+      ),
       body: session.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('خطأ: $e')),
+        error: (e, _) => Center(child: Text(l10n.authError(e.toString()))),
         data: (s) {
           return Padding(
             padding: const EdgeInsets.all(20),
@@ -25,8 +35,10 @@ class AuthScreen extends ConsumerWidget {
               children: [
                 Text(
                   s.isGuest
-                      ? 'أنتِ ضيفة على الجهاز — التقييمات العامة والمزامنة المتقدمة تحتاج تسجيل دخول اختياري.'
-                      : 'مسجّلة دخول: ${s.resolvedDisplayName ?? s.firestoreSyncId}',
+                      ? l10n.authGuestIntro
+                      : l10n.authSignedInIntro(
+                          s.resolvedDisplayName ?? s.firestoreSyncId,
+                        ),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
@@ -34,7 +46,7 @@ class AuthScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'معرّف المزامنة: ${s.firestoreSyncId}',
+                  l10n.authSyncId(s.firestoreSyncId),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.inkMuted,
@@ -43,7 +55,7 @@ class AuthScreen extends ConsumerWidget {
                 const SizedBox(height: 32),
                 if (s.isGuest) ...[
                   LhPrimaryButton(
-                    label: 'تسجيل دخول مجهول (سريع)',
+                    label: l10n.authAnonymousSignIn,
                     expanded: true,
                     icon: Icons.person_outline_rounded,
                     onPressed: () async {
@@ -53,14 +65,16 @@ class AuthScreen extends ConsumerWidget {
                             .signInAnonymously();
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('تم تسجيل الدخول')),
+                            SnackBar(content: Text(l10n.authSignedInSnackbar)),
                           );
                           context.pop();
                         }
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('تعذر: $e')),
+                            SnackBar(
+                              content: Text(l10n.authSignInFailed('$e')),
+                            ),
                           );
                         }
                       }
@@ -72,11 +86,11 @@ class AuthScreen extends ConsumerWidget {
                       await ref.read(authRepositoryProvider).continueAsGuest();
                       if (context.mounted) context.pop();
                     },
-                    child: const Text('متابعة كضيفة'),
+                    child: Text(l10n.authContinueGuest),
                   ),
                 ] else ...[
                   LhPrimaryButton(
-                    label: 'تسجيل الخروج',
+                    label: l10n.authSignOut,
                     expanded: true,
                     icon: Icons.logout_rounded,
                     onPressed: () async {
