@@ -212,11 +212,83 @@ abstract class AppLocalizations {
   /// **'عرض الكل'**
   String get homeTrendingSeeAll;
 
+  /// No description provided for @homeTrendingEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد تريندي من السحابة حاليًا.'**
+  String get homeTrendingEmpty;
+
   /// No description provided for @homeTrendingError.
   ///
   /// In ar, this message translates to:
   /// **'تريندي: {error}'**
   String homeTrendingError(String error);
+
+  /// No description provided for @homePopularPrefsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأكلات المفضلة عند الناس'**
+  String get homePopularPrefsTitle;
+
+  /// No description provided for @homePopularPrefsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لما يتوفر اتصال ويشارك المستخدمون تفضيلاتهم، هتظهر هنا إحصائيات عامة فقط (بدون بيانات شخصية).'**
+  String get homePopularPrefsEmpty;
+
+  /// No description provided for @homeCloudPlansHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'خططك الأسبوعية تتزامن مع السحابة عند تسجيل الدخول.'**
+  String get homeCloudPlansHint;
+
+  /// No description provided for @homeAccountEntry.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب والمزامنة'**
+  String get homeAccountEntry;
+
+  /// No description provided for @mealPlanSyncLocalOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخطة محفوظة على جهازك. سجّلي دخولًا اختياريًا للمزامنة مع السحابة.'**
+  String get mealPlanSyncLocalOnly;
+
+  /// No description provided for @mealPlanSyncCloud.
+  ///
+  /// In ar, this message translates to:
+  /// **'مزامنة سحابية: تُحفظ الخطة على جهازك وتُرفع تلقائيًا عند توفر الشبكة.'**
+  String get mealPlanSyncCloud;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد'**
+  String get authEmailLabel;
+
+  /// No description provided for @authEmailNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير مرتبط'**
+  String get authEmailNone;
+
+  /// No description provided for @authSyncStatusGuest.
+  ///
+  /// In ar, this message translates to:
+  /// **'وضع ضيف: المفضلة والخطط محليًا على الجهاز.'**
+  String get authSyncStatusGuest;
+
+  /// No description provided for @authSyncStatusCloud.
+  ///
+  /// In ar, this message translates to:
+  /// **'متصل بالسحابة: المفضلة والخطط والتقييمات العامة تتزامن عند توفر الشبكة.'**
+  String get authSyncStatusCloud;
+
+  /// No description provided for @authGoogleTodo.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الدخول بجوجل قريبًا'**
+  String get authGoogleTodo;
 
   /// No description provided for @settingsTitle.
   ///

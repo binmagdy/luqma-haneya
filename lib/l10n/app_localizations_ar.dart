@@ -70,9 +70,51 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeTrendingSeeAll => 'عرض الكل';
 
   @override
+  String get homeTrendingEmpty => 'لا يوجد تريندي من السحابة حاليًا.';
+
+  @override
   String homeTrendingError(String error) {
     return 'تريندي: $error';
   }
+
+  @override
+  String get homePopularPrefsTitle => 'الأكلات المفضلة عند الناس';
+
+  @override
+  String get homePopularPrefsEmpty =>
+      'لما يتوفر اتصال ويشارك المستخدمون تفضيلاتهم، هتظهر هنا إحصائيات عامة فقط (بدون بيانات شخصية).';
+
+  @override
+  String get homeCloudPlansHint =>
+      'خططك الأسبوعية تتزامن مع السحابة عند تسجيل الدخول.';
+
+  @override
+  String get homeAccountEntry => 'الحساب والمزامنة';
+
+  @override
+  String get mealPlanSyncLocalOnly =>
+      'الخطة محفوظة على جهازك. سجّلي دخولًا اختياريًا للمزامنة مع السحابة.';
+
+  @override
+  String get mealPlanSyncCloud =>
+      'مزامنة سحابية: تُحفظ الخطة على جهازك وتُرفع تلقائيًا عند توفر الشبكة.';
+
+  @override
+  String get authEmailLabel => 'البريد';
+
+  @override
+  String get authEmailNone => 'غير مرتبط';
+
+  @override
+  String get authSyncStatusGuest =>
+      'وضع ضيف: المفضلة والخطط محليًا على الجهاز.';
+
+  @override
+  String get authSyncStatusCloud =>
+      'متصل بالسحابة: المفضلة والخطط والتقييمات العامة تتزامن عند توفر الشبكة.';
+
+  @override
+  String get authGoogleTodo => 'تسجيل الدخول بجوجل قريبًا';
 
   @override
   String get settingsTitle => 'الإعدادات';

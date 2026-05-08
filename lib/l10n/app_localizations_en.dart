@@ -71,9 +71,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeTrendingSeeAll => 'See all';
 
   @override
+  String get homeTrendingEmpty => 'No cloud trending data right now.';
+
+  @override
   String homeTrendingError(String error) {
     return 'Trending: $error';
   }
+
+  @override
+  String get homePopularPrefsTitle => 'Popular tastes (community)';
+
+  @override
+  String get homePopularPrefsEmpty =>
+      'When online, anonymous counts of favorite tags may appear here. No personal data is shown.';
+
+  @override
+  String get homeCloudPlansHint =>
+      'Weekly plans sync to the cloud after you sign in.';
+
+  @override
+  String get homeAccountEntry => 'Account & sync';
+
+  @override
+  String get mealPlanSyncLocalOnly =>
+      'Plan is saved on this device only. Optional sign-in enables cloud sync.';
+
+  @override
+  String get mealPlanSyncCloud =>
+      'Cloud sync: your plan is saved locally and uploaded when the network is available.';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authEmailNone => 'Not linked';
+
+  @override
+  String get authSyncStatusGuest =>
+      'Guest mode: favorites and meal plans stay on this device.';
+
+  @override
+  String get authSyncStatusCloud =>
+      'Cloud: favorites, meal plans, and public ratings sync when online.';
+
+  @override
+  String get authGoogleTodo => 'Google sign-in coming later';
 
   @override
   String get settingsTitle => 'Settings';
