@@ -248,6 +248,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recipeSteps => 'الخطوات';
 
   @override
+  String get recipeChefTips => 'نصائح الشيف';
+
+  @override
+  String get recipeServingSuggestions => 'اقتراحات التقديم';
+
+  @override
   String get recipeBack => 'رجوع';
 
   @override

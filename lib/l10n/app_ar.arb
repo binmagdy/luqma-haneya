@@ -121,6 +121,8 @@
   "recipeMainIngredients": "المكونات الأساسية",
   "recipeOptionalIngredients": "مكونات اختيارية",
   "recipeSteps": "الخطوات",
+  "recipeChefTips": "نصائح الشيف",
+  "recipeServingSuggestions": "اقتراحات التقديم",
   "recipeBack": "رجوع",
   "recipeMinutesChip": "{minutes} دقيقة",
   "@recipeMinutesChip": {

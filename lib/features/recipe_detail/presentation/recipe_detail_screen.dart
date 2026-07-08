@@ -365,6 +365,42 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
             ),
           );
         }),
+        if (widget.recipe.chefTips.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          LhSectionHeader(title: l10n.recipeChefTips),
+          const SizedBox(height: 10),
+          ...widget.recipe.chefTips.map(
+            (line) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textDirection: TextDirection.rtl,
+                children: [
+                  const Text('•  '),
+                  Expanded(child: Text(line, textAlign: TextAlign.right)),
+                ],
+              ),
+            ),
+          ),
+        ],
+        if (widget.recipe.servingSuggestions.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          LhSectionHeader(title: l10n.recipeServingSuggestions),
+          const SizedBox(height: 10),
+          ...widget.recipe.servingSuggestions.map(
+            (line) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textDirection: TextDirection.rtl,
+                children: [
+                  const Text('•  '),
+                  Expanded(child: Text(line, textAlign: TextAlign.right)),
+                ],
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 8),
         LhPrimaryButton(
           label: l10n.recipeBack,

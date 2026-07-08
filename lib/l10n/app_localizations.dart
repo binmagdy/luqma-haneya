@@ -530,6 +530,18 @@ abstract class AppLocalizations {
   /// **'الخطوات'**
   String get recipeSteps;
 
+  /// No description provided for @recipeChefTips.
+  ///
+  /// In ar, this message translates to:
+  /// **'نصائح الشيف'**
+  String get recipeChefTips;
+
+  /// No description provided for @recipeServingSuggestions.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقتراحات التقديم'**
+  String get recipeServingSuggestions;
+
   /// No description provided for @recipeBack.
   ///
   /// In ar, this message translates to:

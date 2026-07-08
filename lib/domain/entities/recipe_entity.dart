@@ -18,6 +18,8 @@ class RecipeEntity {
     required this.cuisine,
     required this.mainIngredients,
     required this.optionalIngredients,
+    this.chefTips = const [],
+    this.servingSuggestions = const [],
     this.source = RecipeSource.asset,
     this.createdByUserId,
     this.createdAt,
@@ -59,6 +61,8 @@ class RecipeEntity {
 
   final List<String> mainIngredients;
   final List<String> optionalIngredients;
+  final List<String> chefTips;
+  final List<String> servingSuggestions;
 
   /// One of [RecipeSource] values: bundled asset, user submission, or remote doc.
   final String source;

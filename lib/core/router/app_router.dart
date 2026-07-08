@@ -59,9 +59,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         final s = ref.read(authSessionProvider);
         if (s.isLoading) return null;
         final v = s.valueOrNull;
-        if (v == null ||
-            !v.isLoggedIn ||
-            v.firebaseIsAnonymous) {
+        if (v == null || !v.isLoggedIn || v.firebaseIsAnonymous) {
           return '/login';
         }
       }

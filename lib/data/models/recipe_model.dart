@@ -21,6 +21,8 @@ class RecipeModel extends RecipeEntity {
     required super.cuisine,
     required super.mainIngredients,
     required super.optionalIngredients,
+    super.chefTips = const [],
+    super.servingSuggestions = const [],
     super.source = RecipeSource.asset,
     super.createdByUserId,
     super.createdAt,
@@ -59,6 +61,8 @@ class RecipeModel extends RecipeEntity {
       cuisine: e.cuisine,
       mainIngredients: e.mainIngredients,
       optionalIngredients: e.optionalIngredients,
+      chefTips: e.chefTips,
+      servingSuggestions: e.servingSuggestions,
       source: e.source,
       createdByUserId: e.createdByUserId,
       createdAt: e.createdAt,
@@ -105,6 +109,8 @@ class RecipeModel extends RecipeEntity {
       cuisine: json['cuisine'] as String? ?? _inferCuisine(tags),
       mainIngredients: main,
       optionalIngredients: optional,
+      chefTips: _jsonStringList(json['chefTips']),
+      servingSuggestions: _jsonStringList(json['servingSuggestions']),
       source: json['source'] as String? ?? RecipeSource.asset,
       createdByUserId:
           json['createdByUserId'] as String? ?? json['createdBy'] as String?,
@@ -127,6 +133,17 @@ class RecipeModel extends RecipeEntity {
       imageUrl: json['imageUrl'] as String?,
       creatorName: json['creatorName'] as String?,
     );
+  }
+
+  static List<String> _jsonStringList(dynamic value) {
+    if (value == null) return const [];
+    if (value is List) {
+      return value
+          .map((e) => e == null ? '' : e.toString().trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+    return const [];
   }
 
   static List<String> _firestoreStringList(dynamic value) {
@@ -185,6 +202,8 @@ class RecipeModel extends RecipeEntity {
       cuisine: data['cuisine'] as String? ?? _inferCuisine(tags),
       mainIngredients: main,
       optionalIngredients: optional,
+      chefTips: _firestoreStringList(data['chefTips']),
+      servingSuggestions: _firestoreStringList(data['servingSuggestions']),
       source: data['source'] as String? ?? RecipeSource.remote,
       createdByUserId:
           data['createdByUserId'] as String? ?? data['createdBy'] as String?,
@@ -262,6 +281,9 @@ class RecipeModel extends RecipeEntity {
       'cuisine': cuisine,
       'mainIngredients': mainIngredients,
       'optionalIngredients': optionalIngredients,
+      if (chefTips.isNotEmpty) 'chefTips': chefTips,
+      if (servingSuggestions.isNotEmpty)
+        'servingSuggestions': servingSuggestions,
       'source': source,
       'status': moderationStatus,
       'visibility': visibility,
@@ -299,6 +321,8 @@ class RecipeModel extends RecipeEntity {
     String? cuisine,
     List<String>? mainIngredients,
     List<String>? optionalIngredients,
+    List<String>? chefTips,
+    List<String>? servingSuggestions,
     String? source,
     String? createdByUserId,
     DateTime? createdAt,
@@ -331,6 +355,8 @@ class RecipeModel extends RecipeEntity {
       cuisine: cuisine ?? this.cuisine,
       mainIngredients: mainIngredients ?? this.mainIngredients,
       optionalIngredients: optionalIngredients ?? this.optionalIngredients,
+      chefTips: chefTips ?? this.chefTips,
+      servingSuggestions: servingSuggestions ?? this.servingSuggestions,
       source: source ?? this.source,
       createdByUserId: createdByUserId ?? this.createdByUserId,
       createdAt: createdAt ?? this.createdAt,
@@ -366,6 +392,9 @@ class RecipeModel extends RecipeEntity {
       'cuisine': cuisine,
       'mainIngredients': mainIngredients,
       'optionalIngredients': optionalIngredients,
+      if (chefTips.isNotEmpty) 'chefTips': chefTips,
+      if (servingSuggestions.isNotEmpty)
+        'servingSuggestions': servingSuggestions,
       'source': source,
       if (createdByUserId != null) 'createdByUserId': createdByUserId,
       if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),

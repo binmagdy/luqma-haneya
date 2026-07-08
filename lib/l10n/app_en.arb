@@ -72,6 +72,8 @@
   "recipeMainIngredients": "Main ingredients",
   "recipeOptionalIngredients": "Optional ingredients",
   "recipeSteps": "Steps",
+  "recipeChefTips": "Chef tips",
+  "recipeServingSuggestions": "Serving suggestions",
   "recipeBack": "Back",
   "recipeMinutesChip": "{minutes} min",
   "@recipeMinutesChip": {

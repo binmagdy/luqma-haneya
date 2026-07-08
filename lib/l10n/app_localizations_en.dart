@@ -250,6 +250,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recipeSteps => 'Steps';
 
   @override
+  String get recipeChefTips => 'Chef tips';
+
+  @override
+  String get recipeServingSuggestions => 'Serving suggestions';
+
+  @override
   String get recipeBack => 'Back';
 
   @override
