@@ -38,6 +38,9 @@ class RecipeScoringService {
   /// Minimum total score for daily suggestions before falling back to unfiltered top.
   static const double minSuggestionScore = 14;
 
+  /// Minimum total score for diet suggestions before falling back.
+  static const double minDietSuggestionScore = 10;
+
   /// Minimum total score for pantry results before falling back.
   static const double minPantryScore = 10;
 
@@ -326,6 +329,81 @@ class RecipeScoringService {
     }
 
     return score;
+  }
+
+  /// Diet-mode suggestions: lower calories, higher protein, lighter cooking methods.
+  /// Nutrition fields on [recipe] are approximate per-serving estimates.
+  static double? scoreForDietSuggestion(
+    RecipeEntity recipe,
+    UserPreferencesEntity prefs, {
+    RecipeSuggestionContext context = RecipeSuggestionContext.empty,
+  }) {
+    if (!recipe.isDietRecipe || !recipe.hasNutritionInfo) return null;
+    if (isHardExcluded(recipe, prefs)) return null;
+    if (prefs.avoidSpicy && recipe.spicy) return null;
+
+    var score = 18.0;
+    final cal = recipe.calories!;
+    if (cal <= 320) {
+      score += 28;
+    } else if (cal <= 420) {
+      score += 18;
+    } else if (cal <= 520) {
+      score += 8;
+    } else {
+      score -= (cal - 520) / 25;
+    }
+
+    score += (recipe.proteinGrams! * 1.8).clamp(0, 32);
+
+    final blob = _matchBlob(recipe);
+    if (_blobHasAny(
+        blob, const ['مشوي', 'فرن', 'مسلوق', 'شواية', 'baked', 'grill'])) {
+      score += 20;
+    }
+    if (_blobHasAny(blob, const ['مقلي', 'قلي', 'زيت للقلي', 'deep fry'])) {
+      score -= 38;
+    }
+    if (_blobHasAny(
+        blob, const ['كريمة', 'زبدة', 'سمنة', 'سكر', 'عسل', 'شوكولاتة'])) {
+      score -= 18;
+    }
+
+    score -= _dislikePenalty(blob, prefs.dislikedIngredients);
+
+    if (context.favoriteRecipeIds.contains(recipe.id)) {
+      score += _favoriteRecipeIdBoost * 0.7;
+    }
+
+    if (prefs.quickMealsPreferred && recipe.minutes <= 35) {
+      score += 12;
+    }
+
+    if (context.penalizedRecipeIds.contains(recipe.id)) {
+      score -= _repeatSuggestionPenalty;
+    }
+
+    return score;
+  }
+
+  /// Pantry overlap for diet catalog with nutrition-aware weighting.
+  static double? scoreForDietPantry(
+    RecipeEntity recipe,
+    UserPreferencesEntity prefs,
+    List<String> pantryNormalized,
+  ) {
+    final pantryScore = scoreForPantry(recipe, prefs, pantryNormalized);
+    if (pantryScore == null) return null;
+    final dietScore = scoreForDietSuggestion(recipe, prefs);
+    if (dietScore == null) return null;
+    return pantryScore * 0.55 + dietScore * 0.45;
+  }
+
+  static bool _blobHasAny(String blob, List<String> needles) {
+    for (final n in needles) {
+      if (blob.contains(normalize(n))) return true;
+    }
+    return false;
   }
 
   /// Debug-only explanation of how a score was built (no user-visible UI).

@@ -304,6 +304,10 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
             ),
           ],
         ),
+        if (widget.recipe.hasNutritionInfo) ...[
+          const SizedBox(height: 20),
+          _NutritionCard(recipe: widget.recipe),
+        ],
         const SizedBox(height: 24),
         LhSectionHeader(title: l10n.recipeMainIngredients),
         const SizedBox(height: 10),
@@ -409,6 +413,95 @@ class _RecipeBodyState extends ConsumerState<_RecipeBody> {
               context.canPop() ? context.pop() : context.go('/home'),
         ),
       ],
+    );
+  }
+}
+
+/// Per-serving nutrition estimates — not lab-tested values.
+class _NutritionCard extends StatelessWidget {
+  const _NutritionCard({required this.recipe});
+
+  final RecipeEntity recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.cream.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.oliveLight.withValues(alpha: 0.35)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'القيم الغذائية (تقدير للحصة)',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+              textAlign: TextAlign.right,
+            ),
+            const SizedBox(height: 10),
+            _NutritionRow(
+              label: 'السعرات الحرارية',
+              value: '${recipe.calories} kcal',
+            ),
+            _NutritionRow(
+              label: 'البروتين',
+              value: '${recipe.proteinGrams!.toStringAsFixed(0)} جم',
+            ),
+            _NutritionRow(
+              label: 'الكارب',
+              value: '${recipe.carbsGrams!.toStringAsFixed(0)} جم',
+            ),
+            _NutritionRow(
+              label: 'الدهون',
+              value: '${recipe.fatGrams!.toStringAsFixed(0)} جم',
+            ),
+            if (recipe.servingSizeDescription != null &&
+                recipe.servingSizeDescription!.isNotEmpty)
+              _NutritionRow(
+                label: 'الحصة الغذائية',
+                value: recipe.servingSizeDescription!,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NutritionRow extends StatelessWidget {
+  const _NutritionRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        textDirection: TextDirection.rtl,
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.inkMuted,
+                  ),
+            ),
+          ),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+        ],
+      ),
     );
   }
 }

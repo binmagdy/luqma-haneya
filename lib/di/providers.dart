@@ -303,18 +303,20 @@ final myRatingProvider = FutureProvider.family<int?, String>(
   (ref, recipeId) => ref.watch(ratingRepositoryProvider).getMyRating(recipeId),
 );
 
-final suggestionBundleProvider = FutureProvider<
+final suggestionBundleProvider = FutureProvider.family<
     ({
       List<RecipeEntity> suggestions,
       Set<String> favorites,
       Map<String, RecipeRatingSummary> summaries,
-    })>((ref) async {
+    }),
+    String>((ref, mode) async {
   final prefs = await ref.read(preferencesRepositoryProvider).loadPreferences();
   final trendingList = await ref.watch(trendingRecipesProvider.future);
   final trendingIds = trendingList.map((e) => e.id).toSet();
   final suggestions = await ref.read(recipeRepositoryProvider).suggestForToday(
         prefs,
         trendingRecipeIds: trendingIds,
+        suggestionMode: mode,
       );
   final favorites =
       await ref.read(favoritesRepositoryProvider).favoriteRecipeIds();

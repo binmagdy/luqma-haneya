@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/models/recipe_model.dart';
 import '../../di/providers.dart';
 import '../../domain/value_objects/recipe_moderation.dart';
+import '../../domain/value_objects/recipe_category.dart';
 import '../../features/add_recipe/presentation/add_recipe_screen.dart';
 import '../../features/admin/presentation/admin_dashboard_screen.dart';
 import '../../features/admin/presentation/admin_recipe_list_screen.dart';
@@ -80,7 +81,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/recipes',
-        builder: (context, state) => const AllRecipesScreen(),
+        builder: (context, state) => AllRecipesScreen(
+          initialCategory: state.uri.queryParameters['category'],
+        ),
       ),
       GoRoute(
         path: '/favorites',
@@ -96,7 +99,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/suggest',
-        builder: (context, state) => const RecipeSuggestionScreen(),
+        builder: (context, state) => RecipeSuggestionScreen(
+          initialMode: state.uri.queryParameters['mode'],
+        ),
       ),
       GoRoute(
         path: '/recipe/:id',
@@ -107,7 +112,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/pantry',
-        builder: (context, state) => const PantryScreen(),
+        builder: (context, state) => PantryScreen(
+          recipeCategory: RecipeCategory.normalize(
+            state.uri.queryParameters['category'],
+          ),
+        ),
       ),
       GoRoute(
         path: '/meal-plan',
@@ -115,7 +124,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/smart-meal-plan',
-        builder: (context, state) => const SmartMealPlanScreen(),
+        builder: (context, state) => SmartMealPlanScreen(
+          initialPlanCategory: state.uri.queryParameters['plan'],
+        ),
       ),
       GoRoute(
         path: '/trending',

@@ -9,6 +9,7 @@ import '../../domain/repositories/rating_repository.dart';
 import '../../domain/repositories/recipe_repository.dart';
 import '../../domain/repositories/user_recipe_repository.dart';
 import '../../domain/services/recipe_scoring_service.dart';
+import '../../domain/value_objects/recipe_category.dart';
 import '../datasources/recipe_local_datasource.dart';
 import '../datasources/recipe_remote_datasource.dart'
     show RecipeRemoteDataSource, recipeRowIsPublicCatalog;
@@ -135,6 +136,13 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> getAllRecipes() => _resolvedPublicCatalog();
 
   @override
+  Future<List<RecipeEntity>> getRecipesByCategory(String category) async {
+    final all = await _resolvedPublicCatalog();
+    final normalized = RecipeCategory.normalize(category);
+    return all.where((r) => r.recipeCategory == normalized).toList();
+  }
+
+  @override
   Future<RecipeEntity?> getRecipeById(String id) async {
     final all = await _resolvedPublicCatalog();
     for (final r in all) {
@@ -161,8 +169,13 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<List<RecipeEntity>> suggestForToday(
     UserPreferencesEntity prefs, {
     Set<String> trendingRecipeIds = const {},
+    String suggestionMode = RecipeCategory.normal,
   }) async {
+    final mode = RecipeCategory.normalize(suggestionMode);
     final all = await _resolvedPublicCatalog();
+    final scoped = mode == RecipeCategory.diet
+        ? all.where((r) => r.isDietRecipe).toList()
+        : all.where((r) => !r.isDietRecipe).toList();
     final viewed = await _viewed.loadOrdered();
     final penalized = viewed.take(6).toSet();
     final ctx = await _suggestionContext(
@@ -172,25 +185,32 @@ class RecipeRepositoryImpl implements RecipeRepository {
     );
     final ranked = <MapEntry<RecipeModel, double>>[];
 
-    for (final r in all) {
-      final s = RecipeScoringService.scoreForDailySuggestion(
-        r,
-        prefs,
-        context: ctx,
-      );
+    for (final r in scoped) {
+      final s = mode == RecipeCategory.diet
+          ? RecipeScoringService.scoreForDietSuggestion(
+              r,
+              prefs,
+              context: ctx,
+            )
+          : RecipeScoringService.scoreForDailySuggestion(
+              r,
+              prefs,
+              context: ctx,
+            );
       if (s == null) continue;
       ranked.add(MapEntry(r, s));
     }
     ranked.sort((a, b) => b.value.compareTo(a.value));
 
     RecipeScoringService.debugLogRanking(
-      label: 'suggestForToday',
+      label: mode == RecipeCategory.diet ? 'suggestDiet' : 'suggestForToday',
       ranked: ranked.map((e) => MapEntry<RecipeEntity, double>(e.key, e.value)),
     );
 
-    final passed = ranked
-        .where((e) => e.value >= RecipeScoringService.minSuggestionScore)
-        .toList();
+    final minScore = mode == RecipeCategory.diet
+        ? RecipeScoringService.minDietSuggestionScore
+        : RecipeScoringService.minSuggestionScore;
+    final passed = ranked.where((e) => e.value >= minScore).toList();
     final pool = passed.isNotEmpty ? passed : ranked;
 
     if (kDebugMode && pool.isNotEmpty) {
@@ -199,7 +219,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
           RecipeScoringService.describeScoreForDebug(
             recipe: e.key,
             prefs: prefs,
-            mode: 'daily',
+            mode: mode == RecipeCategory.diet ? 'diet' : 'daily',
           ),
         );
       }
@@ -211,8 +231,9 @@ class RecipeRepositoryImpl implements RecipeRepository {
   @override
   Future<List<RecipeEntity>> findByPantryIngredients(
     List<String> ingredients,
-    UserPreferencesEntity prefs,
-  ) async {
+    UserPreferencesEntity prefs, {
+    String recipeCategory = RecipeCategory.normal,
+  }) async {
     if (ingredients.isEmpty) return const [];
     final normalized = ingredients
         .map(RecipeScoringService.normalize)
@@ -220,11 +241,15 @@ class RecipeRepositoryImpl implements RecipeRepository {
         .toList();
     if (normalized.isEmpty) return const [];
 
+    final category = RecipeCategory.normalize(recipeCategory);
     final all = await _resolvedPublicCatalog();
+    final scoped = all.where((r) => r.recipeCategory == category).toList();
     final ranked = <MapEntry<RecipeModel, double>>[];
 
-    for (final r in all) {
-      final s = RecipeScoringService.scoreForPantry(r, prefs, normalized);
+    for (final r in scoped) {
+      final s = category == RecipeCategory.diet
+          ? RecipeScoringService.scoreForDietPantry(r, prefs, normalized)
+          : RecipeScoringService.scoreForPantry(r, prefs, normalized);
       if (s == null) continue;
       ranked.add(MapEntry(r, s));
     }

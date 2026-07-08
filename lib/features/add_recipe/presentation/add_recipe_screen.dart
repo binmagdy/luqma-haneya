@@ -9,6 +9,7 @@ import '../../../core/widgets/lh_primary_button.dart';
 import '../../../core/widgets/lh_section_header.dart';
 import '../../../data/models/recipe_model.dart';
 import '../../../di/providers.dart';
+import '../../../domain/value_objects/recipe_category.dart';
 import '../../../domain/value_objects/recipe_moderation.dart';
 import '../../../domain/value_objects/recipe_schema.dart';
 import '../../../domain/value_objects/recipe_source.dart';
@@ -35,10 +36,16 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   final _tags = TextEditingController();
   final _cuisine = TextEditingController(text: 'egyptian');
   final _imageUrl = TextEditingController();
+  final _calories = TextEditingController();
+  final _protein = TextEditingController();
+  final _carbs = TextEditingController();
+  final _fat = TextEditingController();
+  final _servingSize = TextEditingController();
 
   String _meal = RecipeMealType.any;
   String _difficulty = RecipeDifficulty.easy;
   String _budget = RecipeBudget.medium;
+  String _recipeCategory = RecipeCategory.normal;
   bool _spicy = false;
   bool _saving = false;
 
@@ -63,6 +70,14 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
       if (i.imageUrl != null && i.imageUrl!.isNotEmpty) {
         _imageUrl.text = i.imageUrl!;
       }
+      _recipeCategory = i.recipeCategory;
+      if (i.calories != null) _calories.text = '${i.calories}';
+      if (i.proteinGrams != null) _protein.text = '${i.proteinGrams}';
+      if (i.carbsGrams != null) _carbs.text = '${i.carbsGrams}';
+      if (i.fatGrams != null) _fat.text = '${i.fatGrams}';
+      if (i.servingSizeDescription != null) {
+        _servingSize.text = i.servingSizeDescription!;
+      }
     }
   }
 
@@ -78,8 +93,18 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
     _tags.dispose();
     _cuisine.dispose();
     _imageUrl.dispose();
+    _calories.dispose();
+    _protein.dispose();
+    _carbs.dispose();
+    _fat.dispose();
+    _servingSize.dispose();
     super.dispose();
   }
+
+  int? _parseOptionalInt(String raw) => int.tryParse(raw.trim());
+
+  double? _parseOptionalDouble(String raw) =>
+      double.tryParse(raw.trim().replaceAll(',', '.'));
 
   List<String> _lines(String raw) {
     return raw
@@ -103,6 +128,22 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
       return;
     }
 
+    final isAdmin =
+        ref.read(appUserContextProvider).valueOrNull?.isAdmin == true;
+    if (isAdmin &&
+        _recipeCategory == RecipeCategory.diet &&
+        (_parseOptionalInt(_calories.text) == null ||
+            _parseOptionalDouble(_protein.text) == null ||
+            _parseOptionalDouble(_carbs.text) == null ||
+            _parseOptionalDouble(_fat.text) == null)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('وصفات الدايت تحتاج السعرات والبروتين والكارب والدهون'),
+        ),
+      );
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final uid = session.firebaseUid!;
@@ -113,6 +154,19 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
       final tags = _lines(_tags.text);
       final img = _imageUrl.text.trim();
       final existing = widget.initialRecipe;
+      final servingDesc = _servingSize.text.trim();
+      final dietCalories = _recipeCategory == RecipeCategory.diet
+          ? _parseOptionalInt(_calories.text)
+          : null;
+      final dietProtein = _recipeCategory == RecipeCategory.diet
+          ? _parseOptionalDouble(_protein.text)
+          : null;
+      final dietCarbs = _recipeCategory == RecipeCategory.diet
+          ? _parseOptionalDouble(_carbs.text)
+          : null;
+      final dietFat = _recipeCategory == RecipeCategory.diet
+          ? _parseOptionalDouble(_fat.text)
+          : null;
 
       if (existing != null) {
         final admin =
@@ -133,6 +187,14 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
               _cuisine.text.trim().isEmpty ? 'mixed' : _cuisine.text.trim(),
           mainIngredients: main,
           optionalIngredients: opt,
+          recipeCategory: admin ? _recipeCategory : existing.recipeCategory,
+          calories: admin ? dietCalories : existing.calories,
+          proteinGrams: admin ? dietProtein : existing.proteinGrams,
+          carbsGrams: admin ? dietCarbs : existing.carbsGrams,
+          fatGrams: admin ? dietFat : existing.fatGrams,
+          servingSizeDescription: admin
+              ? (servingDesc.isEmpty ? null : servingDesc)
+              : existing.servingSizeDescription,
           source: existing.source,
           createdByUserId: existing.createdByUserId ?? uid,
           createdAt: existing.createdAt ?? now,
@@ -183,6 +245,7 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
               _cuisine.text.trim().isEmpty ? 'mixed' : _cuisine.text.trim(),
           mainIngredients: main,
           optionalIngredients: opt,
+          recipeCategory: RecipeCategory.normal,
           source: RecipeSource.user,
           createdByUserId: uid,
           createdAt: now,
@@ -223,6 +286,8 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final editing = widget.initialRecipe != null;
+    final isAdmin =
+        ref.watch(appUserContextProvider).valueOrNull?.isAdmin == true;
     return Scaffold(
       appBar: AppBar(
         title: Text(editing ? l10n.addRecipeEditTitle : l10n.addRecipeTitle),
@@ -284,6 +349,81 @@ class _AddRecipeScreenState extends ConsumerState<AddRecipeScreen> {
                 ),
               ],
             ),
+            if (isAdmin) ...[
+              const SizedBox(height: 12),
+              const Text('تصنيف الوصفة'),
+              Wrap(
+                spacing: 8,
+                children: [
+                  ChoiceChip(
+                    label: const Text('وصفات البيت'),
+                    selected: _recipeCategory == RecipeCategory.normal,
+                    onSelected: (_) => setState(
+                      () => _recipeCategory = RecipeCategory.normal,
+                    ),
+                  ),
+                  ChoiceChip(
+                    label: const Text('دايت'),
+                    selected: _recipeCategory == RecipeCategory.diet,
+                    onSelected: (_) => setState(
+                      () => _recipeCategory = RecipeCategory.diet,
+                    ),
+                  ),
+                ],
+              ),
+              if (_recipeCategory == RecipeCategory.diet) ...[
+                const SizedBox(height: 8),
+                const Text('القيم الغذائية للحصة (تقدير) *'),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _calories,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(labelText: 'السعرات'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _protein,
+                        keyboardType: TextInputType.number,
+                        decoration:
+                            const InputDecoration(labelText: 'بروتين (جم)'),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _carbs,
+                        keyboardType: TextInputType.number,
+                        decoration:
+                            const InputDecoration(labelText: 'كارb (جم)'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _fat,
+                        keyboardType: TextInputType.number,
+                        decoration:
+                            const InputDecoration(labelText: 'دهون (جم)'),
+                      ),
+                    ),
+                  ],
+                ),
+                TextFormField(
+                  controller: _servingSize,
+                  textDirection: TextDirection.rtl,
+                  decoration: const InputDecoration(
+                    labelText: 'وصف الحصة الغذائية',
+                  ),
+                ),
+              ],
+            ],
             const SizedBox(height: 8),
             const Text('نوع الوجبة'),
             Wrap(

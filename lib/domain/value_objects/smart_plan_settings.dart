@@ -6,6 +6,8 @@ enum SmartPlanBudget { economical, balanced, flexible }
 
 enum SmartPlanCookingPace { quickWeekdays, any }
 
+enum SmartPlanCategory { normal, diet }
+
 class SmartPlanSettings {
   const SmartPlanSettings({
     required this.duration,
@@ -17,6 +19,7 @@ class SmartPlanSettings {
     required this.pantryIngredients,
     required this.includeFavorites,
     required this.tryNewRecipes,
+    this.planCategory = SmartPlanCategory.normal,
   });
 
   final SmartPlanDuration duration;
@@ -28,6 +31,7 @@ class SmartPlanSettings {
   final List<String> pantryIngredients;
   final bool includeFavorites;
   final bool tryNewRecipes;
+  final SmartPlanCategory planCategory;
 
   int get durationDays => switch (duration) {
         SmartPlanDuration.three => 3,

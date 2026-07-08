@@ -9,6 +9,7 @@ import '../../../core/widgets/lh_primary_button.dart';
 import '../../../core/widgets/lh_recipe_tile.dart';
 import '../../../di/providers.dart';
 import '../../../domain/entities/recipe_entity.dart';
+import '../../../domain/value_objects/recipe_category.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -85,6 +86,30 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+              Row(
+                children: [
+                  Expanded(
+                    child: _HomeCategoryCard(
+                      title: 'وصفات البيت',
+                      subtitle: 'أكلات بيتية مصرية',
+                      icon: Icons.home_rounded,
+                      color: AppColors.terracotta,
+                      onTap: () => context.push('/recipes?category=normal'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _HomeCategoryCard(
+                      title: 'وصفات دايت',
+                      subtitle: 'خفيفة وغنية بالبروتين',
+                      icon: Icons.monitor_heart_outlined,
+                      color: AppColors.olive,
+                      onTap: () => context.push('/recipes?category=diet'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
               LhPrimaryButton(
                 label: l10n.homeAllRecipes,
                 icon: Icons.menu_book_rounded,
@@ -418,7 +443,7 @@ class _HomeRecommendedSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bundle = ref.watch(suggestionBundleProvider);
+    final bundle = ref.watch(suggestionBundleProvider(RecipeCategory.normal));
     final l10n = AppLocalizations.of(context)!;
 
     return bundle.when(
@@ -478,7 +503,9 @@ class _HomeRecommendedSection extends ConsumerWidget {
                             .read(favoritesRepositoryProvider)
                             .setFavorite(r.id, !b.favorites.contains(r.id));
                         ref.invalidate(favoriteIdsProvider);
-                        ref.invalidate(suggestionBundleProvider);
+                        ref.invalidate(
+                          suggestionBundleProvider(RecipeCategory.normal),
+                        );
                       },
                       onTap: () => context.push('/recipe/${r.id}'),
                     ),
@@ -534,6 +561,72 @@ class _HomeCloudHintCard extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _HomeCategoryCard extends StatelessWidget {
+  const _HomeCategoryCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            gradient: LinearGradient(
+              colors: [
+                color.withValues(alpha: 0.12),
+                Colors.white,
+              ],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+            ),
+            border: Border.all(color: color.withValues(alpha: 0.25)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(icon, color: color, size: 28),
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                  textAlign: TextAlign.right,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.inkMuted,
+                      ),
+                  textAlign: TextAlign.right,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

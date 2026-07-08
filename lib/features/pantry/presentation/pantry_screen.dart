@@ -9,9 +9,12 @@ import '../../../core/widgets/lh_recipe_tile.dart';
 import '../../../core/widgets/lh_section_header.dart';
 import '../../../di/providers.dart';
 import '../../../domain/entities/recipe_entity.dart';
+import '../../../domain/value_objects/recipe_category.dart';
 
 class PantryScreen extends ConsumerStatefulWidget {
-  const PantryScreen({super.key});
+  const PantryScreen({super.key, this.recipeCategory = RecipeCategory.normal});
+
+  final String recipeCategory;
 
   @override
   ConsumerState<PantryScreen> createState() => _PantryScreenState();
@@ -46,6 +49,7 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
           await ref.read(recipeRepositoryProvider).findByPantryIngredients(
                 _items,
                 prefs,
+                recipeCategory: widget.recipeCategory,
               );
       setState(() => _results = AsyncData(list));
     } catch (e, st) {
@@ -60,7 +64,11 @@ class _PantryScreenState extends ConsumerState<PantryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('مكونات عندك في البيت'),
+        title: Text(
+          widget.recipeCategory == RecipeCategory.diet
+              ? 'بحث دايت بالمكونات'
+              : 'مكونات عندك في البيت',
+        ),
       ),
       body: SafeArea(
         child: ListView(

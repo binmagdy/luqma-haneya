@@ -17,6 +17,7 @@ class SmartPlanGenerationResult {
     required this.filledSlots,
     this.relaxedFiltersUsed = false,
     this.reusedRecipes = false,
+    this.estimatedDailyCaloriesByDay = const {},
   });
 
   final Map<String, String> assignments;
@@ -24,6 +25,9 @@ class SmartPlanGenerationResult {
   final int filledSlots;
   final bool relaxedFiltersUsed;
   final bool reusedRecipes;
+
+  /// Approximate kcal per calendar day (diet plans only; per-serving sums).
+  final Map<String, int> estimatedDailyCaloriesByDay;
 
   /// Shown when we had to relax meal/budget filters or reuse recipes.
   static const String relaxedMessageAr =
@@ -144,16 +148,26 @@ class SmartMealPlanGenerator {
       );
     }
 
+    final isDiet = settings.planCategory == SmartPlanCategory.diet;
+
     // Pre-filter + cache daily scores once per recipe (major perf win vs per-slot rescoring).
     final rows = <_RecipeRow>[];
     for (final r in catalog) {
+      if (isDiet && (!r.isDietRecipe || !r.hasNutritionInfo)) continue;
+      if (!isDiet && r.isDietRecipe) continue;
       if (RecipeScoringService.isHardExcluded(r, prefs)) continue;
       if (prefs.avoidSpicy && r.spicy) continue;
-      final daily = RecipeScoringService.scoreForDailySuggestion(
-        r,
-        prefs,
-        context: suggestionContext,
-      );
+      final daily = isDiet
+          ? RecipeScoringService.scoreForDietSuggestion(
+              r,
+              prefs,
+              context: suggestionContext,
+            )
+          : RecipeScoringService.scoreForDailySuggestion(
+              r,
+              prefs,
+              context: suggestionContext,
+            );
       if (daily == null) continue;
       rows.add(_RecipeRow(r, daily, _proteinBucket(r)));
     }
@@ -209,14 +223,22 @@ class SmartMealPlanGenerator {
         }
 
         if (settings.usePantry && pantryNorm.isNotEmpty) {
-          final p = RecipeScoringService.scoreForPantry(
-            r,
-            prefs,
-            pantryNorm,
-          );
+          final p = isDiet
+              ? RecipeScoringService.scoreForDietPantry(r, prefs, pantryNorm)
+              : RecipeScoringService.scoreForPantry(r, prefs, pantryNorm);
           if (p != null) {
             s += 0.20 * (p.clamp(0, 120) / 120 * 100);
           }
+        }
+
+        if (isDiet) {
+          final blob = RecipeScoringService.normalize([
+            ...r.mainIngredients,
+            ...r.steps,
+            r.title,
+          ].join(' '));
+          if (blob.contains('مقلي') || blob.contains('قلي')) s -= 28;
+          if (r.hasNutritionInfo && (r.calories ?? 999) <= 400) s += 8;
         }
 
         final mr = myRatings[r.id] ?? 0;
@@ -349,12 +371,26 @@ class SmartMealPlanGenerator {
       );
     }
 
+    final dailyCals = <String, int>{};
+    if (isDiet) {
+      final recipeById = {for (final row in rows) row.recipe.id: row.recipe};
+      for (final entry in out.entries) {
+        final dayKey = entry.key.split('__').first;
+        final decoded = MealPlanSlotCodec.decode(entry.value);
+        if (decoded == null) continue;
+        final recipe = recipeById[decoded.recipeId];
+        if (recipe?.calories == null) continue;
+        dailyCals[dayKey] = (dailyCals[dayKey] ?? 0) + recipe!.calories!;
+      }
+    }
+
     return SmartPlanGenerationResult(
       assignments: out,
       totalSlots: totalSlots,
       filledSlots: out.length,
       relaxedFiltersUsed: relaxedFiltersUsed,
       reusedRecipes: reusedRecipes,
+      estimatedDailyCaloriesByDay: dailyCals,
     );
   }
 

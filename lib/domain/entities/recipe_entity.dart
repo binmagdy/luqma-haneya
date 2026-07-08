@@ -1,3 +1,4 @@
+import '../value_objects/recipe_category.dart';
 import '../value_objects/recipe_moderation.dart';
 import '../value_objects/recipe_schema.dart';
 import '../value_objects/recipe_source.dart';
@@ -20,6 +21,12 @@ class RecipeEntity {
     required this.optionalIngredients,
     this.chefTips = const [],
     this.servingSuggestions = const [],
+    this.recipeCategory = RecipeCategory.normal,
+    this.calories,
+    this.proteinGrams,
+    this.carbsGrams,
+    this.fatGrams,
+    this.servingSizeDescription,
     this.source = RecipeSource.asset,
     this.createdByUserId,
     this.createdAt,
@@ -64,6 +71,17 @@ class RecipeEntity {
   final List<String> chefTips;
   final List<String> servingSuggestions;
 
+  /// [RecipeCategory.normal] or [RecipeCategory.diet].
+  final String recipeCategory;
+
+  /// Per-serving nutrition estimates (diet recipes). Values are approximate —
+  /// not lab-tested; see bundled JSON comments and admin entry hints.
+  final int? calories;
+  final double? proteinGrams;
+  final double? carbsGrams;
+  final double? fatGrams;
+  final String? servingSizeDescription;
+
   /// One of [RecipeSource] values: bundled asset, user submission, or remote doc.
   final String source;
 
@@ -104,4 +122,12 @@ class RecipeEntity {
 
   /// All ingredient lines (main then optional) for lists and legacy call sites.
   List<String> get ingredients => [...mainIngredients, ...optionalIngredients];
+
+  bool get isDietRecipe => recipeCategory == RecipeCategory.diet;
+
+  bool get hasNutritionInfo =>
+      calories != null &&
+      proteinGrams != null &&
+      carbsGrams != null &&
+      fatGrams != null;
 }

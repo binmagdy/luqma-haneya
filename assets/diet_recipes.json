@@ -1,0 +1,904 @@
+[
+  {
+    "id": "diet_grilled_chicken_salad",
+    "title": "سلطة فراخ مشوية دايت",
+    "description": "سلطة فراخ مشوية خفيفة وغنية بالبروتين، مناسبة للغداء أو العشاء.",
+    "minutes": 25,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "بروtein",
+      "مصري"
+    ],
+    "mainIngredients": [
+      "صدر دجاج 300 جم",
+      "خس وجرجير",
+      "طماطم كherry",
+      "خيار",
+      "ليمون",
+      "زيت زيتون",
+      "ملح وفلفل"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "تتبل صدر الدجاج بالليمون والملح.",
+      "اشوي الدجاج 12–15 دقيقة حتى ينضج.",
+      "قطّع الخضار ورتّبها.",
+      "قطّع الدجاج شرائح وضعه فوق السلطة.",
+      "رشّ زيت زيتون وعصير ليمون."
+    ],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 285,
+    "proteinGrams": 34,
+    "carbsGrams": 9,
+    "fatGrams": 12,
+    "servingSizeDescription": "طبق واحد (350 جم تقريبًا)",
+    "chefTips": [
+      "لا تفرط في الزيت؛ ملعقة كبيرة كافية.",
+      "اترك الدجاج يرتاح 3 دقائق قبل التقطيع."
+    ],
+    "servingSuggestions": [
+      "قدّم مع خبز بلدي خفيف أو بدون عيش.",
+      "أضف بذور رقيق أو سمسم محمص قليلًا."
+    ]
+  },
+  {
+    "id": "diet_baked_fish_lemon",
+    "title": "سمك بلطي مشوي بالليمون",
+    "description": "سمك مشوي بالفرن بصلصة ليمون وثوم، وجبة دايت متوازنة.",
+    "minutes": 35,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "سمك",
+      "مشوي"
+    ],
+    "mainIngredients": [
+      "2 قطع سمك بلطي",
+      "ليمونة",
+      "4 فصوص ثوم",
+      "زيت زيتون",
+      "بقدونس",
+      "ملح وفلفل",
+      "كمون"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "نظّف السمك وجفّفه.",
+      "اخلط عصير الليمون والثوم والزيت والتوابل.",
+      "ادهن السمك بالخليط.",
+      "اشوه في فرن 200°م لـ 20–25 دقيقة."
+    ],
+    "mealType": "dinner",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 260,
+    "proteinGrams": 32,
+    "carbsGrams": 4,
+    "fatGrams": 11,
+    "servingSizeDescription": "قطعة سمك متوسطة مع سلطة",
+    "chefTips": [
+      "لا تغطّ السمك كثيرًا حتى يتحمر.",
+      "استخدم ورق زبدة لتقليل الزيت."
+    ],
+    "servingSuggestions": [
+      "قدّم مع سلطة خضراء أو خضار مطبوخة على البخار."
+    ]
+  },
+  {
+    "id": "diet_lentil_soup_light",
+    "title": "شوربة عدس خفيفة",
+    "description": "شوربة عدس مصرية خفيفة بدون سمنة زائدة.",
+    "minutes": 40,
+    "servings": 4,
+    "tags": [
+      "دايت",
+      "نباتي",
+      "شوربة"
+    ],
+    "mainIngredients": [
+      "1 كوب عدس أصفر",
+      "1 بصلة",
+      "1 جزرة",
+      "2 طماطم",
+      "كمون وكركم",
+      "ملح وفلفل",
+      "ماء"
+    ],
+    "optionalIngredients": [
+      "عصير ليمون"
+    ],
+    "steps": [
+      "شوّح البصل والجزر بملعقة زيت.",
+      "أضف العدس والماء والطماطم.",
+      "اتركها تغلي ثم تسوّى 25 دقيقة.",
+      "اطحن جزئيًا للقوام الكريمي.",
+      "اضبط التتبيل بالليمون."
+    ],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 210,
+    "proteinGrams": 12,
+    "carbsGrams": 32,
+    "fatGrams": 3,
+    "servingSizeDescription": "كوب شوربة (250 مل)",
+    "chefTips": [
+      "لا تستخدم سمنة؛ زيت زيتون يكفي.",
+      "العدس المصري يحتاج غلي هادئ."
+    ],
+    "servingSuggestions": [
+      "وجبة كاملة مع سلطة خضراء."
+    ]
+  },
+  {
+    "id": "diet_egg_white_omelette",
+    "title": "عجة بياض بيض بالخضار",
+    "description": "عجة خفيفة بالبياض والخضار، فطار دايت سريع.",
+    "minutes": 12,
+    "servings": 1,
+    "tags": [
+      "دايت",
+      "فطار",
+      "بيض"
+    ],
+    "mainIngredients": [
+      "4 بياض بيض",
+      "1 بيضة كاملة",
+      "فلفل رومي",
+      "بصل أخضر",
+      "ملح وفلفل",
+      "رشة زيت"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "اخفق البياض مع البيضة.",
+      "شوّح الخضار دقيقة.",
+      "صبّ الخليط واطبخ على نار هادئة.",
+      "اطوِ العجة وقدّمها."
+    ],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 165,
+    "proteinGrams": 18,
+    "carbsGrams": 6,
+    "fatGrams": 6,
+    "servingSizeDescription": "عجة واحدة",
+    "chefTips": [
+      "بيضة كاملة واحدة تعطي نكهة أفضل.",
+      "نار هادئة = عجة طرية."
+    ],
+    "servingSuggestions": [
+      "مع خيار ومخلل خفيف."
+    ]
+  },
+  {
+    "id": "diet_chicken_breast_oven",
+    "title": "صدر دجاج بالفرن والأعشاب",
+    "description": "صدر دجاج متبل بالأعشاب ومشوي بالفرن بدون قلي.",
+    "minutes": 35,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "فراخ",
+      "فرن"
+    ],
+    "mainIngredients": [
+      "2 صدر دجاج",
+      "زيت زيتون",
+      "ثوم",
+      "ريحان أو زعتر",
+      "ليمون",
+      "ملح وفلفل"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "افتح جيب في الدجاج أو اثقبه.",
+      "تتبل ساعة أو ليلة.",
+      "اشوه 200°م 22–28 دقيقة.",
+      "اتركه يرتاح قبل التقطيع."
+    ],
+    "mealType": "dinner",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 295,
+    "proteinGrams": 38,
+    "carbsGrams": 2,
+    "fatGrams": 14,
+    "servingSizeDescription": "نصف صدر مع خضار",
+    "chefTips": [
+      "لا تفرط في التسوية حتى لا يجف.",
+      "استخدم ترمومتر داخلي 74°م."
+    ],
+    "servingSuggestions": [
+      "مع سلطة أو أرز بني قليل."
+    ]
+  },
+  {
+    "id": "diet_veg_stir_fry",
+    "title": "خضار سوتيه على البخار",
+    "description": "خضار مشكلة مطبوخة على البخار مع توابل خفيفة.",
+    "minutes": 20,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "نباتي",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "بروكلي",
+      "جزر",
+      "كوسة",
+      "فلفل",
+      "ثوم",
+      "زيت زيتون",
+      "صويا لايت"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "قطّع الخضار قطع متساوية.",
+      "سخّن مقلاة واسعة.",
+      "قلّب الخضار 2 دقيقة.",
+      "غطّ واترك 5 دقائق على نار هادئة.",
+      "اضبط بالصويا والثوم."
+    ],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "mixed",
+    "recipeCategory": "diet",
+    "calories": 120,
+    "proteinGrams": 4,
+    "carbsGrams": 18,
+    "fatGrams": 4,
+    "servingSizeDescription": "طبق خضار (300 جم)",
+    "chefTips": [
+      "لا تفرط في الزيت.",
+      "الخضار يجب أن تبقى مقرمشة قليلًا."
+    ],
+    "servingSuggestions": [
+      "طبق جانبي أو وجبة مع بروtein إضافي."
+    ]
+  },
+  {
+    "id": "diet_tuna_salad",
+    "title": "سلطة تونة دايت",
+    "description": "سلطة تونة بالذرة والخضار بدون مايونيز ثقيل.",
+    "minutes": 15,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "سريع",
+      "بروtein"
+    ],
+    "mainIngredients": [
+      "علبتان تونة في الماء",
+      "ذرة",
+      "خيار",
+      "فلفل",
+      "ليمون",
+      "زيت زيتون",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "صفّي التونة جيدًا.",
+      "اخلط المكونات.",
+      "تتبل بالليمون والزيت.",
+      "برد قبل التقديم."
+    ],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "mixed",
+    "recipeCategory": "diet",
+    "calories": 220,
+    "proteinGrams": 28,
+    "carbsGrams": 12,
+    "fatGrams": 7,
+    "servingSizeDescription": "طبق سلطة متوسط",
+    "chefTips": [
+      "استخدم تونة في الماء وليس الزيت.",
+      "بدون مايونيز لتقليل السعرات."
+    ],
+    "servingSuggestions": [
+      "مع خس أو خبز أسمر خفيف."
+    ]
+  },
+  {
+    "id": "diet_oats_banana",
+    "title": "شوفان بالموز والحليب",
+    "description": "فطار شوفان بالموز وحليب قليل الدسم.",
+    "minutes": 10,
+    "servings": 1,
+    "tags": [
+      "دايت",
+      "فطار",
+      "شوفان"
+    ],
+    "mainIngredients": [
+      "نصف كوب شوفان",
+      "كوب حليب قليل الدسم",
+      "موزة",
+      "قرفة",
+      "ملعقة عسل صغيرة"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "اسلق الشوفان مع الحليب 5 دقائق.",
+      "قطّع الموز فوقه.",
+      "رشّ القرفة وعسل خفيف."
+    ],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "mixed",
+    "recipeCategory": "diet",
+    "calories": 310,
+    "proteinGrams": 14,
+    "carbsGrams": 52,
+    "fatGrams": 6,
+    "servingSizeDescription": "كوب ونصف",
+    "chefTips": [
+      "العسل اختياري لتقليل السكر.",
+      "الشوفان يشبع لفترة طويلة."
+    ],
+    "servingSuggestions": [
+      "وجبة قبل التمرين أو فطار مبكر."
+    ]
+  },
+  {
+    "id": "diet_grilled_kofta_lean",
+    "title": "كفتة لحم قليلة الدهن مشوية",
+    "description": "كفتة لحم بدهن قليل ومشوية بدون زيت زائد.",
+    "minutes": 30,
+    "servings": 3,
+    "tags": [
+      "دايت",
+      "لحوم",
+      "مشوي"
+    ],
+    "mainIngredients": [
+      "500 جم لحم مفروم قليل الدهن",
+      "بصل مبشور",
+      "بقدونس",
+      "بهارات",
+      "ملح وفلفل"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "اعجن اللحم مع البصل والبقدونس.",
+      "شكّل أقراص رفيعة.",
+      "اشوي على شبكة 10–12 دقيقة لكل جانب."
+    ],
+    "mealType": "dinner",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 245,
+    "proteinGrams": 26,
+    "carbsGrams": 3,
+    "fatGrams": 14,
+    "servingSizeDescription": "3 قطع كفتة متوسطة",
+    "chefTips": [
+      "أقراص رفيعة تطبخ أسرع وتقلل الدهن.",
+      "لا تضغط على الكفتة أثناء الشوي."
+    ],
+    "servingSuggestions": [
+      "مع سلطة طحينة خفيفة أو خضار مشوية."
+    ]
+  },
+  {
+    "id": "diet_chicken_veg_soup",
+    "title": "شوربة فراخ بالخضار",
+    "description": "شوربة فراخ خفيفة بدون كريمة، غنية بالبروتين.",
+    "minutes": 45,
+    "servings": 4,
+    "tags": [
+      "دايت",
+      "شوربة",
+      "فراخ"
+    ],
+    "mainIngredients": [
+      "2 صدر فراخ",
+      "جزر",
+      "كرفس",
+      "بصل",
+      "طماطم",
+      "مرق خضار",
+      "ملح وفلفل"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "اسلق الدجاج مع الخضار.",
+      "قطّع الدجاج وارجعه للشوربة.",
+      "اتركها 15 دقيقة على نار هادئة.",
+      "تتبيل خفيف."
+    ],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 185,
+    "proteinGrams": 22,
+    "carbsGrams": 14,
+    "fatGrams": 4,
+    "servingSizeDescription": "كوب وربع شوربة",
+    "chefTips": [
+      "بدون كريمة أو نشا زائد.",
+      "شيل رغوة المرقة للشوربة الصافية."
+    ],
+    "servingSuggestions": [
+      "وجبة دافئة مع ليمون."
+    ]
+  },
+  {
+    "id": "diet_foul_light",
+    "title": "فول خفيف بالليمون",
+    "description": "فول مدمس بزيت زيتون قليل وكمون، نسخة دايت.",
+    "minutes": 20,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "نباتي",
+      "مصري"
+    ],
+    "mainIngredients": [
+      "2 كوب فول مسلوق",
+      "ليمون",
+      "ثوم",
+      "كمون",
+      "زيت زيتون",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "سخّن الفول.",
+      "هرس جزئيًا.",
+      "أضف الثوم والكمون والليمون.",
+      "رشّ زيت زيتون خفيف."
+    ],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 230,
+    "proteinGrams": 13,
+    "carbsGrams": 28,
+    "fatGrams": 8,
+    "servingSizeDescription": "طبق فول متوسط",
+    "chefTips": [
+      "زيت زيتون نصف ملعقة كبيرة للحصة.",
+      "بدون سمنة."
+    ],
+    "servingSuggestions": [
+      "مع خيار وطماطم."
+    ]
+  },
+  {
+    "id": "diet_zucchini_boats",
+    "title": "كوسة محشية لحم قليل الدهن",
+    "description": "كوسة محشية لحم مفروم قليل الدهن ومشوية.",
+    "minutes": 50,
+    "servings": 3,
+    "tags": [
+      "داiet",
+      "لحوم",
+      "فرن"
+    ],
+    "mainIngredients": [
+      "6 كوسة",
+      "300 جم لحم مفروم قليل الدهن",
+      "بصل",
+      "صلصة طماطم",
+      "توابل"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "أفرغ الكوسة.",
+      "قلّب اللحم مع البصل.",
+      "احشِ الكوسة.",
+      "ضعها في صينية وصلصة واشوه 35 دقيقة."
+    ],
+    "mealType": "dinner",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 275,
+    "proteinGrams": 24,
+    "carbsGrams": 18,
+    "fatGrams": 12,
+    "servingSizeDescription": "2 حبات كوسة",
+    "chefTips": [
+      "اختر لحمًا قليل الدهن.",
+      "لا تبالغ في الأرز داخل الحشو."
+    ],
+    "servingSuggestions": [
+      "مع سلطة خضراء."
+    ]
+  },
+  {
+    "id": "diet_shakshuka_diet",
+    "title": "شكشوكة بيض دايت",
+    "description": "شكشوكة بيض بصلصة طماطم خفيفة بدون زيت كثير.",
+    "minutes": 25,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "فطار",
+      "بيض"
+    ],
+    "mainIngredients": [
+      "4 بيض",
+      "3 طماطم",
+      "فلفل",
+      "بصل",
+      "ثوم",
+      "زيت زيتون",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "شوّح البصل والفلفل.",
+      "أضف الطماطم حتى تتسبك.",
+      "اكسر البيض فوق الصلصة.",
+      "غطّ حتى ينضج البيض."
+    ],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "low",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 240,
+    "proteinGrams": 16,
+    "carbsGrams": 14,
+    "fatGrams": 14,
+    "servingSizeDescription": "بيضتان مع صلصة",
+    "chefTips": [
+      "ملعقة زيت واحدة للطبخ.",
+      "البيض يفضل أن يبقى صفاره طريًا."
+    ],
+    "servingSuggestions": [
+      "مع خبز بلدي ربع رغيف."
+    ]
+  },
+  {
+    "id": "diet_brown_rice_chicken",
+    "title": "أرز بني بالفراخ المسلوق",
+    "description": "أرز بني مع صدر فراخ مسلوق وتوابل خفيفة.",
+    "minutes": 40,
+    "servings": 3,
+    "tags": [
+      "دايت",
+      "أرز",
+      "فراخ"
+    ],
+    "mainIngredients": [
+      "1.5 كوب أرز بني",
+      "2 صدر فراخ",
+      "بصل",
+      "كمون",
+      "ملح",
+      "ورق غار"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "انقع الأرز 30 دقيقة.",
+      "اسلق الدجاج واستخدم المرقة للأرز.",
+      "اسلق الأرز 35–40 دقيقة.",
+      "قطّع الدجاج وقدّمه فوق الأرز."
+    ],
+    "mealType": "lunch",
+    "difficulty": "medium",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 380,
+    "proteinGrams": 32,
+    "carbsGrams": 42,
+    "fatGrams": 8,
+    "servingSizeDescription": "كوب أرز مع 120 جم دجاج",
+    "chefTips": [
+      "الأرز البني أعلى ألياف.",
+      "الدجاج مسلوق وليس مقلي."
+    ],
+    "servingSuggestions": [
+      "وجبة ما بعد تمرين."
+    ]
+  },
+  {
+    "id": "diet_greek_salad_egypt",
+    "title": "سلطة يونانية مصرية",
+    "description": "سلطة خضار مع جبنة فتا قليلة و زيتون.",
+    "minutes": 15,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "سلطة",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "خيار",
+      "طماطم",
+      "فلفل",
+      "بصل أحمر",
+      "جبنة فتا قليلة الدسم",
+      "زيتون",
+      "زيت زيتون",
+      "ليمون"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "قطّع الخضار.",
+      "أضف الجبنة والزيتون.",
+      "تتبل بالليمون وزيت خفيف."
+    ],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed",
+    "recipeCategory": "diet",
+    "calories": 195,
+    "proteinGrams": 9,
+    "carbsGrams": 12,
+    "fatGrams": 14,
+    "servingSizeDescription": "طبق سلطة كبير",
+    "chefTips": [
+      "جبنة فتا بكمية معتدلة.",
+      "بدون خبز محمص زائد."
+    ],
+    "servingSuggestions": [
+      "وجبة غداء خفيفة."
+    ]
+  },
+  {
+    "id": "diet_stuffed_pepper_diet",
+    "title": "فلفل محشي دايت",
+    "description": "فلفل محشي أرز بني ولحم قليل الدهن.",
+    "minutes": 70,
+    "servings": 4,
+    "tags": [
+      "دايت",
+      "محشي"
+    ],
+    "mainIngredients": [
+      "8 فلفل",
+      "1 كوب أرز بني",
+      "300 جم لحم قليل الدهن",
+      "بصل",
+      "صلصة طماطم",
+      "توابل"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "اخلط الأرز واللحم والبصل.",
+      "احشِ الفلفل.",
+      "رتّب في طاجن وصلصة.",
+      "اطبخ 50–60 دقيقة على نار هادئة."
+    ],
+    "mealType": "dinner",
+    "difficulty": "hard",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 295,
+    "proteinGrams": 20,
+    "carbsGrams": 28,
+    "fatGrams": 10,
+    "servingSizeDescription": "2 فلفل",
+    "chefTips": [
+      "أرز بني بدل الأبيض.",
+      "لحم قليل الدهن."
+    ],
+    "servingSuggestions": [
+      "مع سلطة زبادي."
+    ]
+  },
+  {
+    "id": "diet_yogurt_berry_bowl",
+    "title": "زبادي بالتوت والمكسرات",
+    "description": "زبادي يوناني مع توت ومكسرات خفيفة.",
+    "minutes": 5,
+    "servings": 1,
+    "tags": [
+      "دايت",
+      "فطار",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "كوب زبادي يوناني قليل الدسم",
+      "توت",
+      "ملعقة لوز"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "ضع الزبادي في وعاء.",
+      "أضف التوت واللوز."
+    ],
+    "mealType": "breakfast",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed",
+    "recipeCategory": "diet",
+    "calories": 180,
+    "proteinGrams": 15,
+    "carbsGrams": 18,
+    "fatGrams": 6,
+    "servingSizeDescription": "كوب واحد",
+    "chefTips": [
+      "زبادي يوناني أعلى بروtein.",
+      "مكسرات بكمية محدودة."
+    ],
+    "servingSuggestions": [
+      "وجبة سناك أو فطار خفيف."
+    ]
+  },
+  {
+    "id": "diet_grilled_shrimp",
+    "title": "جمبري مشوي بالثوم",
+    "description": "جمبري مشوي بتوابل خفيفة، وجبة بروtein عالية.",
+    "minutes": 20,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "سي فود",
+      "مشوي"
+    ],
+    "mainIngredients": [
+      "400 جم جمبري",
+      "ثوم",
+      "ليمون",
+      "زيت زيتون",
+      "بقدونس",
+      "ملح"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "نظّف الجمبري.",
+      "تتبل بالثوم والليمون.",
+      "اشوه 3–4 دقائق لكل جانب."
+    ],
+    "mealType": "dinner",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 210,
+    "proteinGrams": 28,
+    "carbsGrams": 3,
+    "fatGrams": 9,
+    "servingSizeDescription": "150 جم جمبري",
+    "chefTips": [
+      "لا تفرط في التسوية.",
+      "الجمبري ينضج بسرعة."
+    ],
+    "servingSuggestions": [
+      "مع سلطة أو خضار مشوية."
+    ]
+  },
+  {
+    "id": "diet_meat_veg_skillet",
+    "title": "لحم مفروم بالخضار",
+    "description": "لحم مفروم قليل الدهن مع خضار على البخار.",
+    "minutes": 25,
+    "servings": 3,
+    "tags": [
+      "دايت",
+      "لحوم",
+      "سريع"
+    ],
+    "mainIngredients": [
+      "400 جم لحم مفروم قليل الدهن",
+      "بروكلي",
+      "جزر",
+      "فلفل",
+      "ثوم",
+      "توابل"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "شوّح اللحم حتى ينضج.",
+      "أضف الخضار.",
+      "غطّ 8 دقائق.",
+      "تتبيل خفيف."
+    ],
+    "mealType": "lunch",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "egyptian",
+    "recipeCategory": "diet",
+    "calories": 265,
+    "proteinGrams": 28,
+    "carbsGrams": 10,
+    "fatGrams": 12,
+    "servingSizeDescription": "طبق متوسط",
+    "chefTips": [
+      "صُفّ الدهن الزائد بعد التشويح.",
+      "خضار أكثر من اللحم بالحجم."
+    ],
+    "servingSuggestions": [
+      "بدون أرز أو مع ربع كوب أرز بني."
+    ]
+  },
+  {
+    "id": "diet_cauliflower_rice",
+    "title": "أرز قرنبيط بالفراخ",
+    "description": "بديل الأرز من القرنبيط مع دجاج مشوي.",
+    "minutes": 30,
+    "servings": 2,
+    "tags": [
+      "دايت",
+      "low carb",
+      "فراخ"
+    ],
+    "mainIngredients": [
+      "1 قرنبيط",
+      "صدر دجاج",
+      "ثوم",
+      "زيت زيتون",
+      "ملح وفلفل",
+      "بقدونس"
+    ],
+    "optionalIngredients": [],
+    "steps": [
+      "فرّم القرنبيط في محضرة.",
+      "شوّح 5 دقائق حتى يذبل.",
+      "اشوي الدجاج وقطّعه.",
+      "اخلط وقدّم."
+    ],
+    "mealType": "dinner",
+    "difficulty": "easy",
+    "budget": "medium",
+    "spicy": false,
+    "cuisine": "mixed",
+    "recipeCategory": "diet",
+    "calories": 240,
+    "proteinGrams": 30,
+    "carbsGrams": 12,
+    "fatGrams": 9,
+    "servingSizeDescription": "طبق كامل",
+    "chefTips": [
+      "القرنبيط بديل خفيف للأرز.",
+      "لا تفرط في الزيت."
+    ],
+    "servingSuggestions": [
+      "وجبة low carb مناسبة للدايت."
+    ]
+  }
+]

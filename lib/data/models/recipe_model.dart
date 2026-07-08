@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../domain/entities/recipe_entity.dart';
+import '../../domain/value_objects/recipe_category.dart';
 import '../../domain/value_objects/recipe_moderation.dart';
 import '../../domain/value_objects/recipe_schema.dart';
 import '../../domain/value_objects/recipe_source.dart';
@@ -23,6 +24,12 @@ class RecipeModel extends RecipeEntity {
     required super.optionalIngredients,
     super.chefTips = const [],
     super.servingSuggestions = const [],
+    super.recipeCategory = RecipeCategory.normal,
+    super.calories,
+    super.proteinGrams,
+    super.carbsGrams,
+    super.fatGrams,
+    super.servingSizeDescription,
     super.source = RecipeSource.asset,
     super.createdByUserId,
     super.createdAt,
@@ -63,6 +70,12 @@ class RecipeModel extends RecipeEntity {
       optionalIngredients: e.optionalIngredients,
       chefTips: e.chefTips,
       servingSuggestions: e.servingSuggestions,
+      recipeCategory: e.recipeCategory,
+      calories: e.calories,
+      proteinGrams: e.proteinGrams,
+      carbsGrams: e.carbsGrams,
+      fatGrams: e.fatGrams,
+      servingSizeDescription: e.servingSizeDescription,
       source: e.source,
       createdByUserId: e.createdByUserId,
       createdAt: e.createdAt,
@@ -111,6 +124,14 @@ class RecipeModel extends RecipeEntity {
       optionalIngredients: optional,
       chefTips: _jsonStringList(json['chefTips']),
       servingSuggestions: _jsonStringList(json['servingSuggestions']),
+      recipeCategory: RecipeCategory.normalize(
+        json['recipeCategory'] as String?,
+      ),
+      calories: (json['calories'] as num?)?.toInt(),
+      proteinGrams: (json['proteinGrams'] as num?)?.toDouble(),
+      carbsGrams: (json['carbsGrams'] as num?)?.toDouble(),
+      fatGrams: (json['fatGrams'] as num?)?.toDouble(),
+      servingSizeDescription: json['servingSizeDescription'] as String?,
       source: json['source'] as String? ?? RecipeSource.asset,
       createdByUserId:
           json['createdByUserId'] as String? ?? json['createdBy'] as String?,
@@ -204,6 +225,15 @@ class RecipeModel extends RecipeEntity {
       optionalIngredients: optional,
       chefTips: _firestoreStringList(data['chefTips']),
       servingSuggestions: _firestoreStringList(data['servingSuggestions']),
+      recipeCategory: RecipeCategory.normalize(
+        data['recipeCategory'] as String?,
+      ),
+      calories: (data['calories'] as num?)?.toInt(),
+      proteinGrams: (data['proteinGrams'] as num?)?.toDouble(),
+      carbsGrams: (data['carbsGrams'] as num?)?.toDouble(),
+      fatGrams: (data['fatGrams'] as num?)?.toDouble(),
+      servingSizeDescription:
+          _firestoreStringOrNull(data['servingSizeDescription']),
       source: data['source'] as String? ?? RecipeSource.remote,
       createdByUserId:
           data['createdByUserId'] as String? ?? data['createdBy'] as String?,
@@ -284,6 +314,13 @@ class RecipeModel extends RecipeEntity {
       if (chefTips.isNotEmpty) 'chefTips': chefTips,
       if (servingSuggestions.isNotEmpty)
         'servingSuggestions': servingSuggestions,
+      'recipeCategory': recipeCategory,
+      if (calories != null) 'calories': calories,
+      if (proteinGrams != null) 'proteinGrams': proteinGrams,
+      if (carbsGrams != null) 'carbsGrams': carbsGrams,
+      if (fatGrams != null) 'fatGrams': fatGrams,
+      if (servingSizeDescription != null && servingSizeDescription!.isNotEmpty)
+        'servingSizeDescription': servingSizeDescription,
       'source': source,
       'status': moderationStatus,
       'visibility': visibility,
@@ -323,6 +360,12 @@ class RecipeModel extends RecipeEntity {
     List<String>? optionalIngredients,
     List<String>? chefTips,
     List<String>? servingSuggestions,
+    String? recipeCategory,
+    int? calories,
+    double? proteinGrams,
+    double? carbsGrams,
+    double? fatGrams,
+    String? servingSizeDescription,
     String? source,
     String? createdByUserId,
     DateTime? createdAt,
@@ -357,6 +400,13 @@ class RecipeModel extends RecipeEntity {
       optionalIngredients: optionalIngredients ?? this.optionalIngredients,
       chefTips: chefTips ?? this.chefTips,
       servingSuggestions: servingSuggestions ?? this.servingSuggestions,
+      recipeCategory: recipeCategory ?? this.recipeCategory,
+      calories: calories ?? this.calories,
+      proteinGrams: proteinGrams ?? this.proteinGrams,
+      carbsGrams: carbsGrams ?? this.carbsGrams,
+      fatGrams: fatGrams ?? this.fatGrams,
+      servingSizeDescription:
+          servingSizeDescription ?? this.servingSizeDescription,
       source: source ?? this.source,
       createdByUserId: createdByUserId ?? this.createdByUserId,
       createdAt: createdAt ?? this.createdAt,
@@ -395,6 +445,13 @@ class RecipeModel extends RecipeEntity {
       if (chefTips.isNotEmpty) 'chefTips': chefTips,
       if (servingSuggestions.isNotEmpty)
         'servingSuggestions': servingSuggestions,
+      'recipeCategory': recipeCategory,
+      if (calories != null) 'calories': calories,
+      if (proteinGrams != null) 'proteinGrams': proteinGrams,
+      if (carbsGrams != null) 'carbsGrams': carbsGrams,
+      if (fatGrams != null) 'fatGrams': fatGrams,
+      if (servingSizeDescription != null && servingSizeDescription!.isNotEmpty)
+        'servingSizeDescription': servingSizeDescription,
       'source': source,
       if (createdByUserId != null) 'createdByUserId': createdByUserId,
       if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),

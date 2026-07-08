@@ -11,14 +11,20 @@ import '../../../di/providers.dart';
 import '../../../domain/entities/recipe_entity.dart';
 import '../../../domain/entities/recipe_rating_summary.dart';
 import '../../../domain/services/recipe_scoring_service.dart';
+import '../../../domain/value_objects/recipe_category.dart';
 import '../../../domain/value_objects/recipe_schema.dart';
 
 enum _RecipeSort { def, newest, highestRated, fastest }
 
 enum _SpicyFilter { any, spicy, mild }
 
+enum _CategoryTab { all, normal, diet }
+
 class AllRecipesScreen extends ConsumerStatefulWidget {
-  const AllRecipesScreen({super.key});
+  const AllRecipesScreen({super.key, this.initialCategory});
+
+  /// Optional [RecipeCategory.normal] or [RecipeCategory.diet] from route.
+  final String? initialCategory;
 
   @override
   ConsumerState<AllRecipesScreen> createState() => _AllRecipesScreenState();
@@ -33,6 +39,18 @@ class _AllRecipesScreenState extends ConsumerState<AllRecipesScreen> {
   String? _cuisine;
   _SpicyFilter _spicy = _SpicyFilter.any;
   _RecipeSort _sort = _RecipeSort.def;
+  late _CategoryTab _categoryTab;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoryTab = switch (RecipeCategory.normalize(widget.initialCategory)) {
+      RecipeCategory.diet => _CategoryTab.diet,
+      RecipeCategory.normal when widget.initialCategory != null =>
+        _CategoryTab.normal,
+      _ => _CategoryTab.all,
+    };
+  }
 
   @override
   void dispose() {
@@ -64,7 +82,16 @@ class _AllRecipesScreenState extends ConsumerState<AllRecipesScreen> {
     return false;
   }
 
+  bool _passesCategory(RecipeEntity r) {
+    return switch (_categoryTab) {
+      _CategoryTab.all => true,
+      _CategoryTab.normal => !r.isDietRecipe,
+      _CategoryTab.diet => r.isDietRecipe,
+    };
+  }
+
   bool _passesFilters(RecipeEntity r) {
+    if (!_passesCategory(r)) return false;
     if (_meal != null &&
         r.mealType != _meal &&
         r.mealType != RecipeMealType.any) {
@@ -128,7 +155,15 @@ class _AllRecipesScreenState extends ConsumerState<AllRecipesScreen> {
     final favs = ref.watch(favoriteIdsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('كل الوصفات')),
+      appBar: AppBar(
+        title: Text(
+          switch (_categoryTab) {
+            _CategoryTab.diet => 'وصفات دايت',
+            _CategoryTab.normal => 'وصفات البيت',
+            _CategoryTab.all => 'كل الوصفات',
+          },
+        ),
+      ),
       body: cat.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('خطأ: $e')),
@@ -148,6 +183,28 @@ class _AllRecipesScreenState extends ConsumerState<AllRecipesScreen> {
                   final sorted = _applySort(filtered, sumMap);
                   return Column(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                        child: SegmentedButton<_CategoryTab>(
+                          segments: const [
+                            ButtonSegment(
+                              value: _CategoryTab.all,
+                              label: Text('الكل'),
+                            ),
+                            ButtonSegment(
+                              value: _CategoryTab.normal,
+                              label: Text('وصفات البيت'),
+                            ),
+                            ButtonSegment(
+                              value: _CategoryTab.diet,
+                              label: Text('دايت'),
+                            ),
+                          ],
+                          selected: {_categoryTab},
+                          onSelectionChanged: (s) =>
+                              setState(() => _categoryTab = s.first),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                         child: TextField(
@@ -316,6 +373,7 @@ class _AllRecipesScreenState extends ConsumerState<AllRecipesScreen> {
                           _sort = _RecipeSort.def;
                           _query = '';
                           _searchCtrl.clear();
+                          _categoryTab = _CategoryTab.all;
                         }),
                         child: const Text('مسح الفلاتر'),
                       ),

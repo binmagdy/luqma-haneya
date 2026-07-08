@@ -13,7 +13,9 @@ import '../../../domain/services/smart_meal_plan_generator.dart';
 import '../../../domain/value_objects/smart_plan_settings.dart';
 
 class SmartMealPlanScreen extends ConsumerStatefulWidget {
-  const SmartMealPlanScreen({super.key});
+  const SmartMealPlanScreen({super.key, this.initialPlanCategory});
+
+  final String? initialPlanCategory;
 
   @override
   ConsumerState<SmartMealPlanScreen> createState() =>
@@ -25,6 +27,7 @@ class _SmartMealPlanScreenState extends ConsumerState<SmartMealPlanScreen> {
   SmartPlanMealsPerDay _meals = SmartPlanMealsPerDay.lunchDinner;
   SmartPlanBudget _budget = SmartPlanBudget.balanced;
   SmartPlanCookingPace _pace = SmartPlanCookingPace.quickWeekdays;
+  SmartPlanCategory _planCat = SmartPlanCategory.normal;
   var _people = 4;
   var _usePantry = false;
   final _pantryCtrl = TextEditingController();
@@ -32,6 +35,14 @@ class _SmartMealPlanScreenState extends ConsumerState<SmartMealPlanScreen> {
   var _tryNew = true;
   var _busy = false;
   String _busyMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialPlanCategory == 'diet') {
+      _planCat = SmartPlanCategory.diet;
+    }
+  }
 
   @override
   void dispose() {
@@ -64,7 +75,10 @@ class _SmartMealPlanScreenState extends ConsumerState<SmartMealPlanScreen> {
       setState(() => _busyMessage = 'بنختار أفضل الوصفات ليك...');
 
       final prefs = results[0] as UserPreferencesEntity;
-      final catalog = results[1] as List<RecipeEntity>;
+      final allCatalog = results[1] as List<RecipeEntity>;
+      final catalog = _planCat == SmartPlanCategory.diet
+          ? allCatalog.where((r) => r.isDietRecipe).toList()
+          : allCatalog.where((r) => !r.isDietRecipe).toList();
       final favs = results[2] as Set<String>;
       final ratings = results[3] as Map<String, int>;
       final viewed = results[4] as List<String>;
@@ -114,6 +128,7 @@ class _SmartMealPlanScreenState extends ConsumerState<SmartMealPlanScreen> {
             .toList(),
         includeFavorites: _includeFav,
         tryNewRecipes: _tryNew,
+        planCategory: _planCat,
       );
 
       final startMonday = SmartMealPlanGenerator.mondayOf(DateTime.now());
@@ -170,8 +185,17 @@ class _SmartMealPlanScreenState extends ConsumerState<SmartMealPlanScreen> {
           ),
         );
       } else {
+        var msg = 'تم توليد الخطة وحفظها';
+        if (_planCat == SmartPlanCategory.diet &&
+            planResult.estimatedDailyCaloriesByDay.isNotEmpty) {
+          final avg = planResult.estimatedDailyCaloriesByDay.values.reduce(
+                (a, b) => a + b,
+              ) ~/
+              planResult.estimatedDailyCaloriesByDay.length;
+          msg = 'تم الحفظ — متوسط السعرات اليومية تقريبًا: $avg (تقدير)';
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم توليد الخطة وحفظها')),
+          SnackBar(content: Text(msg)),
         );
       }
 
@@ -223,6 +247,30 @@ class _SmartMealPlanScreenState extends ConsumerState<SmartMealPlanScreen> {
             ),
             const SizedBox(height: 16),
           ],
+          const Text('نوع الخطة'),
+          Wrap(
+            spacing: 8,
+            children: [
+              ChoiceChip(
+                label: const Text('وصفات البيت'),
+                selected: _planCat == SmartPlanCategory.normal,
+                onSelected: _busy
+                    ? null
+                    : (_) => setState(
+                          () => _planCat = SmartPlanCategory.normal,
+                        ),
+              ),
+              ChoiceChip(
+                label: const Text('دايت'),
+                selected: _planCat == SmartPlanCategory.diet,
+                onSelected: _busy
+                    ? null
+                    : (_) =>
+                        setState(() => _planCat = SmartPlanCategory.diet),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
           const Text('مدة الخطة'),
           Wrap(
             spacing: 8,
